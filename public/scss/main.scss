@@ -1,0 +1,5 @@
+@use "variables";
+
+main{
+    background-color: variables.$rojo;
+}

@@ -4,20 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var usersRouter = require('./routes/users');
 
 var app = express();
-
-//rutas
-const authController = require('./controllers/login.controller.js');
-const homeController = require('./controllers/home.controller.js');
-
-app.get('/home2', homeController.index)
-app.get('/home', homeController.home)
-
-app.get('/',authController.index)
-app.get('/create',authController.createUser)
-app.post('/login/postUser', authController.postUser);
 
 
 
@@ -32,8 +20,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter);
 
+
+//controladores
+const authController = require('./controllers/login.controller.js');
+const homeController = require('./controllers/home.controller.js');
+const ventasController = require('./controllers/ventas.controller.js')
+const alquilerController = require ('./controllers/alquiler.controller.js');
+
+//rutas
+app.get('/',authController.index) //login
+app.get('/create',authController.createUser)//para crear usuario
+app.post('/create', authController.postUser); //método post para la creacion 
+app.get('/home', homeController.index) //home
+app.get('/ventas', ventasController.index)
+app.get('/alquileres', alquilerController.index);
+
+//para evitar un eerro 404 que ensucia consola
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.status(204).end();
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
