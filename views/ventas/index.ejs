@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <%- include('../partials/nav') %>
-    
-    <main>
-        <h2>UN DIV POR CADA ARTICULO</h2>
-    <aside>
-        <h3>Carrito</h3>
-        <div>
-            <p>Aún no hay ítems</p>
-        </div>
-        <button>Finalizar compra</button>
-    </aside>
-    </main>
-    
+
+        <main>
+            <h2>UN DIV POR CADA ARTICULO</h2>
+            <ul>
+                <% productos.forEach(p=> { %>
+                    <% if(p.stock>0) { %>
+                        <li>
+                            <b>
+                                <%= p.producto %>
+                            </b>
+                            <b>$ <%= p.precio %></b>
+                            <button id="addToCart">Agregar</button>
+                        </li>
+                        <% } else{%>
+                            <li>
+                                <b>
+                                    <%= p.producto %>
+                                </b>
+                                <b>SIN STOCK</b>
+                            </li>
+                            <% } %>
+
+                                <% }) %>
+            </ul>
+            <aside>
+                <h3>Carrito</h3>
+                <div>
+                    <p>Aún no hay ítems</p>
+                </div>
+                <button>Finalizar compra</button>
+            </aside>
+        </main>
+
 
 </body>
+
 </html>

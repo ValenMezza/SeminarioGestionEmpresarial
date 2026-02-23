@@ -1,6 +1,10 @@
+const { listProds } = require("../store/dbStock");
+
 const ventasController={
-    index:(req,res) =>{
-        res.render('ventas/index')
+    index:async (req,res) =>{
+        const productos=await listProds();
+        
+        res.render('ventas/index', {productos})
     }
 }
 

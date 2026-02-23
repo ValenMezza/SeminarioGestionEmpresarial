@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock</title>
+</head>
+
+<body>
+    <%- include('../partials/nav.ejs') %>
+
+        <h1>Stock</h1>
+
+        <ul class="prods_cards">
+            <% productos.forEach(p=> { %>
+                <li>
+                    <b>
+                        <%= p.producto %>
+                    </b> - $<%= p.precio %>
+                        | <a href="/stock/detalle/<%= p.id %>">Ver detalle</a>
+                </li>
+                <% }) %>
+        </ul>
+</body>
+
+</html>
