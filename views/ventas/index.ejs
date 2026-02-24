@@ -5,22 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
 </head>
 
 <body>
     <%- include('../partials/nav') %>
 
         <main>
-            <h2>UN DIV POR CADA ARTICULO</h2>
+            <div>
+<h2>UN DIV POR CADA ARTICULO</h2>
             <ul>
                 <% productos.forEach(p=> { %>
                     <% if(p.stock>0) { %>
                         <li>
-                            <b>
+                            <b data-prod="<%= p.producto %>">
                                 <%= p.producto %>
                             </b>
-                            <b>$ <%= p.precio %></b>
-                            <button id="addToCart">Agregar</button>
+                            <b data-id="<%= p.id %>">
+                                <%= p.id %>
+                            </b>
+                            <b data-precio="<%= p.precio %>">$<%= p.precio %></b>
+                            <button class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
+                                data-precio="<%= p.precio %>">
+                                Agregar
+                            </button>
                         </li>
                         <% } else{%>
                             <li>
@@ -33,16 +42,21 @@
 
                                 <% }) %>
             </ul>
+            </div>
+            
             <aside>
                 <h3>Carrito</h3>
-                <div>
-                    <p>Aún no hay ítems</p>
+                <div id="cart">
+                    <ul id="cart_items">
+
+                    </ul>
+
                 </div>
                 <button>Finalizar compra</button>
             </aside>
         </main>
 
-
+        <script src="/javascript/ventas.js"></script>
 </body>
 
 </html>

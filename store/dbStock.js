@@ -4,10 +4,9 @@ const dbStock = {
     { id: 2, producto: "Arena", precio: 10000,stock:10 },
     { id: 3, producto: "Piedra", precio: 15000, stock:10 },
     { id: 4, producto: "Arenza zarandeada", precio: 12000, stock:0 },
+    { id: 5, producto: "Material Relleno", precio: 20000 , stock: 1}
   ],
 };
-
-
 
 
 async function listProds() {

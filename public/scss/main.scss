@@ -1,5 +1,8 @@
 @use "variables";
+@use "aside";
 
 main{
+    display: flex;
+    flex-direction: row;
     background-color: variables.$rojo;
 }
