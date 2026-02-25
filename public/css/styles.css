@@ -1,11 +1,162 @@
+aside .carrito {
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 1rem;
+  background: white;
+  margin-right: 10px;
+  position: sticky;
+  top: 1rem;
+}
+aside .carrito h3 {
+  margin-top: 0;
+}
+aside .carrito #cart_items {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 1rem 0;
+}
+aside .carrito button {
+  width: 100%;
+  padding: 10px 16px;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: beige;
+  cursor: pointer;
+}
 aside {
   background-color: rgb(94, 186, 94);
 }
 
-main {
+/* =========================
+   HOME
+========================= */
+#home {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  background-color: rgb(71, 71, 71);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+#home .cards_main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 12px;
+  text-align: center;
+  background-color: blue;
+}
+#home .btn_card {
+  width: fit-content;
+  min-width: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: beige;
+  text-decoration: none;
+  color: black;
+  margin: 0 auto;
+  padding: 10px 16px;
+}
+
+/* =========================
+   VENTAS (Layout principal)
+========================= */
+#ventas.ventas-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem;
+}
+
+/* =========================
+   VENTAS - Productos
+========================= */
+#ventas .productos {
+  min-width: 0;
+}
+#ventas .productos h2 {
+  margin: 0 0 1rem 0;
+}
+#ventas .lista-productos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+#ventas .cards_main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 12px;
+  text-align: center;
+  background-color: blue;
+}
+#ventas .cards_main button.addToCart {
+  width: fit-content;
+  align-self: center;
+  padding: 10px 16px;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: beige;
+  cursor: pointer;
+}
+#ventas .cards_main.sin-stock {
+  opacity: 0.6;
+}
+#ventas .cards_main.sin-stock button.addToCart {
+  width: fit-content;
+  align-self: center;
+  padding: 10px 16px;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: beige;
+  cursor: not-allowed;
+}
+#ventas .carrito {
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 1rem;
+  background: white;
+  margin-right: 10px;
+  position: sticky;
+  top: 1rem;
+}
+#ventas .carrito h3 {
+  margin-top: 0;
+}
+#ventas .carrito #cart_items {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 1rem 0;
+}
+#ventas .carrito button {
+  width: 100%;
+  padding: 10px 16px;
+  border: 2px solid black;
+  border-radius: 20px;
+  background-color: beige;
+  cursor: pointer;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+  #ventas.ventas-layout {
+    grid-template-columns: 1fr;
+  }
+  #ventas .carrito {
+    position: static;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

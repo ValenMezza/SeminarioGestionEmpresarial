@@ -12,50 +12,55 @@
 <body>
     <%- include('../partials/nav') %>
 
-        <main>
-            <div>
-<h2>UN DIV POR CADA ARTICULO</h2>
-            <ul>
-                <% productos.forEach(p=> { %>
-                    <% if(p.stock>0) { %>
-                        <li>
-                            <b data-prod="<%= p.producto %>">
-                                <%= p.producto %>
-                            </b>
-                            <b data-id="<%= p.id %>">
-                                <%= p.id %>
-                            </b>
-                            <b data-precio="<%= p.precio %>">$<%= p.precio %></b>
-                            <button class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
-                                data-precio="<%= p.precio %>">
-                                Agregar
-                            </button>
-                        </li>
-                        <% } else{%>
+        <main id="ventas" class="ventas-layout">
+            <section class="productos">
+                <ul class="lista-productos">
+                    <% productos.forEach(p=> { %>
+                        <% if (p.stock> 0) { %>
                             <li>
-                                <b>
-                                    <%= p.producto %>
-                                </b>
-                                <b>SIN STOCK</b>
+                                <div class="cards_main">
+                                    <b>
+                                        <%= p.producto %>
+                                    </b>
+                                    <b>
+                                        <%= p.id %>
+                                    </b>
+                                    <b>$<%= p.precio %></b>
+                                    <button class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
+                                        data-precio="<%= p.precio %>">
+                                        Agregar
+                                    </button>
+                                </div>
                             </li>
-                            <% } %>
+                            <% } else { %>
+                                <li>
+                                    <div class="cards_main sin-stock">
+                                        <b>
+                                            <%= p.producto %>
+                                        </b>
+                                        <b>
+                                            <%= p.id %>
+                                        </b>
+                                        <b>$<%= p.precio %></b>
+                                        <button disabled class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
+                                            data-precio="<%= p.precio %>">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </li>
+                                <% } %>
+                                    <% }) %>
+                </ul>
+            </section>
 
-                                <% }) %>
-            </ul>
-            </div>
-            
-            <aside>
+            <aside class="carrito">
                 <h3>Carrito</h3>
                 <div id="cart">
-                    <ul id="cart_items">
-
-                    </ul>
-
+                    <ul id="cart_items"></ul>
                 </div>
                 <button>Finalizar compra</button>
             </aside>
         </main>
-
         <script src="/javascript/ventas.js"></script>
 </body>
 

@@ -1,3 +1,35 @@
-aside{
+aside {
+
+    //carrito
+    .carrito {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 1rem;
+        background: white;
+        margin-right: 10px;
+        position: sticky;
+        top: 1rem;
+
+        h3 {
+            margin-top: 0;
+        }
+
+        #cart_items {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 1rem 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 16px;
+
+            border: 2px solid black;
+            border-radius: 20px;
+            background-color: beige;
+            cursor: pointer;
+        }
+    }
+
     background-color: rgb(94, 186, 94);
 }

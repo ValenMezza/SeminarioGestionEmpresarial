@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Producto: ${producto.nombre} 
         | Cantidad: ${producto.cantidad} 
         | Subtotal: $${producto.precio * producto.cantidad}
-      `;
+        `;
 
             const delOne = document.createElement('button');
             delOne.className = "deleteBtn";
