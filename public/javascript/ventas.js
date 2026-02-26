@@ -5,10 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let carrito = [];
 
-    // Botón eliminar carrito (lo creas 1 vez)
     const deleteCart = document.createElement('button');
     deleteCart.textContent = "Eliminar carrito";
     deleteCart.style.display = "none"; // arranca oculto
+    const checkoutCart = document.createElement('button');
+    checkoutCart.textContent = 'Finalizar compra';
+    checkoutCart.style.display = 'none'
+    cartDiv.append(checkoutCart)
     cartDiv.append(deleteCart);
 
     function renderCarrito() {
@@ -17,20 +20,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (carrito.length === 0) {
             cart.innerHTML = "<li>No hay items</li>";
             deleteCart.style.display = "none";
+            checkoutCart.style.display = 'none'
+
             return;
         }
 
         deleteCart.style.display = "inline-block";
+        checkoutCart.style.display = 'inline-block'
 
         carrito.forEach(producto => {
             const li = document.createElement('li');
 
             li.innerHTML = `
-        Producto: ${producto.nombre} 
-        | Cantidad: ${producto.cantidad} 
-        | Subtotal: $${producto.precio * producto.cantidad}
+        ${producto.nombre} 
+        | x${producto.cantidad} 
+        |Subtotal: $${producto.precio * producto.cantidad}
         `;
-
+            const divBtns = document.createElement('div');
+            divBtns.className = 'divBtns'
             const delOne = document.createElement('button');
             delOne.className = "deleteBtn";
             delOne.textContent = "-";
@@ -40,9 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             addOne.textContent = "+";
 
             const eliminarProdBtn = document.createElement('button');
+            eliminarProdBtn.className = "delCartBtn"
             eliminarProdBtn.textContent = "ELIMINAR";
 
-            // ✅ -1 cantidad
             delOne.addEventListener('click', () => {
                 const prod = carrito.find(p => p.id === producto.id);
                 if (!prod) return;
@@ -56,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderCarrito();
             });
 
-            // ✅ +1 cantidad
             addOne.addEventListener('click', () => {
                 const prod = carrito.find(p => p.id === producto.id);
                 if (!prod) return;
@@ -65,20 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderCarrito();
             });
 
-            // ✅ eliminar producto completo
             eliminarProdBtn.addEventListener('click', () => {
                 carrito = carrito.filter(p => p.id !== producto.id);
                 renderCarrito();
             });
 
-            li.append(delOne);
-            li.append(eliminarProdBtn);
-            li.append(addOne);
-            cart.append(li);
+
+            divBtns.append(delOne, eliminarProdBtn, addOne);;
+            li.append(divBtns)
+            cart.appendChild(li);
+
         });
     }
 
-    // ✅ agregar desde la lista de productos
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const id = Number(btn.dataset.id);
@@ -97,11 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ✅ vaciar carrito
     deleteCart.addEventListener('click', () => {
         carrito = [];
         renderCarrito();
     });
 
     renderCarrito();
-});s
+}); 

@@ -1,14 +1,13 @@
 @use "variables";
 @use "aside";
+@use "nav";
 
-/* =========================
-   HOME
-========================= */
 #home {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    justify-content: center;
 
     .cards_main {
         display: flex;
@@ -18,7 +17,7 @@
         padding: 1rem;
         border: 1px solid black;
         border-radius: 12px;
-
+        width: 350px;
         text-align: center;
         background-color: blue;
     }
@@ -41,22 +40,17 @@
     }
 }
 
-/* =========================
-   VENTAS (Layout principal)
-========================= */
-#ventas.ventas-layout {
+
+
+
+#ventas {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 320px; // productos | carrito
+    grid-template-columns: 1fr 400px; // productos | carrito
     gap: 1rem;
     align-items: start;
     padding: 1rem;
-}
 
-/* =========================
-   VENTAS - Productos
-========================= */
-#ventas {
     .productos {
         min-width: 0; // evita overflow raro en grid
 
@@ -71,11 +65,9 @@
         margin: 0;
 
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 1rem;
     }
-
-
 
     .cards_main {
         display: flex;
@@ -103,7 +95,7 @@
 
     //productos que no tienen stock
     .cards_main.sin-stock {
-        opacity: 0.6;
+        // opacity: 0.6;
 
         button.addToCart {
             width: fit-content;
@@ -115,42 +107,8 @@
             cursor: not-allowed
         }
     }
-
-    //carrito
-    .carrito {
-        border: 1px solid black;
-        border-radius: 12px;
-        padding: 1rem;
-        background: white;
-        margin-right: 10px;
-        position: sticky;
-        top: 1rem;
-
-        h3 {
-            margin-top: 0;
-        }
-
-        #cart_items {
-            list-style: none;
-            padding: 0;
-            margin: 0.75rem 0 1rem 0;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px 16px;
-
-            border: 2px solid black;
-            border-radius: 20px;
-            background-color: beige;
-            cursor: pointer;
-        }
-    }
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
 @media (max-width: 900px) {
     #ventas.ventas-layout {
         grid-template-columns: 1fr; // carrito abajo

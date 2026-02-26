@@ -1,4 +1,5 @@
-aside .carrito {
+#carrito {
+  display: grid;
   border: 1px solid black;
   border-radius: 12px;
   padding: 1rem;
@@ -6,35 +7,55 @@ aside .carrito {
   margin-right: 10px;
   position: sticky;
   top: 1rem;
+  align-content: center;
 }
-aside .carrito h3 {
+#carrito h3 {
   margin-top: 0;
 }
-aside .carrito #cart_items {
+#carrito #cart_items {
   list-style: none;
   padding: 0;
   margin: 0.75rem 0 1rem 0;
 }
-aside .carrito button {
-  width: 100%;
+#carrito button {
+  width: fit-content;
   padding: 10px 16px;
   border: 2px solid black;
   border-radius: 20px;
-  background-color: beige;
+  background-color: rgb(255, 11, 11);
   cursor: pointer;
 }
-aside {
-  background-color: rgb(94, 186, 94);
+#carrito .divBtns .delCartBtn {
+  background-color: rgb(118, 186, 126);
 }
 
-/* =========================
-   HOME
-========================= */
+nav {
+  background-color: red;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+nav ul {
+  display: flex;
+  flex-direction: row;
+}
+nav ul li {
+  list-style: none;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+nav ul li a {
+  text-decoration: none;
+  color: black;
+}
+
 #home {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  justify-content: center;
 }
 #home .cards_main {
   display: flex;
@@ -43,6 +64,7 @@ aside {
   padding: 1rem;
   border: 1px solid black;
   border-radius: 12px;
+  width: 350px;
   text-align: center;
   background-color: blue;
 }
@@ -61,21 +83,14 @@ aside {
   padding: 10px 16px;
 }
 
-/* =========================
-   VENTAS (Layout principal)
-========================= */
-#ventas.ventas-layout {
+#ventas {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 400px;
   gap: 1rem;
   align-items: start;
   padding: 1rem;
 }
-
-/* =========================
-   VENTAS - Productos
-========================= */
 #ventas .productos {
   min-width: 0;
 }
@@ -87,7 +102,7 @@ aside {
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 1rem;
 }
 #ventas .cards_main {
@@ -109,9 +124,6 @@ aside {
   background-color: beige;
   cursor: pointer;
 }
-#ventas .cards_main.sin-stock {
-  opacity: 0.6;
-}
 #ventas .cards_main.sin-stock button.addToCart {
   width: fit-content;
   align-self: center;
@@ -121,35 +133,7 @@ aside {
   background-color: beige;
   cursor: not-allowed;
 }
-#ventas .carrito {
-  border: 1px solid black;
-  border-radius: 12px;
-  padding: 1rem;
-  background: white;
-  margin-right: 10px;
-  position: sticky;
-  top: 1rem;
-}
-#ventas .carrito h3 {
-  margin-top: 0;
-}
-#ventas .carrito #cart_items {
-  list-style: none;
-  padding: 0;
-  margin: 0.75rem 0 1rem 0;
-}
-#ventas .carrito button {
-  width: 100%;
-  padding: 10px 16px;
-  border: 2px solid black;
-  border-radius: 20px;
-  background-color: beige;
-  cursor: pointer;
-}
 
-/* =========================
-   RESPONSIVE
-========================= */
 @media (max-width: 900px) {
   #ventas.ventas-layout {
     grid-template-columns: 1fr;

@@ -1,0 +1,23 @@
+nav {
+    background-color: red;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+
+    & ul {
+        display: flex;
+        flex-direction: row;
+
+        & li{
+            list-style:none;
+            margin-left: 10px;   
+            margin-right: 10px; 
+
+            & a{
+                text-decoration: none;
+                color: black;
+            }
+        }
+    }
+}

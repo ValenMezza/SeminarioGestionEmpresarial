@@ -1,35 +1,43 @@
-aside {
+//carrito
+#carrito {
+    display: grid;
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 1rem;
+    background: white;
+    margin-right: 10px;
+    position: sticky;
+    top: 1rem;
+    // justify-content: center;
+    //align-items: center;
+     align-content: center;
 
-    //carrito
-    .carrito {
-        border: 1px solid black;
-        border-radius: 12px;
-        padding: 1rem;
-        background: white;
-        margin-right: 10px;
-        position: sticky;
-        top: 1rem;
+    h3 {
+        margin-top: 0;
+    }
 
-        h3 {
-            margin-top: 0;
-        }
+    #cart_items {
+        list-style: none;
+        padding: 0;
+        margin: 0.75rem 0 1rem 0;
+    }
 
-        #cart_items {
-            list-style: none;
-            padding: 0;
-            margin: 0.75rem 0 1rem 0;
-        }
+    button {
+        width: fit-content;
+        padding: 10px 16px;
+        border: 2px solid black;
+        border-radius: 20px;
+        background-color: rgb(255, 11, 11);
+        cursor: pointer;
 
-        button {
-            width: 100%;
-            padding: 10px 16px;
+    }
 
-            border: 2px solid black;
-            border-radius: 20px;
-            background-color: beige;
-            cursor: pointer;
+    & .divBtns {
+        & .delCartBtn {
+            background-color: rgb(118, 186, 126);
         }
     }
 
-    background-color: rgb(94, 186, 94);
+
+
 }
