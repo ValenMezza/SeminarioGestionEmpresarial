@@ -1,0 +1,12 @@
+/* public/scss/style.scss */
+
+/* 1) Config primero */
+@use "variables";
+@use "body";
+
+/* 2) Base / páginas */
+@use "main";
+
+/* 3) Layout / componentes */
+@use "aside";
+@use "cardsMain";
