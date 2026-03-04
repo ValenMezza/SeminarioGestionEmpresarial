@@ -3,7 +3,8 @@
 /* 1) Config primero */
 @use "variables";
 @use "body";
-
+@use "navbar";
+@use "sidebar";
 /* 2) Base / páginas */
 @use "main";
 

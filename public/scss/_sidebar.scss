@@ -1,0 +1,216 @@
+// /* ===== Sidebar Layout ===== */
+// .layout {
+//     min-height: 100vh;
+//     display: grid;
+//     grid-template-columns: 270px 1fr;
+//     background: #f6f7fb;
+//     font-family: 'Inter', sans-serif;
+// }
+
+// .layout__content {
+//     min-width: 0;
+//     position: relative;
+// }
+
+// /* ===== Sidebar ===== */
+// .sidebar {
+//     position: sticky;
+//     top: 0;
+//     height: 100vh;
+//     width: 270px;
+
+//     padding: 14px;
+//     background: #ffffff;
+//     border-right: 1px solid #e5e7eb;
+
+//     display: flex;
+//     flex-direction: column;
+//     gap: 14px;
+
+//     transition: width 0.25s ease, transform 0.25s ease;
+// }
+
+// .sidebar__brand {
+//     display: flex;
+//     align-items: center;
+//     gap: 12px;
+
+//     border-radius: 14px;
+//     background: #f9fafb;
+//     border: 1px solid #eef2f7;
+// }
+
+// .sidebar__logo {
+//     height: 42px;
+//     border-radius: 12px;
+
+//     display: grid;
+//     place-items: center;
+
+//     background: #111827;
+//     color: #ffffff;
+//     font-weight: 800;
+// }
+
+// .sidebar__name {
+//     font-weight: 800;
+//     color: #111827;
+//     line-height: 1.1;
+// }
+
+// .sidebar__sub {
+//     font-size: 0.85rem;
+//     color: #6b7280;
+//     margin-top: 2px;
+// }
+
+// .sidebar__nav {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 6px;
+//     padding: 6px;
+// }
+
+// .sidebar__link {
+//     display: block;
+//     text-decoration: none;
+
+//     padding: 10px 12px;
+//     border-radius: 12px;
+
+//     color: #111827;
+//     font-weight: 600;
+//     font-size: 0.95rem;
+
+//     border: 1px solid transparent;
+//     transition: background-color .2s ease, transform .15s ease, border-color .2s ease;
+// }
+
+// .sidebar__link:hover {
+//     background: #f3f4f6;
+//     border-color: #e5e7eb;
+//     transform: translateY(-1px);
+// }
+
+// .sidebar__link.is-active {
+//     background: #111827;
+//     color: #ffffff;
+//     border-color: #111827;
+// }
+
+// .sidebar__footer {
+//     margin-top: auto;
+//     padding: 6px;
+// }
+
+// .sidebar__user {
+//     display: block;
+//     text-decoration: none;
+//     text-align: center;
+
+//     padding: 10px 12px;
+//     border-radius: 12px;
+
+//     background: #111827;
+//     color: #ffffff;
+//     font-weight: 700;
+
+//     transition: transform .15s ease, background-color .2s ease;
+// }
+
+// .sidebar__user:hover {
+//     background: #0b1220;
+//     transform: translateY(-1px);
+// }
+
+// /* ===== Topbar ===== */
+// .topbar {
+//     display: flex;
+//     align-items: center;
+//     gap: 12px;
+
+//     padding: 14px 18px;
+//     background: #ffffff;
+//     border-bottom: 1px solid #e5e7eb;
+// }
+
+// .topbar__btn {
+//     /* ✅ IMPORTANTÍSIMO: SIEMPRE VISIBLE */
+//     display: inline-grid;
+//     place-items: center;
+
+//     width: 40px;
+//     height: 40px;
+
+//     border-radius: 12px;
+//     border: 1px solid #e5e7eb;
+//     background: #ffffff;
+
+//     cursor: pointer;
+//     font-size: 18px;
+// }
+
+// .topbar__title {
+//     font-weight: 800;
+//     color: #111827;
+// }
+
+// /* ===== Overlay (mobile) ===== */
+// .sidebar__overlay {
+//     display: none;
+// }
+
+// /* ===== Desktop collapse ===== */
+// .sidebar.collapsed {
+//     width: 76px;
+// }
+
+// /* Cuando el sidebar está colapsado, ajustar columnas del layout */
+// .layout.is-collapsed {
+//     grid-template-columns: 76px 1fr;
+// }
+
+// .sidebar.collapsed .sidebar__titles,
+// .sidebar.collapsed .sidebar__link,
+// .sidebar.collapsed .sidebar__footer {
+//     display: none;
+// }
+
+// .sidebar.collapsed .sidebar__brand {
+//     justify-content: center;
+// }
+
+// /* ===== Responsive Mobile ===== */
+// @media (max-width: 900px) {
+//     .layout {
+//         grid-template-columns: 1fr;
+//     }
+
+//     /* sidebar oculto por default en mobile */
+//     .sidebar {
+//         position: fixed;
+//         left: 0;
+//         top: 0;
+//         height: 100vh;
+//         z-index: 100;
+
+//         transform: translateX(-110%);
+//     }
+
+//     .sidebar.is-open {
+//         transform: translateX(0);
+//     }
+
+//     /* en mobile no usamos collapse, usamos open/close */
+//     .sidebar.collapsed {
+//         width: 270px;
+//     }
+
+//     .sidebar__overlay.is-open {
+//         display: block;
+//         position: fixed;
+//         inset: 0;
+//         background: rgba(0, 0, 0, 0.35);
+//         z-index: 90;
+//     }
+// }

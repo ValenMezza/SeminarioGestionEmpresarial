@@ -9,7 +9,8 @@
 </head>
 
 <body>
-    <%- include("./partials/nav") %>
+
+    <%- include("./partials/sidebar") %>
 
         <main id="home">
             <div class="cards_main">
@@ -19,30 +20,26 @@
             <div class="cards_main">
                 <b>Alquileres</b>
                 <a href="/alquileres" class="btn_card">Acceder</a>
-
             </div>
             <div class="cards_main">
                 <b>Contenedores</b>
                 <a href="/contenedores" class="btn_card">Acceder</a>
-
             </div>
             <div class="cards_main">
                 <b>Stock</b>
                 <a href="/stock" class="btn_card">Acceder</a>
-
             </div>
             <div class="cards_main">
                 <b>Clientes</b>
                 <a href="/clientes" class="btn_card">Acceder</a>
-
             </div>
             <div class="cards_main">
                 <b>Transacciones</b>
                 <a href="/transacciones" class="btn_card">Acceder</a>
-
             </div>
         </main>
 
+        <script src="/javascript/sidebar.js?v=<%= Date.now() %>"></script>
 </body>
 
 </html>

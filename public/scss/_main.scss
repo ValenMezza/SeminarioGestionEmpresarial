@@ -1,19 +1,25 @@
 @use "variables";
 
+main{
+    margin-top: 5%;
+}
 #home {
-    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
+    align-items: center ;
 
 
 }
 
 #ventas {
-    width: 100%;
+    width: 95%;
     display: grid;
-    grid-template-columns: 1fr 400px; // productos | carrito
+    grid-template-columns: 1fr 300px; // productos | carrito
     gap: 1rem;
     align-items: start;
     padding: 1rem;
