@@ -1,6 +1,9 @@
+const { listContenedores } = require("../store/dbContenedor");
+
 const  contenedoresController ={
-    index: (req, res) =>{
-        res.render('contenedores/index')
+    index:async (req, res) =>{
+        const contenedores = await listContenedores();
+        res.render('contenedores/index', {contenedores})
     },
     detalle: (req, res) =>{
         res.render('contenedores/detalle')

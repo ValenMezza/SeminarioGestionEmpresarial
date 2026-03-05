@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
 </head>
+
 <body>
-    <%- include("../partials/nav.ejs") %>
-    <h1>contenedores</h1>
+    <%- include("../partials/sidebar.ejs") %>
+        <main id="contenedores">
+            <h1>contenedores</h1>
+
+            <ul id="listContenedores">
+                <% contenedores.forEach(c=> { %>
+                    <li>
+                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %>
+                    </li>
+                    <% }) %>
+            </ul>
+        </main>
+
+
+
+        <script src="/javascript/sidebar.js"></script>
 </body>
+
 </html>

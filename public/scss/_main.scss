@@ -36,8 +36,20 @@ main{
 
 }
 
+#contenedores{
+    margin:0;
+    padding:0;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    .listContenedores{
+        display: flex;
+        flex-direction: row;
+    }
+}
+
 /* =========================
-   RESPONSIVE
+    RESPONSIVE
 ========================= */
 @media (max-width: 900px) {
     #ventas.ventas-layout {

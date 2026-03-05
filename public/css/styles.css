@@ -42,8 +42,20 @@ main {
   gap: 1rem;
 }
 
+#contenedores {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+#contenedores .listContenedores {
+  display: flex;
+  flex-direction: row;
+}
+
 /* =========================
-   RESPONSIVE
+    RESPONSIVE
 ========================= */
 @media (max-width: 900px) {
   #ventas.ventas-layout {
@@ -260,6 +272,7 @@ body {
   border: solid 1px white;
   border-radius: 10px;
   margin: 15px 0;
+  cursor: pointer;
 }
 
 .sidebar li:hover {

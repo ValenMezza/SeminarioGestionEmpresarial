@@ -25,14 +25,5 @@ async function prodsById(id) {
   return dbStock.productos.find((p) => p.id === prodId);
 }
 
-// async function stockActivo(){
-//     if (dbStock.productos.id >0){
-//         retu
-//     }
-//     else
-// }
-
-
-
 
 module.exports = { dbStock, listProds, prodsById };
