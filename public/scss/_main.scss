@@ -12,8 +12,6 @@ main{
     gap: 1rem;
     justify-content: center;
     align-items: center ;
-
-
 }
 
 #ventas {
@@ -33,19 +31,18 @@ main{
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
     }
-
 }
 
 #contenedores{
-    margin:0;
-    padding:0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
     display: flex;
     flex-direction: column;
-    margin: auto;
-    .listContenedores{
-        display: flex;
-        flex-direction: row;
-    }
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center ;
 }
 
 /* =========================

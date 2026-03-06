@@ -14,12 +14,18 @@
         <main id="contenedores">
             <h1>contenedores</h1>
 
-            <ul id="listContenedores">
-                <% contenedores.forEach(c=> { %>
+
+            <ul>
+                <% contenedores.forEach(c=> { if (c.estado === "Alquilado") { %>
                     <li>
-                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %>
+                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler
+                                            %>
                     </li>
-                    <% }) %>
+                    <% }else{%>
+                        <li>
+                            <%= c.id %> | <%= c.estado %>
+                        </li>
+                        <% } }) %>
             </ul>
         </main>
 

@@ -43,15 +43,15 @@ main {
 }
 
 #contenedores {
-  margin: 0;
-  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
   display: flex;
   flex-direction: column;
-  margin: auto;
-}
-#contenedores .listContenedores {
-  display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
 }
 
 /* =========================

@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
 </head>
+
 <body>
-    <%- include('../partials/nav.ejs') %>
-    <h1>Alquileres</h1>
-    <main>
-        <h1>lista de alquileres</h1>
-    </main>
+    <%- include('../partials/sidebar.ejs') %>
+        <h1>Alquileres</h1>
+        <main>
+            <h1>lista de alquileres</h1>
+            <ul>
+                
+                <% contenedores.forEach(c=>{ %>
+                    <% if (c.estado === "Alquilado") { %>
+                    <li>
+                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler %>
+                    </li>
+                <% } %>
+                <% }) %>
+            </ul>
+
+        </main>
+    <%- include('../partials/scripts.ejs') %>
 </body>
+
 </html>
