@@ -12,15 +12,18 @@
 <body>
     <%- include('../partials/sidebar.ejs') %>
         <h1>Alquileres</h1>
+        
         <main>
             <h1>lista de alquileres</h1>
+
+            <a href="/alquileres/nuevo_alquiler">Nuevo alquiler</a>
             <ul>
                 
                 <% contenedores.forEach(c=>{ %>
                     <% if (c.estado === "Alquilado") { %>
                     <li>
                         <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler %>
-                    </li>
+<a href="/alquileres/detalle/<%= c.id %>">Ver detalle</a>                    </li>
                 <% } %>
                 <% }) %>
             </ul>

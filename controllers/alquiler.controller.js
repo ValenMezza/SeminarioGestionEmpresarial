@@ -1,4 +1,4 @@
-const { listContenedores } = require("../store/dbContenedor")
+const { listContenedores , contenedorById } = require("../store/dbContenedor")
 
 const alquilerController = {
     index: async (req, res) => {
@@ -6,8 +6,13 @@ const alquilerController = {
 
         res.render('alquileres/index', { contenedores })
     },
-    detalle: (req, res) => {
-        res.render('alquileres/detalle')
+    detalle:async (req, res) => {
+        const id = Number(req.params.id);
+        const contenedor = await contenedorById(id);
+        if (!contenedor) {
+            return res.status(400).send("Contenedor no encontrado")
+        }
+        res.render('alquileres/detalle',{contenedor})
     },
     nuevoAlquiler: (req, res) => {
         res.render('alquileres/nuevo_alquiler')
