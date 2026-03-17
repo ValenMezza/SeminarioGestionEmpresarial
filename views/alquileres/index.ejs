@@ -12,24 +12,38 @@
 <body>
     <%- include('../partials/sidebar.ejs') %>
         <h1>Alquileres</h1>
-        
-        <main>
+
+        <main id="mainAlquileres">
             <h1>lista de alquileres</h1>
+            <div id="filtrosAlquiler">
+                <h4>Filtrar alquileres</h4>
+                <ul>
+                    <li>#ID: <input type="text"></li>
+                    <li>Cliente: <input type="text"></li>
+                    <li>Próximos a finalizar</li>
+                    <li>Fecha inicio: <input type="date"></li>
+                    <li>Fecha fin: <input type="date"></li>
+                </ul>
+                <button>Filtrar</button>
+            </div>
+            <a href="/alquileres/nuevo_alquiler" id="btnNuevoAlquiler">Nuevo alquiler</a>
 
-            <a href="/alquileres/nuevo_alquiler">Nuevo alquiler</a>
+
             <ul>
-                
-                <% contenedores.forEach(c=>{ %>
-                    <% if (c.estado === "Alquilado") { %>
-                    <li>
-                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler %>
-<a href="/alquileres/detalle/<%= c.id %>">Ver detalle</a>                    </li>
-                <% } %>
-                <% }) %>
-            </ul>
 
+                <% contenedores.forEach(c=>{ %>
+                    <% if (c.estado==="Alquilado" ) { %>
+                        <li>
+                            <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%=
+                                                c.finAlquiler %>
+                                                <a href="/alquileres/detalle/<%= c.id %>">Ver detalle</a>
+                                                <a href="/alquileres/editar/<%= c.id %>">Editar</a>
+                        </li>
+                        <% } %>
+                            <% }) %>
+            </ul>
         </main>
-    <%- include('../partials/scripts.ejs') %>
+        <%- include('../partials/scripts.ejs') %>
 </body>
 
 </html>

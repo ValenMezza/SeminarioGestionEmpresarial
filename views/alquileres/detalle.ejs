@@ -12,16 +12,19 @@
 <body>
     <%- include('../partials/sidebar.ejs') %>
         <h1>DETALLES</h1>
-        <% if (contenedor.estado==="Alquilado" ) { %>
-            <%= contenedor.id %>
-                <%= contenedor.estado %>
-                    <%= contenedor.cliente %>
-                        <%= contenedor.finAlquiler %>
-                            <%= contenedor.direccionAlquiler %>
-                                <% } else { %>
-                                    <%= contenedor.id %>
-                                        <%= contenedor.estado %>
-                                            <% } %>
+        <main>
+            <h1>detalle por id</h1>
+            <% if (contenedor.estado==="Alquilado" ) { %>
+                <%= contenedor.id %>
+                    <%= contenedor.estado %>
+                        <%= contenedor.cliente %>
+                            <%= contenedor.finAlquiler %>
+                                <%= contenedor.direccionAlquiler %>
+                                    <% } else { %>
+                                        <%= contenedor.id %>
+                                            <%= contenedor.estado %>
+                                                <% } %>
+        </main>
 
 
 

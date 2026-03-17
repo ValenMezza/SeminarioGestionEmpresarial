@@ -50,7 +50,7 @@ app.get('/transacciones/detalle', transaccionesController.detalle)
 app.get('/alquileres', alquilerController.index);
 app.get('/alquileres/detalle/:id', alquilerController.detalle);
 app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
-app.get('/alquileres/edicion_alquiler', alquilerController.edicionAlquiler)
+app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
 
 //contendedor
 app.get('/contenedores', contenedoresController.index)

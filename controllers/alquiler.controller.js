@@ -17,8 +17,10 @@ const alquilerController = {
     nuevoAlquiler: (req, res) => {
         res.render('alquileres/nuevo_alquiler')
     },
-    edicionAlquiler: (req, res) => {
-        res.render('alquileres/edicion_alquiler')
+    edicionAlquiler: async(req, res) => {
+        const id = Number(req.params.id);
+        const contenedor = await contenedorById(id);
+        return res.render('alquileres/editar', { contenedor })
     }
 }
 

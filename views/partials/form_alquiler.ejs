@@ -1,0 +1,53 @@
+<form action="" method="post">
+    <div>
+        <label for="name">Cliente</label>
+        <input type="text">
+        <label for="nuevoCliente">Crear nuevo cliente</label>
+        <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
+    </div>
+    <div id="creacionCliente">
+        <h3>Crear nuevo cliente</h3>
+        <p class="leyenasForm">La creación de un nuevo cliente impactará en el sistema para futuras ventas.</p>
+        <label for="nameNuevoCliente">Nombre:</label>
+        <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente">
+        <label for="telefonoNuevoCliente">Teléfono:</label>
+        <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente">
+
+    </div>
+    <div id="datosAlquiler">
+        <h3>Datos del alquiler</h3>
+        <p class="leyenasForm">El alquiler no puede superar los 7 días</p>
+        <label for="fechaInicio">Fecha de inicio:</label>
+        <input type="date" name="fechaInicio" id="fechaInicio">
+        <label for="fechaFin">Fecha de fin:</label>
+        <input type="date" name="fechaFin" id="fechaFin">
+
+        <div id="datosDireccion">
+            <h3>Datos de la dirección</h3>
+            <label for="calle">Calle:</label>
+            <input type="text" name="calle" id="calle">
+            <label for="numero">Número:</label>
+            <input type="text" name="numero" id="numero">
+            <button>Buscar dirección</button>
+            <div id="mapaEntrega">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13618.729898799336!2d-64.18331629999999!3d-31.422873349999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sar!4v1773710104971!5m2!1ses-419!2sar"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <h3>Método de pago</h3>
+        <label for="metodoPago">Selecciona un método de pago:</label>
+        <select name="metodoPago" id="metodoPago">
+            <option value="efectivo">Efectivo</option>
+            <option value="tarjeta">Tarjeta de crédito/débito</option>
+            <option value="transferencia">Transferencia bancaria</option>
+        </select>
+    </div>
+    <button type="submit">Crear alquiler</button>
+    <button type="reset">Cancelar</button>
+
+</form>

@@ -25,7 +25,8 @@ async function listContenedoresDisponibles (){
 }
 
 async function contenedorLibre(){
+    
     return dbContenedores.listaContenedores.find(c=> c.estado === "Disponible")
 }
 
-module.exports = {dbContenedores,contenedorById , listContenedores, listContenedoresAlquilados, listContenedoresDisponibles}
+module.exports = {dbContenedores,contenedorById , listContenedores, listContenedoresAlquilados, listContenedoresDisponibles , contenedorLibre}
