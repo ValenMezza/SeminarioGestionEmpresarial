@@ -51,6 +51,7 @@ app.get('/alquileres', alquilerController.index);
 app.get('/alquileres/detalle/:id', alquilerController.detalle);
 app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
 app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
+app.post('/alquileres/crear', alquilerController.crearAlquiler);
 
 //contendedor
 app.get('/contenedores', contenedoresController.index)

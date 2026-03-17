@@ -1,11 +1,11 @@
-<form action="" method="post">
+<form action="/alquileres/crear" method="POST">
     <div>
-        <label for="name">Cliente</label>
-        <input type="text">
+        <label for="cliente">Cliente</label>
+        <input type="text" name="cliente" id="cliente">
         <label for="nuevoCliente">Crear nuevo cliente</label>
         <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
     </div>
-    <div id="creacionCliente">
+    <div id="creacionCliente" style="display:none">
         <h3>Crear nuevo cliente</h3>
         <p class="leyenasForm">La creación de un nuevo cliente impactará en el sistema para futuras ventas.</p>
         <label for="nameNuevoCliente">Nombre:</label>
@@ -16,19 +16,38 @@
     </div>
     <div id="datosAlquiler">
         <h3>Datos del alquiler</h3>
-        <p class="leyenasForm">El alquiler no puede superar los 7 días</p>
+        <label for="contenedor">Contenedor asignado:</label>
+        <select name="contenedor" id="selectDisponibles">
+            <% contenedorlibre.forEach(c => { %>
+                <option value="<%= c.id %>">Contenedor #<%= c.id %></option>
+            <% }) %>
+        </select>
+
+        <label for="contenedorPorFinalizar">Ver contenedores por finalizar (vencen en ≤2 días)</label>
+        <input type="checkbox" name="contenedorPorFinalizarCheck" id="contenedorPorFinalizar">
+
+        <select name="contenedor" id="selectPorFinalizar" style="display:none" disabled>
+            <% contenedoresPorFinalizar.forEach(c => { %>
+                <option value="<%= c.id %>" data-fin="<%= c.finAlquiler %>">Contenedor #<%= c.id %> — vence <%= c.finAlquiler %></option>
+            <% }) %>
+            <% if (contenedoresPorFinalizar.length === 0) { %>
+                <option disabled>No hay contenedores por finalizar</option>
+            <% } %>
+        </select>
+
+        <p class="leyenasForm">El alquiler debe ser mínimo 4 días y máximo 9 días</p>
         <label for="fechaInicio">Fecha de inicio:</label>
         <input type="date" name="fechaInicio" id="fechaInicio">
         <label for="fechaFin">Fecha de fin:</label>
         <input type="date" name="fechaFin" id="fechaFin">
-
+        
         <div id="datosDireccion">
             <h3>Datos de la dirección</h3>
             <label for="calle">Calle:</label>
             <input type="text" name="calle" id="calle">
             <label for="numero">Número:</label>
             <input type="text" name="numero" id="numero">
-            <button>Buscar dirección</button>
+            <button type="button">Buscar dirección</button>
             <div id="mapaEntrega">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13618.729898799336!2d-64.18331629999999!3d-31.422873349999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sar!4v1773710104971!5m2!1ses-419!2sar"

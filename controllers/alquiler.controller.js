@@ -1,4 +1,5 @@
-const { listContenedores , contenedorById } = require("../store/dbContenedor")
+const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar } = require("../store/dbContenedor")
+
 
 const alquilerController = {
     index: async (req, res) => {
@@ -14,8 +15,22 @@ const alquilerController = {
         }
         res.render('alquileres/detalle',{contenedor})
     },
-    nuevoAlquiler: (req, res) => {
-        res.render('alquileres/nuevo_alquiler')
+nuevoAlquiler: async (req, res) => {
+        const contenedorlibre = await listContenedoresDisponibles();
+        const contenedoresPorFinalizar = listContenedoresPorFinalizar();
+        res.render('alquileres/nuevo_alquiler', { contenedorlibre, contenedoresPorFinalizar });
+    },
+
+    crearAlquiler: async (req, res) => {
+        const contenedorId = Number(req.body.contenedor);
+        actualizarContenedor(contenedorId, {
+            estado: 'Alquilado',
+            cliente: req.body.cliente || req.body.nombreNuevoCliente,
+            inicioAlquiler: req.body.fechaInicio,
+            finAlquiler: req.body.fechaFin,
+            direccionAlquiler: `${req.body.calle} ${req.body.numero}`,
+        });
+        res.redirect('/alquileres');
     },
     edicionAlquiler: async(req, res) => {
         const id = Number(req.params.id);
