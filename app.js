@@ -14,6 +14,15 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use((_req, res, next) => {
+    res.locals.formatFecha = (fecha) => {
+        if (!fecha) return '';
+        const [y, m, d] = fecha.split('-');
+        return `${d}-${m}-${y}`;
+    };
+    next();
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,8 +47,6 @@ app.get('/create', authController.createUser)//para crear usuario
 app.post('/create', authController.postUser); //método post para la creacion 
 app.get('/home', homeController.index) //home
 app.get('/ventas', ventasController.index)
-app.get('/controllers/stock.controller.js')
-app.get('/controllers/clientes.controller.js')
 
 //transacciones
 app.get('/transacciones', transaccionesController.index)

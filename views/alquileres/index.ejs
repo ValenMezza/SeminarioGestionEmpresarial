@@ -34,8 +34,7 @@
                 <% contenedores.forEach(c=>{ %>
                     <% if (c.estado==="Alquilado" ) { %>
                         <li>
-                            <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%=
-                                                c.finAlquiler %>
+                            <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= formatFecha(c.inicioAlquiler) %> | <%= formatFecha(c.finAlquiler) %>
                                                 <a href="/alquileres/detalle/<%= c.id %>">Ver detalle</a>
                                                 <a href="/alquileres/editar/<%= c.id %>">Editar</a>
                         </li>

@@ -1,3 +1,24 @@
+// Mapa con iframe de Google Maps
+const btnBuscar = document.getElementById('btnBuscarDireccion');
+const mapaDiv = document.getElementById('mapaEntrega');
+const msgMapa = document.getElementById('msgMapa');
+const iframeMapa = document.getElementById('iframeMapa');
+
+if (btnBuscar) {
+    btnBuscar.addEventListener('click', () => {
+        const calle = document.getElementById('calle').value.trim();
+        const numero = document.getElementById('numero').value.trim();
+        if (!calle || !numero) {
+            msgMapa.style.display = 'block';
+            return;
+        }
+        const query = encodeURIComponent(`${calle} ${numero}, Córdoba, Argentina`);
+        iframeMapa.src = `https://maps.google.com/maps?q=${query}&output=embed&hl=es`;
+        mapaDiv.style.display = 'block';
+        msgMapa.style.display = 'none';
+    });
+}
+
 // Referencias a fechas (declaradas primero para usarlas en toda la lógica)
 const fechaInicio = document.getElementById('fechaInicio');
 const fechaFin = document.getElementById('fechaFin');
