@@ -14,12 +14,40 @@
         <main id="contenedores">
             <h1>contenedores</h1>
 
+            <div class="info-contenedor">
+                <p><strong>Contenedores activos:</strong>
+                    <%= contenedores.length %>
+                </p>
+            </div>
+            <div class="info-contenedor">
+                <p><strong>Contenedores disponibles:</strong>
+                    <%= contenedores.filter(c=> c.estado === "Disponible").length %>
+                </p>
+            </div>
+            <div class="info-contenedor">
+                <p><strong>Contenedores alquilados:</strong>
+                    <%= contenedores.filter(c=> c.estado === "Alquilado").length %>
+                </p>
+            </div>
+            <div class="info-contenedor">
+                <p><strong>Precio por día:</strong>
+                    $<%= contenedores[0]?.precioDia %>
+                </p>
+            </div>
+            <div>
+                <p><strong>Precio por alquiler 7 días:</strong>
+                    $<%= contenedores[0]?.precioAlquiler %>
+                </p>
+            </div>
+
+            <a href="/contenedores/config">Configurar contenedores</a>
 
             <ul>
                 <% contenedores.forEach(c=> { if (c.estado === "Alquilado") { %>
                     <li>
                         <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler
                                             %>
+                                            $<%= c.precioAlquiler %>
                     </li>
                     <% }else{%>
                         <li>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include("../partials/sidebar.ejs") %>   
+    <h1>config</h1>
+
+    <form action="/contenedores/config" method="POST">
+    
+        <div>
+        <p><strong>Precio por día:</strong></p>
+        <input type="number" name="precioPorDia" id="precioPorDia" value="<%= contenedores[0]?.precioDia %>"> 
+        <p><strong>Precio Alquiler 7 días:</strong></p>
+        <input type="number" name="precioAlquiler" id="precioAlquiler" value="<%= contenedores[0]?.precioAlquiler %>">
+    </div>
+        <button type="submit">Guardar cambios</button>
+        <button type="reset">Restablecer</button>
+    </form>
+</body>
+</html>

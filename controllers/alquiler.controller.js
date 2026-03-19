@@ -1,4 +1,4 @@
-const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar } = require("../store/dbContenedor")
+const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, finalizarAlquiler } = require("../store/dbContenedor")
 
 
 const alquilerController = {
@@ -37,6 +37,11 @@ const alquilerController = {
         const id = Number(req.params.id);
         const contenedor = await contenedorById(id);
         return res.render('alquileres/editar', { contenedor })
+    },
+    finalizarAlquiler: (req, res) => {
+        const id = Number(req.params.id);
+        finalizarAlquiler(id);
+        res.redirect('/alquileres');
     }
 }
 

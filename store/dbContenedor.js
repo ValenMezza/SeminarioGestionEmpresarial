@@ -1,13 +1,14 @@
 const listAlquileres = require("./dbAlquiler").listAlquileres;
 
+const config = { precioDia: 5000, precioAlquiler: 30000 };
 
 const dbContenedores = {
     listaContenedores: [
-        { id: 1, estado: "Disponible", precioAlquiler: 15000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
-        { id: 2, estado: "Alquilado", precioAlquiler: 15000, precioDia: 5000, cliente: "Juan Perez", inicioAlquiler: "2026-03-13", finAlquiler: "2026-03-19", direccionAlquiler: "Calle Falsa 123" },
-        { id: 3, estado: "Disponible", precioAlquiler: 15000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
-        { id: 4, estado: "Alquilado", precioAlquiler: 15000, precioDia: 5000, cliente: "Maria Lopez", inicioAlquiler: "2024-06-05", finAlquiler: "2024-06-15", direccionAlquiler: "Avenida Siempre Viva 456" },
-        { id: 5, estado: "Disponible", precioAlquiler: 15000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null }
+        { id: 1, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
+        { id: 2, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Juan Perez", inicioAlquiler: "2026-03-13", finAlquiler: "2026-03-19", direccionAlquiler: "Calle Falsa 123" },
+        { id: 3, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
+        { id: 4, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Maria Lopez", inicioAlquiler: "2024-06-05", finAlquiler: "2024-06-15", direccionAlquiler: "Avenida Siempre Viva 456" },
+        { id: 5, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null }
     ],
 };
 
@@ -49,4 +50,30 @@ function actualizarContenedor(id, datos) {
     return contenedor;
 }
 
-module.exports = {dbContenedores, contenedorById, listContenedores, listContenedoresAlquilados, listContenedoresDisponibles, contenedorLibre, actualizarContenedor, listContenedoresPorFinalizar}
+function actualizarPrecios(precioDia, precioAlquiler) {
+    config.precioDia = precioDia;
+    config.precioAlquiler = precioAlquiler;
+    dbContenedores.listaContenedores.forEach(c => {
+        if (c.estado !== "Alquilado") {
+            c.precioDia = precioDia;
+            c.precioAlquiler = precioAlquiler;
+        }
+    });
+}
+
+function finalizarAlquiler(id) {
+    const contenedor = dbContenedores.listaContenedores.find(c => c.id === id);
+    if (!contenedor) return null;
+    Object.assign(contenedor, {
+        estado: "Disponible",
+        cliente: null,
+        inicioAlquiler: null,
+        finAlquiler: null,
+        direccionAlquiler: null,
+        precioDia: config.precioDia,
+        precioAlquiler: config.precioAlquiler,
+    });
+    return contenedor;
+}
+
+module.exports = {dbContenedores, contenedorById, listContenedores, listContenedoresAlquilados, listContenedoresDisponibles, contenedorLibre, actualizarContenedor, listContenedoresPorFinalizar, actualizarPrecios, finalizarAlquiler}

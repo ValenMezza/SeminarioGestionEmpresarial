@@ -11,19 +11,43 @@
 
 <body>
     <%- include('../partials/sidebar.ejs') %>
-        <h1>DETALLES</h1>
         <main>
-            <h1>detalle por id</h1>
+            <h1>Detalle contenedor #<%= contenedor.id %>
+            </h1>
             <% if (contenedor.estado==="Alquilado" ) { %>
-                <%= contenedor.id %>
+                <p><strong>ID:</strong>
+                    <%= contenedor.id %>
+                </p>
+                <p><strong>Estado:</strong>
                     <%= contenedor.estado %>
-                        <%= contenedor.cliente %>
-                            <%= contenedor.finAlquiler %>
-                                <%= contenedor.direccionAlquiler %>
-                                    <% } else { %>
-                                        <%= contenedor.id %>
-                                            <%= contenedor.estado %>
-                                                <% } %>
+                </p>
+                <p><strong>Cliente:</strong>
+                    <%= contenedor.cliente %>
+                </p>
+                <p><strong>Inicio del alquiler:</strong>
+                    <%= formatFecha(contenedor.inicioAlquiler) %>
+                </p>
+                <p><strong>Fin del alquiler:</strong>
+                    <%= formatFecha(contenedor.finAlquiler) %>
+                </p>
+                <p><strong>Dirección de entrega:</strong>
+                    <%= contenedor.direccionAlquiler %>
+                </p>
+                <div id="mapaEntrega">
+                    <iframe id="iframeMapa" width="100%" height="350" style="border:0;" allowfullscreen loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <form action="/alquileres/finalizar/<%= contenedor.id %>" method="POST">
+                    <button type="submit">Finalizar alquiler</button>
+                </form>
+                <% } else { %>
+                    <p><strong>ID:</strong>
+                        <%= contenedor.id %>
+                    </p>
+                    <p><strong>Estado:</strong>
+                        <%= contenedor.estado %>
+                    </p>
+                    <% } %>
         </main>
 
 

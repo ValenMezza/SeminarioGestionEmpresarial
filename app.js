@@ -59,11 +59,13 @@ app.get('/alquileres/detalle/:id', alquilerController.detalle);
 app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
 app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
 app.post('/alquileres/crear', alquilerController.crearAlquiler);
+app.post('/alquileres/finalizar/:id', alquilerController.finalizarAlquiler);
 
 //contendedor
 app.get('/contenedores', contenedoresController.index)
 app.get('/contenedores/detalle', contenedoresController.detalle)
-
+app.get('/contenedores/config', contenedoresController.config)
+app.post('/contenedores/config', contenedoresController.guardarConfig)
 //stock
 app.get('/stock', stockController.index)
 app.get('/stock/detalle/:id', stockController.detalle)
