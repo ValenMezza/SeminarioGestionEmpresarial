@@ -8,20 +8,201 @@
   font-family: "Inter", sans-serif;
 }
 
+body {
+  display: flex;
+  background: #f6f7fb;
+}
+
+/* ===== Toggle Button ===== */
+#toggleSidebar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #1e3a5f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+#toggleSidebar:hover {
+  background: #24456e;
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 18px;
+}
+.hamburger-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 240px;
+  height: 100vh;
+  z-index: 1000;
+  background: #1e3a5f;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar.active {
+  left: 0;
+}
+
+/* Header / Brand */
+.sidebar__header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar__brand-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #60a5fa;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.sidebar__brand-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Nav */
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+}
+.sidebar__nav::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar__nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar__nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.sidebar__nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 4px 0;
+}
+.sidebar__nav li {
+  margin: 2px 0;
+}
+
+.sidebar__section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  padding: 10px 8px 4px;
+  margin: 0;
+}
+
+.sidebar__link {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  position: relative;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sidebar__link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background: #60a5fa;
+  border-radius: 0 3px 3px 0;
+  transition: transform 0.2s ease;
+}
+.sidebar__link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+.sidebar__link:hover::before {
+  transform: translateY(-50%) scaleY(1);
+}
+.sidebar__link.is-active {
+  background: rgba(99, 102, 241, 0.15);
+  color: #ffffff;
+}
+.sidebar__link.is-active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+/* Push content when sidebar is open */
+.sidebar.active ~ main {
+  margin-left: 240px;
+}
+
 /* 2) Base / páginas */
 main {
-  margin-top: 5%;
+  flex: 1;
+  min-width: 0;
+  margin-top: 72px;
+  margin-left: 0;
+  padding: 0 1.5rem;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #home {
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
   align-items: center;
+  padding: 0 5%;
 }
 
 #ventas {
@@ -43,15 +224,11 @@ main {
 }
 
 #contenedores {
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
-  align-items: center;
+  padding: 0 5%;
 }
 
 /* =========================
@@ -239,75 +416,6 @@ main {
 #carrito #cart_items .cart-subtotal {
   font-size: 0.9rem;
   color: #444;
-}
-
-body {
-  display: flex;
-}
-
-.sidebar {
-  width: 150px;
-  height: 100vh;
-  background: rgb(30, 6, 51);
-  color: white;
-  padding: 20px;
-  position: fixed;
-  left: -250px;
-  top: 0;
-  transition: 0.3s;
-  z-index: 999;
-}
-
-.sidebar.active {
-  left: 0;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  padding: 10px;
-  border: solid 1px white;
-  border-radius: 10px;
-  margin: 15px 0;
-  cursor: pointer;
-}
-
-.sidebar li:hover {
-  background-color: rgb(234, 234, 234);
-  color: black;
-}
-
-.sidebar a {
-  color: white;
-  border: solid 1px white;
-  border-radius: 10px;
-  padding: 10px;
-  text-decoration: none;
-}
-
-#toggleSidebar {
-  position: fixed;
-  top: 20px;
-  left: 10px;
-  font-size: 1.2rem;
-  background: #1f2937;
-  color: white;
-  border: none;
-  padding: 10px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  z-index: 1000;
-}
-
-main {
-  transition: margin-left 0.3s;
-}
-
-.sidebar.active + main {
-  margin-left: 350px;
 }
 
 .cards_main {

@@ -1,17 +1,36 @@
-<button id="toggleSidebar">☰</button>
+<button id="toggleSidebar" aria-label="Abrir menú">
+    <span class="hamburger-icon">
+        <span></span><span></span><span></span>
+    </span>
+</button>
 
 <aside id="sidebar" class="sidebar">
+    <div class="sidebar__header">
+        <div class="sidebar__brand">
+            <span class="sidebar__brand-initials">SGE</span>
+            <span class="sidebar__brand-name">Gestión Empresarial</span>
+        </div>
+    </div>
 
-    <h2>Menú</h2>
-    <ul>
-            <li><a class="sidebar__link" href="/home">Home</a></li>
+    <nav class="sidebar__nav">
+        <p class="sidebar__section-label">Principal</p>
+        <ul>
+            <li><a class="sidebar__link" href="/home">Inicio</a></li>
             <li><a class="sidebar__link" href="/ventas">Ventas</a></li>
             <li><a class="sidebar__link" href="/alquileres">Alquileres</a></li>
             <li><a class="sidebar__link" href="/contenedores">Contenedores</a></li>
+        </ul>
+
+        <p class="sidebar__section-label">Administración</p>
+        <ul>
             <li><a class="sidebar__link" href="/stock">Stock</a></li>
             <li><a class="sidebar__link" href="/clientes">Clientes</a></li>
             <li><a class="sidebar__link" href="/transacciones">Transacciones</a></li>
-            <li><a class="sidebar__link" href="/configuraciones">Configuraciones</a></li>
-    </ul>
+        </ul>
 
+        <p class="sidebar__section-label">Sistema</p>
+        <ul>
+            <li><a class="sidebar__link" href="/configuraciones">Configuraciones</a></li>
+        </ul>
+    </nav>
 </aside>
