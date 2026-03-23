@@ -3,12 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalle producto</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <%- include('../partials/nav.ejs') %>
-    <h1>Sstock detail</h1>
-    <p><b>Producto: </b> <%= producto.producto %></p>
-    <p><b>Precio: </b> <%= producto.precio %></p>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="stock-detalle">
+
+        <div class="page-header">
+            <div>
+                <a href="/stock" class="back-link">← Stock</a>
+                <h1 class="page-title"><%= producto.producto %></h1>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value">#<%= producto.id %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Producto</span>
+                    <span class="info-value"><%= producto.producto %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Precio</span>
+                    <span class="info-value">$<%= producto.precio?.toLocaleString('es-AR') %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Stock disponible</span>
+                    <span class="info-value">
+                        <span class="badge badge--<%= producto.stock > 0 ? 'con-stock' : 'sin-stock' %>">
+                            <%= producto.stock > 0 ? producto.stock + ' unidades' : 'Sin stock' %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
 </body>
 </html>

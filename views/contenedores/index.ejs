@@ -4,62 +4,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Contenedores</title>
     <link rel="stylesheet" href="/css/styles.css">
-
 </head>
 
 <body>
     <%- include("../partials/sidebar.ejs") %>
-        <main id="contenedores">
-            <h1>contenedores</h1>
+    <main id="contenedores">
 
-            <div class="info-contenedor">
-                <p><strong>Contenedores activos:</strong>
-                    <%= contenedores.length %>
-                </p>
+        <div class="page-header">
+            <h1 class="page-title">Contenedores</h1>
+            <a href="/contenedores/config" class="btn-config">Configurar precios</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total</span>
+                <span class="stat-value"><%= contenedores.length %></span>
             </div>
-            <div class="info-contenedor">
-                <p><strong>Contenedores disponibles:</strong>
-                    <%= contenedores.filter(c=> c.estado === "Disponible").length %>
-                </p>
+            <div class="stat-card stat-card--disponible">
+                <span class="stat-label">Disponibles</span>
+                <span class="stat-value"><%= contenedores.filter(c => c.estado === "Disponible").length %></span>
             </div>
-            <div class="info-contenedor">
-                <p><strong>Contenedores alquilados:</strong>
-                    <%= contenedores.filter(c=> c.estado === "Alquilado").length %>
-                </p>
+            <div class="stat-card stat-card--alquilado">
+                <span class="stat-label">Alquilados</span>
+                <span class="stat-value"><%= contenedores.filter(c => c.estado === "Alquilado").length %></span>
             </div>
-            <div class="info-contenedor">
-                <p><strong>Precio por día:</strong>
-                    $<%= contenedores[0]?.precioDia %>
-                </p>
+            <div class="stat-card">
+                <span class="stat-label">Precio / día</span>
+                <span class="stat-value">$<%= contenedores[0]?.precioDia?.toLocaleString('es-AR') %></span>
             </div>
-            <div>
-                <p><strong>Precio por alquiler 7 días:</strong>
-                    $<%= contenedores[0]?.precioAlquiler %>
-                </p>
+            <div class="stat-card">
+                <span class="stat-label">Precio alquiler</span>
+                <span class="stat-value">$<%= contenedores[0]?.precioAlquiler?.toLocaleString('es-AR') %></span>
             </div>
+        </div>
 
-            <a href="/contenedores/config">Configurar contenedores</a>
+        <div class="contenedores-table-wrapper">
+            <table class="contenedores-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Estado</th>
+                        <th>Cliente</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Precio alquiler</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% contenedores.forEach(c => { %>
+                        <tr>
+                            <td>#<%= c.id %></td>
+                            <td>
+                                <span class="badge badge--<%= c.estado === 'Alquilado' ? 'alquilado' : 'disponible' %>">
+                                    <%= c.estado %>
+                                </span>
+                            </td>
+                            <td><%= c.cliente || '—' %></td>
+                            <td><%= c.inicioAlquiler ? formatFecha(c.inicioAlquiler) : '—' %></td>
+                            <td><%= c.finAlquiler ? formatFecha(c.finAlquiler) : '—' %></td>
+                            <td><%= c.estado === 'Alquilado' ? '$' + c.precioAlquiler?.toLocaleString('es-AR') : '—' %></td>
+                            <td>
+                                <a href="/contenedores/<%= c.id %>/edit" class="btn btn-sm btn-outline">Editar</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
 
-            <ul>
-                <% contenedores.forEach(c=> { if (c.estado === "Alquilado") { %>
-                    <li>
-                        <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= c.inicioAlquiler %> | <%= c.finAlquiler
-                                            %>
-                                            $<%= c.precioAlquiler %>
-                    </li>
-                    <% }else{%>
-                        <li>
-                            <%= c.id %> | <%= c.estado %>
-                        </li>
-                        <% } }) %>
-            </ul>
-        </main>
+    </main>
 
-
-
-        <script src="/javascript/sidebar.js"></script>
+    <script src="/javascript/sidebar.js"></script>
 </body>
 
 </html>

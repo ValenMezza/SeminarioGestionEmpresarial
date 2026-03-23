@@ -3,11 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalle contenedor</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <%- include('../partials/nav.ejs') %>
-    <h1>DETALLE CONTENEDOR</h1>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="contenedores-detalle">
 
+        <div class="page-header">
+            <div>
+                <a href="/contenedores" class="back-link">← Contenedores</a>
+                <h1 class="page-title">Detalle contenedor</h1>
+            </div>
+        </div>
+
+        <div class="wip-placeholder">
+            <div class="wip-icon">📦</div>
+            <div class="wip-text">Módulo en desarrollo</div>
+            <div class="wip-sub">El detalle de contenedores estará disponible próximamente</div>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
 </body>
 </html>

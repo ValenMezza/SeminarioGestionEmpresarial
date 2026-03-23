@@ -3,10 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nuevo cliente</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <&- include('../partials/nav.ejs') %>
-    <h1>Nuevo cliente</h1>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="clientes-nuevo">
+
+        <div class="page-header">
+            <div>
+                <a href="/clientes" class="back-link">← Clientes</a>
+                <h1 class="page-title">Nuevo cliente</h1>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <form action="/clientes/nuevo_cliente" method="POST" class="form-grid">
+
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" name="nombre" id="nombre" placeholder="Ej: Juan Pérez">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" name="telefono" id="telefono" placeholder="Ej: 351 000 0000">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Ej: juan@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" name="direccion" id="direccion" placeholder="Ej: Av. Siempre Viva 123">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <a href="/clientes" class="btn-secondary">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
 </body>
 </html>

@@ -1,27 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-    <%- include('../partials/nav.ejs') %>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="stock-page">
 
-        <h1>Stock</h1>
+        <div class="page-header">
+            <h1 class="page-title">Stock</h1>
+            <a href="/stock/nuevo_stock" class="btn-primary">+ Agregar producto</a>
+        </div>
 
-        <ul class="prods_cards">
-            <% productos.forEach(p=> { %>
-                <li>
-                    <b>
-                        <%= p.producto %>
-                    </b> - $<%= p.precio %>
-                        | <a href="/stock/detalle/<%= p.id %>">Ver detalle</a>
-                </li>
-                <% }) %>
-        </ul>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% productos.forEach(p => { %>
+                        <tr>
+                            <td>#<%= p.id %></td>
+                            <td><%= p.producto %></td>
+                            <td>$<%= p.precio?.toLocaleString('es-AR') %></td>
+                            <td>
+                                <span class="badge badge--<%= p.stock > 0 ? 'con-stock' : 'sin-stock' %>">
+                                    <%= p.stock > 0 ? p.stock + ' unid.' : 'Sin stock' %>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/stock/detalle/<%= p.id %>" class="btn-secondary">Ver detalle</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
 </body>
-
 </html>

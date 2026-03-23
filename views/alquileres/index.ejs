@@ -1,47 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Alquileres</title>
     <link rel="stylesheet" href="/css/styles.css">
-
 </head>
-
 <body>
     <%- include('../partials/sidebar.ejs') %>
-        <main id="mainAlquileres">
-        <h1>Alquileres</h1>
-            <h1>lista de alquileres</h1>
-            <div id="filtrosAlquiler">
-                <h4>Filtrar alquileres</h4>
-                <ul>
-                    <li>#ID: <input type="text"></li>
-                    <li>Cliente: <input type="text"></li>
-                    <li>Próximos a finalizar</li>
-                    <li>Fecha inicio: <input type="date"></li>
-                    <li>Fecha fin: <input type="date"></li>
-                </ul>
-                <button>Filtrar</button>
-            </div>
-            <a href="/alquileres/nuevo_alquiler" id="btnNuevoAlquiler">Nuevo alquiler</a>
+    <main id="mainAlquileres">
 
+        <div class="page-header">
+            <h1 class="page-title">Alquileres</h1>
+            <a href="/alquileres/nuevo_alquiler" class="btn-primary">+ Nuevo alquiler</a>
+        </div>
 
-            <ul>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Cliente</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% const alquilados = contenedores.filter(c => c.estado === "Alquilado"); %>
+                    <% if (alquilados.length === 0) { %>
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#94a3b8; padding: 2rem;">
+                                No hay alquileres activos
+                            </td>
+                        </tr>
+                    <% } %>
+                    <% alquilados.forEach(c => { %>
+                        <tr>
+                            <td>#<%= c.id %></td>
+                            <td><%= c.cliente %></td>
+                            <td><%= formatFecha(c.inicioAlquiler) %></td>
+                            <td><%= formatFecha(c.finAlquiler) %></td>
+                            <td><%= c.direccionAlquiler %></td>
+                            <td style="display:flex; gap:0.5rem;">
+                                <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary">Ver detalle</a>
+                                <a href="/alquileres/editar/<%= c.id %>" class="btn-secondary">Editar</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
 
-                <% contenedores.forEach(c=>{ %>
-                    <% if (c.estado==="Alquilado" ) { %>
-                        <li>
-                            <%= c.id %> | <%= c.estado %> | <%= c.cliente %> | <%= formatFecha(c.inicioAlquiler) %> | <%= formatFecha(c.finAlquiler) %>
-                                                <a href="/alquileres/detalle/<%= c.id %>">Ver detalle</a>
-                                                <a href="/alquileres/editar/<%= c.id %>">Editar</a>
-                        </li>
-                        <% } %>
-                            <% }) %>
-            </ul>
-        </main>
-        <%- include('../partials/scripts.ejs') %>
+    </main>
+    <%- include('../partials/scripts.ejs') %>
 </body>
-
 </html>

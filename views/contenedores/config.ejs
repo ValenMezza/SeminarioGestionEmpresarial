@@ -3,22 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Configurar contenedores</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <%- include("../partials/sidebar.ejs") %>   
-    <h1>config</h1>
+    <%- include("../partials/sidebar.ejs") %>
+    <main id="config-contenedores">
 
-    <form action="/contenedores/config" method="POST">
-    
-        <div>
-        <p><strong>Precio por día:</strong></p>
-        <input type="number" name="precioPorDia" id="precioPorDia" value="<%= contenedores[0]?.precioDia %>"> 
-        <p><strong>Precio Alquiler 7 días:</strong></p>
-        <input type="number" name="precioAlquiler" id="precioAlquiler" value="<%= contenedores[0]?.precioAlquiler %>">
-    </div>
-        <button type="submit">Guardar cambios</button>
-        <button type="reset">Restablecer</button>
-    </form>
+        <div class="page-header">
+            <div>
+                <a href="/contenedores" class="back-link">← Contenedores</a>
+                <h1 class="page-title">Configurar precios</h1>
+            </div>
+        </div>
+
+        <div class="config-card">
+            <form action="/contenedores/config" method="POST" class="config-form">
+
+                <div class="form-group">
+                    <label for="precioPorDia">Precio por día</label>
+                    <div class="input-prefix">
+                        <span>$</span>
+                        <input type="number" name="precioPorDia" id="precioPorDia"
+                            value="<%= contenedores[0]?.precioDia %>" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="precioAlquiler">Precio alquiler (7 días)</label>
+                    <div class="input-prefix">
+                        <span>$</span>
+                        <input type="number" name="precioAlquiler" id="precioAlquiler"
+                            value="<%= contenedores[0]?.precioAlquiler %>" min="0">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                    <button type="reset" class="btn-secondary">Restablecer</button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <script src="/javascript/sidebar.js"></script>
 </body>
 </html>

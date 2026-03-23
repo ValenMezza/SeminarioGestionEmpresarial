@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nuevo alquiler</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
     <%- include('../partials/sidebar.ejs') %>
-        <h1>nuevo alquiler</h1>
-        <main>
-            <%- include('../partials/form_alquiler.ejs') %>
-        </main>
-        <%- include('../partials/scripts.ejs') %>
+    <main id="alquiler-nuevo">
 
+        <div class="page-header">
+            <div>
+                <a href="/alquileres" class="back-link">← Alquileres</a>
+                <h1 class="page-title">Nuevo alquiler</h1>
+            </div>
+        </div>
+        <%- include('../partials/form_alquiler.ejs') %>
+
+    </main>
+    <%- include('../partials/scripts.ejs') %>
 </body>
 </html>

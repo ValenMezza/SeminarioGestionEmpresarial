@@ -1,70 +1,128 @@
-<form action="/alquileres/crear" method="POST">
-    <div>
-        <label for="cliente">Cliente</label>
-        <input type="text" name="cliente" id="cliente">
-        <label for="nuevoCliente">Crear nuevo cliente</label>
-        <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
+<form action="/alquileres/crear" method="POST" class="alquiler-form">
+
+    <%# ── Sección: Cliente ── %>
+    <div class="form-section">
+        <h3 class="form-section__title">Cliente</h3>
+
+        <div class="form-group">
+            <label for="cliente">Cliente existente</label>
+            <input type="text" name="cliente" id="cliente" placeholder="Nombre del cliente">
+        </div>
+
+        <div class="toggle-row">
+            <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
+            <label for="nuevoCliente">Crear nuevo cliente</label>
+        </div>
+
+        <div id="creacionCliente" style="display:none;" class="form-subsection">
+            <p class="form-hint">La creación de un nuevo cliente impactará en el sistema para futuras ventas.</p>
+            <div class="form-group">
+                <label for="nameNuevoCliente">Nombre</label>
+                <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+                <label for="telefonoNuevoCliente">Teléfono</label>
+                <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente" placeholder="351 000 0000">
+            </div>
+        </div>
     </div>
-    <div id="creacionCliente" style="display:none">
-        <h3>Crear nuevo cliente</h3>
-        <p class="leyenasForm">La creación de un nuevo cliente impactará en el sistema para futuras ventas.</p>
-        <label for="nameNuevoCliente">Nombre:</label>
-        <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente">
-        <label for="telefonoNuevoCliente">Teléfono:</label>
-        <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente">
 
+    <%# ── Sección: Contenedor ── %>
+    <div class="form-section">
+        <h3 class="form-section__title">Contenedor</h3>
+
+        <div class="form-group">
+            <label for="selectDisponibles">Contenedor disponible</label>
+            <select name="contenedor" id="selectDisponibles">
+                <% contenedorlibre.forEach(c => { %>
+                    <option value="<%= c.id %>">Contenedor #<%= c.id %></option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div class="toggle-row">
+            <input type="checkbox" name="contenedorPorFinalizarCheck" id="contenedorPorFinalizar">
+            <label for="contenedorPorFinalizar">Ver contenedores por finalizar (vencen en ≤ 2 días)</label>
+        </div>
+
+        <div class="form-group" id="grupoPorFinalizar" style="display:none;">
+            <label>Contenedor por finalizar</label>
+            <select name="contenedor" id="selectPorFinalizar" disabled>
+                <% contenedoresPorFinalizar.forEach(c => { %>
+                    <option value="<%= c.id %>" data-fin="<%= c.finAlquiler %>">
+                        Contenedor #<%= c.id %> — vence <%= c.finAlquiler %>
+                    </option>
+                <% }) %>
+                <% if (contenedoresPorFinalizar.length === 0) { %>
+                    <option disabled>No hay contenedores por finalizar</option>
+                <% } %>
+            </select>
+        </div>
     </div>
-    <div id="datosAlquiler">
-        <h3>Datos del alquiler</h3>
-        <label for="contenedor">Contenedor asignado:</label>
-        <select name="contenedor" id="selectDisponibles">
-            <% contenedorlibre.forEach(c => { %>
-                <option value="<%= c.id %>">Contenedor #<%= c.id %></option>
-            <% }) %>
-        </select>
 
-        <label for="contenedorPorFinalizar">Ver contenedores por finalizar (vencen en ≤2 días)</label>
-        <input type="checkbox" name="contenedorPorFinalizarCheck" id="contenedorPorFinalizar">
+    <%# ── Sección: Fechas ── %>
+    <div class="form-section">
+        <h3 class="form-section__title">Período</h3>
+        <p class="form-hint">El alquiler debe ser mínimo 4 días y máximo 9 días.</p>
 
-        <select name="contenedor" id="selectPorFinalizar" style="display:none" disabled>
-            <% contenedoresPorFinalizar.forEach(c => { %>
-                <option value="<%= c.id %>" data-fin="<%= c.finAlquiler %>">Contenedor #<%= c.id %> — vence <%= c.finAlquiler %></option>
-            <% }) %>
-            <% if (contenedoresPorFinalizar.length === 0) { %>
-                <option disabled>No hay contenedores por finalizar</option>
-            <% } %>
-        </select>
+        <div class="form-row-2">
+            <div class="form-group">
+                <label for="fechaInicio">Fecha de inicio</label>
+                <input type="date" name="fechaInicio" id="fechaInicio">
+            </div>
+            <div class="form-group">
+                <label for="fechaFin">Fecha de fin</label>
+                <input type="date" name="fechaFin" id="fechaFin">
+            </div>
+        </div>
+    </div>
 
-        <p class="leyenasForm">El alquiler debe ser mínimo 4 días y máximo 9 días</p>
-        <label for="fechaInicio">Fecha de inicio:</label>
-        <input type="date" name="fechaInicio" id="fechaInicio">
-        <label for="fechaFin">Fecha de fin:</label>
-        <input type="date" name="fechaFin" id="fechaFin">
-        
-        <div id="datosDireccion">
-            <h3>Datos de la dirección</h3>
-            <label for="calle">Calle:</label>
-            <input type="text" name="calle" id="calle">
-            <label for="numero">Número:</label>
-            <input type="text" name="numero" id="numero">
-            <button type="button" id="btnBuscarDireccion">Buscar dirección</button>
-            <p id="msgMapa" style="display:none; color:red;">Ingresá calle y número para buscar.</p>
-            <div id="mapaEntrega" style="display:none;">
-                <iframe id="iframeMapa" width="100%" height="350" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <%# ── Sección: Dirección ── %>
+    <div class="form-section">
+        <h3 class="form-section__title">Dirección de entrega</h3>
+
+        <div class="form-row-2">
+            <div class="form-group">
+                <label for="calle">Calle</label>
+                <input type="text" name="calle" id="calle" placeholder="Av. Siempre Viva">
+            </div>
+            <div class="form-group">
+                <label for="numero">Número</label>
+                <input type="text" name="numero" id="numero" placeholder="123">
             </div>
         </div>
 
+        <button type="button" id="btnBuscarDireccion" class="btn-secondary" style="width:fit-content;">
+            Buscar en mapa
+        </button>
+        <p id="msgMapa" style="display:none; color:#dc2626; font-size:0.85rem; margin-top:0.5rem;">
+            Ingresá calle y número para buscar.
+        </p>
+        <div id="mapaEntrega" style="display:none; margin-top:1rem;">
+            <iframe id="iframeMapa" width="100%" height="320"
+                style="border:0; border-radius:10px;" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
     </div>
-    <div>
-        <h3>Método de pago</h3>
-        <label for="metodoPago">Selecciona un método de pago:</label>
-        <select name="metodoPago" id="metodoPago">
-            <option value="efectivo">Efectivo</option>
-            <option value="tarjeta">Tarjeta de crédito/débito</option>
-            <option value="transferencia">Transferencia bancaria</option>
-        </select>
+
+    <%# ── Sección: Pago ── %>
+    <div class="form-section">
+        <h3 class="form-section__title">Método de pago</h3>
+
+        <div class="form-group">
+            <label for="metodoPago">Método</label>
+            <select name="metodoPago" id="metodoPago">
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta de crédito/débito</option>
+                <option value="transferencia">Transferencia bancaria</option>
+            </select>
+        </div>
     </div>
-    <button type="submit">Crear alquiler</button>
-    <button type="reset">Cancelar</button>
+
+    <%# ── Acciones ── %>
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Confirmar alquiler</button>
+        <button type="reset" class="btn-secondary">Limpiar</button>
+    </div>
 
 </form>

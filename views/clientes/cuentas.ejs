@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cuentas corrientes</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-    <&- include('../partials/nav.ejs') %>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="clientes-cuentas">
 
-        Cuentas corrientes
+        <div class="page-header">
+            <div>
+                <a href="/clientes" class="back-link">← Clientes</a>
+                <h1 class="page-title">Cuentas corrientes</h1>
+            </div>
+        </div>
+
+        <div class="wip-placeholder">
+            <div class="wip-icon">📒</div>
+            <div class="wip-text">Módulo en desarrollo</div>
+            <div class="wip-sub">Las cuentas corrientes estarán disponibles próximamente</div>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
 </body>
-
 </html>
