@@ -58,6 +58,7 @@ app.get('/alquileres', alquilerController.index);
 app.get('/alquileres/detalle/:id', alquilerController.detalle);
 app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
 app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
+app.post('/alquileres/editar/:id', alquilerController.guardarEdicion);
 app.post('/alquileres/crear', alquilerController.crearAlquiler);
 app.post('/alquileres/finalizar/:id', alquilerController.finalizarAlquiler);
 
@@ -73,9 +74,11 @@ app.get('/stock/nuevo_stock', stockController.nuevoStock)
 
 //cliente
 app.get('/clientes', clienteController.index)
-app.get('/clientes/detalle', clienteController.detalle)
-app.get('/clientes/cuentas', clienteController.cuentas)
 app.get('/clientes/nuevo_cliente', clienteController.nuevo)
+app.post('/clientes/nuevo_cliente', clienteController.crearCliente)
+app.get('/clientes/detalle/:id', clienteController.detalle)
+app.post('/clientes/eliminar/:id', clienteController.eliminar)
+app.get('/clientes/cuentas', clienteController.cuentas)
 
 //para evitar un eerro 404 que ensucia consola
 app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {

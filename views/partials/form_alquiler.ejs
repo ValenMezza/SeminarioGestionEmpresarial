@@ -6,7 +6,12 @@
 
         <div class="form-group">
             <label for="cliente">Cliente existente</label>
-            <input type="text" name="cliente" id="cliente" placeholder="Nombre del cliente">
+            <select name="cliente" id="cliente">
+                <option value="">— Seleccionar cliente —</option>
+                <% clientes.forEach(c => { %>
+                    <option value="<%= c.nombre %>"><%= c.nombre %></option>
+                <% }) %>
+            </select>
         </div>
 
         <div class="toggle-row">
@@ -60,7 +65,6 @@
         </div>
     </div>
 
-    <%# ── Sección: Fechas ── %>
     <div class="form-section">
         <h3 class="form-section__title">Período</h3>
         <p class="form-hint">El alquiler debe ser mínimo 4 días y máximo 9 días.</p>
@@ -77,7 +81,6 @@
         </div>
     </div>
 
-    <%# ── Sección: Dirección ── %>
     <div class="form-section">
         <h3 class="form-section__title">Dirección de entrega</h3>
 
@@ -92,20 +95,17 @@
             </div>
         </div>
 
-        <button type="button" id="btnBuscarDireccion" class="btn-secondary" style="width:fit-content;">
+        <button type="button" id="btnBuscarDireccion" class="btn-secondary">
             Buscar en mapa
         </button>
-        <p id="msgMapa" style="display:none; color:#dc2626; font-size:0.85rem; margin-top:0.5rem;">
+        <p id="msgMapa" style="display:none;">
             Ingresá calle y número para buscar.
         </p>
-        <div id="mapaEntrega" style="display:none; margin-top:1rem;">
-            <iframe id="iframeMapa" width="100%" height="320"
-                style="border:0; border-radius:10px;" allowfullscreen loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div id="mapaEntrega" style="display:none;">
+            <iframe id="iframeMapa" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
 
-    <%# ── Sección: Pago ── %>
     <div class="form-section">
         <h3 class="form-section__title">Método de pago</h3>
 

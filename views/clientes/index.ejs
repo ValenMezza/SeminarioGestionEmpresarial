@@ -15,10 +15,40 @@
             <a href="/clientes/nuevo_cliente" class="btn-primary">+ Nuevo cliente</a>
         </div>
 
-        <div class="wip-placeholder">
-            <div class="wip-icon">👤</div>
-            <div class="wip-text">Módulo en desarrollo</div>
-            <div class="wip-sub">La gestión de clientes estará disponible próximamente</div>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (clientes.length === 0) { %>
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#94a3b8; padding: 2rem;">
+                                No hay clientes registrados
+                            </td>
+                        </tr>
+                    <% } %>
+                    <% clientes.forEach(c => { %>
+                        <tr>
+                            <td>#<%= c.id %></td>
+                            <td><%= c.nombre %></td>
+                            <td><%= c.telefono || '—' %></td>
+                            <td><%= c.email || '—' %></td>
+                            <td><%= c.direccion || '—' %></td>
+                            <td>
+                                <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver detalle</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </div>
 
     </main>

@@ -1,14 +1,23 @@
 /* public/scss/style.scss */
 
-/* 1) Config primero */
+/* 1) Config */
 @use "variables";
 @use "body";
-@use "navbar";
 @use "sidebar";
-/* 2) Base / páginas */
-@use "main";
 
-/* 3) Layout / componentes */
+/* 2) Base */
+@use "main";
 @use "aside";
 @use "cardsMain";
+
+/* 3) Componentes compartidos */
 @use "pages";
+
+/* 4) Secciones */
+@use "alquileres";
+@use "clientes";
+@use "stock";
+@use "contenedores";
+@use "transacciones";
+@use "home";
+@use "login";

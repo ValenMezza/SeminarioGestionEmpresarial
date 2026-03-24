@@ -16,7 +16,49 @@
                 <h1 class="page-title">Nuevo alquiler</h1>
             </div>
         </div>
-        <%- include('../partials/form_alquiler.ejs') %>
+        <div class="alquiler-layout">
+            <%- include('../partials/form_alquiler.ejs') %>
+
+            <aside class="alquiler-resumen">
+                <div class="alquiler-resumen__card">
+                    <p class="alquiler-resumen__title">Resumen</p>
+                    <div class="alquiler-resumen__rows">
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Cliente</span>
+                            <span class="alquiler-resumen__value" id="res-cliente">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Contenedor</span>
+                            <span class="alquiler-resumen__value" id="res-contenedor">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Inicio</span>
+                            <span class="alquiler-resumen__value" id="res-inicio">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Fin</span>
+                            <span class="alquiler-resumen__value" id="res-fin">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Días</span>
+                            <span class="alquiler-resumen__value" id="res-dias">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Dirección</span>
+                            <span class="alquiler-resumen__value" id="res-direccion">—</span>
+                        </div>
+                        <div class="alquiler-resumen__row">
+                            <span class="alquiler-resumen__label">Pago</span>
+                            <span class="alquiler-resumen__value" id="res-pago">—</span>
+                        </div>
+                    </div>
+                    <div class="alquiler-resumen__total" id="res-total" style="display:none;">
+                        <span>Total estimado</span>
+                        <span id="res-total-valor"></span>
+                    </div>
+                </div>
+            </aside>
+        </div>
 
     </main>
     <%- include('../partials/scripts.ejs') %>

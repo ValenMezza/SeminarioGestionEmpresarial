@@ -5,7 +5,7 @@ const config = { precioDia: 5000, precioAlquiler: 30000 };
 const dbContenedores = {
     listaContenedores: [
         { id: 1, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
-        { id: 2, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Juan Perez", inicioAlquiler: "2026-03-13", finAlquiler: "2026-03-19", direccionAlquiler: "Calle Falsa 123" },
+        { id: 2, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Juan Perez", inicioAlquiler: "2026-03-20", finAlquiler: "2026-03-24", direccionAlquiler: "Calle Falsa 123" },
         { id: 3, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
         { id: 4, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Maria Lopez", inicioAlquiler: "2024-06-05", finAlquiler: "2024-06-15", direccionAlquiler: "Avenida Siempre Viva 456" },
         { id: 5, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null }

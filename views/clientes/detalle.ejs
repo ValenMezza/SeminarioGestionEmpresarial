@@ -13,14 +13,71 @@
         <div class="page-header">
             <div>
                 <a href="/clientes" class="back-link">← Clientes</a>
-                <h1 class="page-title">Detalle cliente</h1>
+                <h1 class="page-title"><%= cliente.nombre %></h1>
+            </div>
+            <form action="/clientes/eliminar/<%= cliente.id %>" method="POST" style="margin:0;"
+                  onsubmit="return confirm('¿Eliminar a <%= cliente.nombre %>?')">
+                <button type="submit" class="btn-danger">Eliminar cliente</button>
+            </form>
+        </div>
+
+        <div class="detail-card">
+            <p class="detalle-section-title">Información del cliente</p>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Nombre</span>
+                    <span class="info-value"><%= cliente.nombre %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Teléfono</span>
+                    <span class="info-value"><%= cliente.telefono || '—' %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value"><%= cliente.email || '—' %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Dirección</span>
+                    <span class="info-value"><%= cliente.direccion || '—' %></span>
+                </div>
             </div>
         </div>
 
-        <div class="wip-placeholder">
-            <div class="wip-icon">👤</div>
-            <div class="wip-text">Módulo en desarrollo</div>
-            <div class="wip-sub">El detalle de clientes estará disponible próximamente</div>
+        <div class="clientes-historial">
+            <h2 class="clientes-historial__title">Historial de alquileres</h2>
+
+            <% if (alquileres.length === 0) { %>
+                <div class="clientes-historial__empty">Sin alquileres registrados</div>
+            <% } else { %>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Contenedor</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% alquileres.forEach(a => { %>
+                                <tr>
+                                    <td>#<%= a.id %></td>
+                                    <td><%= formatFecha(a.inicioAlquiler) %></td>
+                                    <td><%= formatFecha(a.finAlquiler) %></td>
+                                    <td><%= a.direccionAlquiler %></td>
+                                    <td>
+                                        <span class="badge badge--<%= a.estado === 'Alquilado' ? 'alquilado' : 'disponible' %>">
+                                            <%= a.estado %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
         </div>
 
     </main>
