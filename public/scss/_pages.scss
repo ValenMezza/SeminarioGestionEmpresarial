@@ -51,7 +51,10 @@
     color: #64748b;
     text-decoration: none;
     transition: color 0.15s ease;
-    &:hover { color: variables.$sidebar-bg; }
+
+    &:hover {
+        color: variables.$sidebar-bg;
+    }
 }
 
 // ── Botones ───────────────────────────────────────────────────
@@ -67,14 +70,19 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
-    &:hover { background: #163050; transform: translateY(-1px); }
+
+    &:hover {
+        background: variables.$hoover;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
 }
 
 .btn-secondary {
     display: inline-block;
     padding: 0.55rem 1.2rem;
-    background: #fff;
-    color: #374151;
+    background: #1e3a5f;
+    color: #ffffff;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.875rem;
@@ -82,13 +90,18 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s ease;
-    &:hover { background: #f8fafc; }
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
 }
+
 .btn-secondary-cancel {
     display: inline-block;
     padding: 0.55rem 1.2rem;
     background: #dc2626;
-    color: #00040b;
+    color: #fefefe;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.875rem;
@@ -96,14 +109,18 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s ease;
-    &:hover { background: #f8fafc; }
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
 }
 
 .btn-finalizar {
     display: inline-block;
     padding: 0.55rem 1.2rem;
     background: #10b981;
-    color: #00040b;
+    color: #ffffff;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.875rem;
@@ -111,7 +128,11 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s ease;
-    &:hover { background: #f8fafc; }
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
 }
 
 .btn-danger {
@@ -125,7 +146,10 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s ease;
-    &:hover { background: #b91c1c; }
+
+    &:hover {
+        background: #b91c1c;
+    }
 }
 
 // ── Badge ─────────────────────────────────────────────────────
@@ -135,10 +159,26 @@
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 700;
-    &--disponible { background: #dcfce7; color: #15803d; }
-    &--alquilado  { background: #fef3c7; color: #b45309; }
-    &--sin-stock  { background: #fee2e2; color: #dc2626; }
-    &--con-stock  { background: #dcfce7; color: #15803d; }
+
+    &--disponible {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    &--alquilado {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    &--sin-stock {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    &--con-stock {
+        background: #dcfce7;
+        color: #15803d;
+    }
 }
 
 // ── Tarjeta de detalle ────────────────────────────────────────
@@ -147,7 +187,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 14px;
     padding: 1.75rem 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     max-width: 640px;
 }
 
@@ -163,7 +203,10 @@
     gap: 0.75rem;
     padding: 0.75rem 0;
     border-bottom: 1px solid #f1f5f9;
-    &:last-child { border-bottom: none; }
+
+    &:last-child {
+        border-bottom: none;
+    }
 
     .info-label {
         font-size: 0.8rem;
@@ -188,7 +231,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .data-table {
@@ -197,7 +240,8 @@
     font-size: 0.9rem;
 
     thead {
-        background: #f8fafc;
+        background: variables.$bg-thead;
+        color:white;
         border-bottom: 1px solid #e2e8f0;
 
         th {
@@ -207,7 +251,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: #64748b;
+            color: #ffffff;
             white-space: nowrap;
         }
     }
@@ -216,8 +260,14 @@
         tr {
             border-bottom: 1px solid #f1f5f9;
             transition: background 0.15s ease;
-            &:last-child { border-bottom: none; }
-            &:hover { background: #f8fafc; }
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background: #f8fafc;
+            }
         }
 
         td {
@@ -234,7 +284,7 @@
     border-radius: 14px;
     padding: 2rem;
     max-width: 560px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .form-grid {
@@ -254,7 +304,9 @@
         color: #374151;
     }
 
-    input, select, textarea {
+    input,
+    select,
+    textarea {
         padding: 0.6rem 0.85rem;
         border: 1px solid #d1d5db;
         border-radius: 8px;
@@ -265,7 +317,7 @@
 
         &:focus {
             border-color: variables.$sidebar-accent;
-            box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
         }
     }
 }
@@ -290,7 +342,16 @@
     color: #94a3b8;
     text-align: center;
 
-    .wip-icon { font-size: 2.5rem; }
-    .wip-text { font-size: 1rem; font-weight: 600; }
-    .wip-sub  { font-size: 0.85rem; }
+    .wip-icon {
+        font-size: 2.5rem;
+    }
+
+    .wip-text {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .wip-sub {
+        font-size: 0.85rem;
+    }
 }

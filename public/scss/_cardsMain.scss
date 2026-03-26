@@ -1,3 +1,4 @@
+@use "variables";
 .cards_main {
     display: flex;
     flex-direction: column;
@@ -54,7 +55,7 @@
         padding: 10px 18px;
         border-radius: 8px;
         border: none;
-        background-color: #1f2937;
+        background-color: variables.$bg-btns-secondary;
         color: #ffffff;
         font-size: 0.9rem;
         font-weight: 500;

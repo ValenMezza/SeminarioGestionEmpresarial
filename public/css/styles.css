@@ -696,7 +696,7 @@ main {
   padding: 10px 18px;
   border-radius: 8px;
   border: none;
-  background-color: #1f2937;
+  background-color: #1e3a5f;
   color: #ffffff;
   font-size: 0.9rem;
   font-weight: 500;
@@ -783,15 +783,16 @@ main {
   transition: background 0.2s ease, transform 0.15s ease;
 }
 .btn-primary:hover {
-  background: #163050;
+  background: rgb(234, 234, 234);
+  color: #0f172a;
   transform: translateY(-1px);
 }
 
 .btn-secondary {
   display: inline-block;
   padding: 0.55rem 1.2rem;
-  background: #fff;
-  color: #374151;
+  background: #1e3a5f;
+  color: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -801,14 +802,15 @@ main {
   transition: background 0.2s ease;
 }
 .btn-secondary:hover {
-  background: #f8fafc;
+  background: rgb(234, 234, 234);
+  color: black;
 }
 
 .btn-secondary-cancel {
   display: inline-block;
   padding: 0.55rem 1.2rem;
   background: #dc2626;
-  color: #00040b;
+  color: #fefefe;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -818,14 +820,15 @@ main {
   transition: background 0.2s ease;
 }
 .btn-secondary-cancel:hover {
-  background: #f8fafc;
+  background: rgb(234, 234, 234);
+  color: black;
 }
 
 .btn-finalizar {
   display: inline-block;
   padding: 0.55rem 1.2rem;
   background: #10b981;
-  color: #00040b;
+  color: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -835,7 +838,8 @@ main {
   transition: background 0.2s ease;
 }
 .btn-finalizar:hover {
-  background: #f8fafc;
+  background: rgb(234, 234, 234);
+  color: black;
 }
 
 .btn-danger {
@@ -932,7 +936,8 @@ main {
   font-size: 0.9rem;
 }
 .data-table thead {
-  background: #f8fafc;
+  background: #1e3a5f;
+  color: white;
   border-bottom: 1px solid #e2e8f0;
 }
 .data-table thead th {
@@ -942,7 +947,7 @@ main {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #64748b;
+  color: #ffffff;
   white-space: nowrap;
 }
 .data-table tbody tr {
@@ -985,7 +990,9 @@ main {
   font-weight: 600;
   color: #374151;
 }
-.form-group input, .form-group select, .form-group textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
   padding: 0.6rem 0.85rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -994,7 +1001,9 @@ main {
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   border-color: #60a5fa;
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
@@ -1284,6 +1293,43 @@ main {
   font-size: 1.15rem;
   font-weight: 700;
   color: #1e3a5f;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 300px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 .cliente-eliminar-form {

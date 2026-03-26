@@ -163,6 +163,27 @@ if (document.getElementById('res-cliente')) {
     actualizarResumen();
 }
 
+// Modal de confirmación (formulario editar)
+const btnGuardar = document.getElementById('btnGuardar');
+const modalConfirmar = document.getElementById('modalConfirmar');
+const btnConfirmarModal = document.getElementById('btnConfirmarModal');
+const btnCancelarModal = document.getElementById('btnCancelarModal');
+
+if (btnGuardar && modalConfirmar) {
+    btnGuardar.addEventListener('click', () => {
+        modalConfirmar.style.display = 'flex';
+    });
+    btnCancelarModal.addEventListener('click', () => {
+        modalConfirmar.style.display = 'none';
+    });
+    btnConfirmarModal.addEventListener('click', () => {
+        btnGuardar.closest('form').submit();
+    });
+    modalConfirmar.addEventListener('click', (e) => {
+        if (e.target === modalConfirmar) modalConfirmar.style.display = 'none';
+    });
+}
+
 // Validación de fechas: mínimo 4 días, máximo 9 días (solo en form nuevo)
 const esFormNuevo = !!document.getElementById('selectDisponibles');
 if (esFormNuevo && fechaInicio && fechaFin) {
