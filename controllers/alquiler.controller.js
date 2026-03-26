@@ -1,5 +1,6 @@
 const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, finalizarAlquiler } = require("../store/dbContenedor")
 const { listClientes } = require("../store/dbClientes")
+const { crearTransaccion } = require("../store/dbTransacciones")
 
 
 const alquilerController = {
@@ -54,8 +55,22 @@ const alquilerController = {
         });
         res.redirect(`/alquileres/detalle/${id}`);
     },
-    finalizarAlquiler: (req, res) => {
+    cancelarAlquiler: (req, res) => {
         const id = Number(req.params.id);
+        finalizarAlquiler(id);
+        res.redirect('/alquileres');
+    },
+    finalizarAlquiler: async (req, res) => {
+        const id = Number(req.params.id);
+        const contenedor = await contenedorById(id);
+        if (contenedor) {
+            crearTransaccion({
+                tipo: 'Alquiler',
+                cliente: contenedor.cliente,
+                monto: contenedor.precioAlquiler,
+                descripcion: `Contenedor #${contenedor.id} — ${contenedor.direccionAlquiler} (${contenedor.inicioAlquiler} → ${contenedor.finAlquiler})`
+            });
+        }
         finalizarAlquiler(id);
         res.redirect('/alquileres');
     }

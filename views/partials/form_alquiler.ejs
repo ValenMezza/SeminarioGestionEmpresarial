@@ -19,7 +19,7 @@
             <label for="nuevoCliente">Crear nuevo cliente</label>
         </div>
 
-        <div id="creacionCliente" style="display:none;" class="form-subsection">
+        <div id="creacionCliente" class="form-subsection">
             <p class="form-hint">La creación de un nuevo cliente impactará en el sistema para futuras ventas.</p>
             <div class="form-group">
                 <label for="nameNuevoCliente">Nombre</label>
@@ -50,7 +50,7 @@
             <label for="contenedorPorFinalizar">Ver contenedores por finalizar (vencen en ≤ 2 días)</label>
         </div>
 
-        <div class="form-group" id="grupoPorFinalizar" style="display:none;">
+        <div class="form-group" id="grupoPorFinalizar">
             <label>Contenedor por finalizar</label>
             <select name="contenedor" id="selectPorFinalizar" disabled>
                 <% contenedoresPorFinalizar.forEach(c => { %>
@@ -98,10 +98,10 @@
         <button type="button" id="btnBuscarDireccion" class="btn-secondary">
             Buscar en mapa
         </button>
-        <p id="msgMapa" style="display:none;">
+        <p id="msgMapa">
             Ingresá calle y número para buscar.
         </p>
-        <div id="mapaEntrega" style="display:none;">
+        <div id="mapaEntrega">
             <iframe id="iframeMapa" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>

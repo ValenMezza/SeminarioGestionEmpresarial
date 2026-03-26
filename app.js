@@ -50,7 +50,7 @@ app.get('/ventas', ventasController.index)
 
 //transacciones
 app.get('/transacciones', transaccionesController.index)
-app.get('/transacciones/detalle', transaccionesController.detalle)
+app.get('/transacciones/detalle/:id', transaccionesController.detalle)
 
 
 //alquiler
@@ -60,6 +60,7 @@ app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
 app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
 app.post('/alquileres/editar/:id', alquilerController.guardarEdicion);
 app.post('/alquileres/crear', alquilerController.crearAlquiler);
+app.post('/alquileres/cancelar/:id', alquilerController.cancelarAlquiler);
 app.post('/alquileres/finalizar/:id', alquilerController.finalizarAlquiler);
 
 //contendedor

@@ -1,93 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle alquiler</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
     <%- include('../partials/sidebar.ejs') %>
-    <main id="alquiler-detalle">
+        <main id="alquiler-detalle">
 
-        <div class="page-header">
-            <div>
-                <a href="/alquileres" class="back-link">← Alquileres</a>
-                <h1 class="page-title">Contenedor #<%= contenedor.id %></h1>
-            </div>
-            <% if (contenedor.estado === "Alquilado") { %>
-                <div style="display:flex; gap:0.75rem;">
-                    <a href="/alquileres/editar/<%= contenedor.id %>" class="btn-secondary">Editar</a>
-                    <form action="/alquileres/finalizar/<%= contenedor.id %>" method="POST" style="margin:0;">
-                        <button type="submit" class="btn-danger">Finalizar alquiler</button>
-                    </form>
+            <div class="page-header">
+                <div>
+                    <a href="/alquileres" class="back-link">← Alquileres</a>
+                    <h1 class="page-title">Contenedor #<%= contenedor.id %>
+                    </h1>
                 </div>
-            <% } %>
-        </div>
+                <% if (contenedor.estado==="Alquilado" ) { %>
+                    <div class="detalle-acciones">
+                        <a href="/alquileres/editar/<%= contenedor.id %>" class="btn-secondary">Editar</a>
+                        <form action="/alquileres/cancelar/<%= contenedor.id %>" method="POST"
+                            class="detalle-finalizar-form"
+                            onsubmit="return confirm('¿Cancelar el alquiler del Contenedor #<%= contenedor.id %>?')">
+                            <button type="submit" class="btn-secondary-cancel">Cancelar alquiler</button>
+                        </form>
+                        <form action="/alquileres/finalizar/<%= contenedor.id %>" method="POST"
+                            class="detalle-finalizar-form">
+                            <button type="submit" class="btn-finalizar">Finalizar alquiler</button>
+                        </form>
+                    </div>
+                    <% } %>
+            </div>
 
-        <% if (contenedor.estado === "Alquilado") { %>
-            <div class="detalle-grid">
+            <% if (contenedor.estado==="Alquilado" ) { %>
+                <div class="detalle-grid">
 
-                <div class="detail-card detalle-info">
-                    <p class="detalle-section-title">Información del alquiler</p>
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <span class="info-label">Estado</span>
-                            <span class="info-value">
-                                <span class="badge badge--alquilado"><%= contenedor.estado %></span>
-                            </span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Cliente</span>
-                            <span class="info-value"><%= contenedor.cliente %></span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Inicio</span>
-                            <span class="info-value"><%= formatFecha(contenedor.inicioAlquiler) %></span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Fin</span>
-                            <span class="info-value"><%= formatFecha(contenedor.finAlquiler) %></span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Dirección</span>
-                            <span class="info-value"><%= contenedor.direccionAlquiler %></span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Precio</span>
-                            <span class="info-value detalle-precio">$<%= contenedor.precioAlquiler?.toLocaleString('es-AR') %></span>
+                    <div class="detail-card detalle-info">
+                        <p class="detalle-section-title">Información del alquiler</p>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">Estado</span>
+                                <span class="info-value">
+                                    <span class="badge badge--alquilado">
+                                        <%= contenedor.estado %>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Cliente</span>
+                                <span class="info-value">
+                                    <%= contenedor.cliente %>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Inicio</span>
+                                <span class="info-value">
+                                    <%= formatFecha(contenedor.inicioAlquiler) %>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Fin</span>
+                                <span class="info-value">
+                                    <%= formatFecha(contenedor.finAlquiler) %>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Dirección</span>
+                                <span class="info-value">
+                                    <%= contenedor.direccionAlquiler %>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Precio</span>
+                                <span class="info-value detalle-precio">$<%=
+                                        contenedor.precioAlquiler?.toLocaleString('es-AR') %></span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="detail-card detalle-mapa">
-                    <p class="detalle-section-title">Ubicación</p>
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        style="border:0; border-radius:10px; min-height:280px;"
-                        allowfullscreen
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        src="https://maps.google.com/maps?q=<%= encodeURIComponent(contenedor.direccionAlquiler + ', Córdoba, Argentina') %>&output=embed&hl=es">
-                    </iframe>
-                </div>
-
-            </div>
-        <% } else { %>
-            <div class="detail-card">
-                <div class="info-grid">
-                    <div class="info-row">
-                        <span class="info-label">Estado</span>
-                        <span class="info-value">
-                            <span class="badge badge--disponible"><%= contenedor.estado %></span>
-                        </span>
+                    <div class="detail-card detalle-mapa">
+                        <p class="detalle-section-title">Ubicación</p>
+                        <iframe class="detalle-iframe" allowfullscreen loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://maps.google.com/maps?q=<%= encodeURIComponent(contenedor.direccionAlquiler + ', Córdoba, Argentina') %>&output=embed&hl=es">
+                        </iframe>
                     </div>
-                </div>
-            </div>
-        <% } %>
 
-    </main>
-    <%- include('../partials/scripts.ejs') %>
+                </div>
+                <% } else { %>
+                    <div class="detail-card">
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <span class="info-label">Estado</span>
+                                <span class="info-value">
+                                    <span class="badge badge--disponible">
+                                        <%= contenedor.estado %>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+        </main>
+        <%- include('../partials/scripts.ejs') %>
 </body>
+
 </html>

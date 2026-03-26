@@ -14,11 +14,39 @@
             <h1 class="page-title">Transacciones</h1>
         </div>
 
-        <div class="wip-placeholder">
-
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Tipo</th>
+                        <th>Cliente</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (transacciones.length === 0) { %>
+                        <tr>
+                            <td colspan="6" class="td-vacia">No hay transacciones registradas</td>
+                        </tr>
+                    <% } %>
+                    <% transacciones.slice().reverse().forEach(t => { %>
+                        <tr>
+                            <td>#<%= t.id %></td>
+                            <td><span class="badge badge--<%= t.tipo.toLowerCase() %>"><%= t.tipo %></span></td>
+                            <td><%= t.cliente %></td>
+                            <td><%= t.descripcion %></td>
+                            <td><%= t.fecha %></td>
+                            <td class="transaccion-monto">$<%= t.monto?.toLocaleString('es-AR') %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </div>
 
     </main>
-    <script src="/javascript/sidebar.js"></script>
+    <%- include('../partials/scripts.ejs') %>
 </body>
 </html>

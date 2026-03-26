@@ -15,7 +15,7 @@
                 <a href="/clientes" class="back-link">← Clientes</a>
                 <h1 class="page-title"><%= cliente.nombre %></h1>
             </div>
-            <form action="/clientes/eliminar/<%= cliente.id %>" method="POST" style="margin:0;"
+            <form action="/clientes/eliminar/<%= cliente.id %>" method="POST" class="cliente-eliminar-form"
                   onsubmit="return confirm('¿Eliminar a <%= cliente.nombre %>?')">
                 <button type="submit" class="btn-danger">Eliminar cliente</button>
             </form>

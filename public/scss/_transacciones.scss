@@ -2,3 +2,24 @@
 
 // ── Estilos de transacciones ──────────────────────────────────
 // Vistas: index, detalle
+
+.td-vacia {
+    text-align: center;
+    color: #94a3b8;
+    padding: 2rem;
+}
+
+.transaccion-monto {
+    font-weight: 700;
+    color: variables.$sidebar-bg;
+}
+
+.badge--alquiler {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge--venta {
+    background: #dcfce7;
+    color: #15803d;
+}
