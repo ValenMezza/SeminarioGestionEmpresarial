@@ -84,7 +84,7 @@ if (checkPorFinalizar && selectDisponibles && selectPorFinalizar) {
         const usarPorFinalizar = checkPorFinalizar.checked;
         selectDisponibles.closest('.form-group').style.display = usarPorFinalizar ? 'none' : '';
         selectDisponibles.disabled = usarPorFinalizar;
-        if (grupoPorFinalizar) grupoPorFinalizar.style.display = usarPorFinalizar ? '' : 'none';
+        if (grupoPorFinalizar) grupoPorFinalizar.style.display = usarPorFinalizar ? 'block' : 'none';
         selectPorFinalizar.disabled = !usarPorFinalizar;
         if (fechaInicio) fechaInicio.value = '';
         if (fechaFin) fechaFin.value = '';
