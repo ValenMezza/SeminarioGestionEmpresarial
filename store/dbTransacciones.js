@@ -21,4 +21,16 @@ function listTransacciones() {
     return dbTransacciones.listaTransacciones;
 }
 
-module.exports = { crearTransaccion, listTransacciones };
+function filtrarTransacciones({ tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = {}) {
+    return dbTransacciones.listaTransacciones.filter(t => {
+        if (tipo      && tipo !== 'todos' && t.tipo !== tipo)                          return false;
+        if (cliente   && !t.cliente.toLowerCase().includes(cliente.toLowerCase()))     return false;
+        if (fechaDesde && t.fecha < fechaDesde)                                        return false;
+        if (fechaHasta && t.fecha > fechaHasta)                                        return false;
+        if (montoMin  && t.monto < Number(montoMin))                                   return false;
+        if (montoMax  && t.monto > Number(montoMax))                                   return false;
+        return true;
+    });
+}
+
+module.exports = { crearTransaccion, listTransacciones, filtrarTransacciones };

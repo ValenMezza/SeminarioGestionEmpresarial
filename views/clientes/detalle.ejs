@@ -21,6 +21,7 @@
             </form>
         </div>
 
+        <!-- Info básica -->
         <div class="detail-card">
             <p class="detalle-section-title">Información del cliente</p>
             <div class="info-grid">
@@ -40,12 +41,53 @@
                     <span class="info-label">Dirección</span>
                     <span class="info-value"><%= cliente.direccion || '—' %></span>
                 </div>
+                <div class="info-row">
+                    <span class="info-label">Cuenta corriente</span>
+                    <span class="info-value">
+                        <% if (cliente.cuentaCorriente) { %>
+                            <span class="badge badge--con-stock">Habilitada</span>
+                            — Saldo: <b>$<%= cliente.saldo.toLocaleString('es-AR') %></b>
+                        <% } else { %>
+                            <span class="badge badge--sin-stock">No habilitada</span>
+                            <form action="/clientes/<%= cliente.id %>/habilitar-cuenta" method="POST" style="display:inline; margin-left:0.5rem">
+                                <button type="submit" class="btn-sm btn-primary-green">Habilitar</button>
+                            </form>
+                        <% } %>
+                    </span>
+                </div>
             </div>
         </div>
 
+        <!-- Filtros del historial -->
+        <div class="historial-filtros-card">
+            <form method="GET" action="/clientes/detalle/<%= cliente.id %>" class="filtros-bar">
+                <div class="filtro-group">
+                    <label>Desde</label>
+                    <input type="date" name="fechaDesde" value="<%= filtros.fechaDesde %>">
+                </div>
+                <div class="filtro-group">
+                    <label>Hasta</label>
+                    <input type="date" name="fechaHasta" value="<%= filtros.fechaHasta %>">
+                </div>
+                <div class="filtro-group">
+                    <label>Operación</label>
+                    <select name="tipoOp">
+                        <option value="">Todas</option>
+                        <option value="alquiler"     <%= filtros.tipoOp === 'alquiler'     ? 'selected' : '' %>>Alquileres</option>
+                        <option value="transaccion"  <%= filtros.tipoOp === 'transaccion'  ? 'selected' : '' %>>Transacciones</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Filtrar</button>
+                <% if (filtros.fechaDesde || filtros.fechaHasta || filtros.tipoOp) { %>
+                    <a href="/clientes/detalle/<%= cliente.id %>" class="btn-secondary">Limpiar</a>
+                <% } %>
+            </form>
+        </div>
+
+        <!-- Historial de alquileres -->
+        <% if (!filtros.tipoOp || filtros.tipoOp === 'alquiler') { %>
         <div class="clientes-historial">
             <h2 class="clientes-historial__title">Historial de alquileres</h2>
-
             <% if (alquileres.length === 0) { %>
                 <div class="clientes-historial__empty">Sin alquileres registrados</div>
             <% } else { %>
@@ -58,6 +100,7 @@
                                 <th>Fin</th>
                                 <th>Dirección</th>
                                 <th>Estado</th>
+                                <th>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,6 +115,7 @@
                                             <%= a.estado %>
                                         </span>
                                     </td>
+                                    <td>$<%= a.precioAlquiler?.toLocaleString('es-AR') || '—' %></td>
                                 </tr>
                             <% }) %>
                         </tbody>
@@ -79,6 +123,42 @@
                 </div>
             <% } %>
         </div>
+        <% } %>
+
+        <!-- Historial de transacciones -->
+        <% if (!filtros.tipoOp || filtros.tipoOp === 'transaccion') { %>
+        <div class="clientes-historial">
+            <h2 class="clientes-historial__title">Historial de transacciones</h2>
+            <% if (transacciones.length === 0) { %>
+                <div class="clientes-historial__empty">Sin transacciones registradas</div>
+            <% } else { %>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Fecha</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% transacciones.slice().reverse().forEach(t => { %>
+                                <tr>
+                                    <td>#<%= t.id %></td>
+                                    <td><span class="badge badge--alquilado"><%= t.tipo %></span></td>
+                                    <td><%= t.descripcion %></td>
+                                    <td><%= t.fecha %></td>
+                                    <td class="transaccion-monto">$<%= t.monto?.toLocaleString('es-AR') %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+        <% } %>
 
     </main>
     <script src="/javascript/sidebar.js"></script>

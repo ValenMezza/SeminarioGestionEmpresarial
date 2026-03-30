@@ -12,8 +12,27 @@
 
         <div class="page-header">
             <h1 class="page-title">Clientes</h1>
-            <a href="/clientes/nuevo_cliente" class="btn-primary">+ Nuevo cliente</a>
+            <div class="page-header-actions">
+                <a href="/clientes/cuentas" class="btn-secondary">Cuentas corrientes</a>
+                <a href="/clientes/nuevo_cliente" class="btn-primary-green">+ Nuevo cliente</a>
+            </div>
         </div>
+
+        <!-- Filtros de búsqueda -->
+        <form method="GET" action="/clientes" class="filtros-bar">
+            <div class="filtro-group">
+                <label>Nombre</label>
+                <input type="text" name="nombre" value="<%= filtros.nombre %>" placeholder="Buscar por nombre...">
+            </div>
+            <div class="filtro-group">
+                <label>Teléfono</label>
+                <input type="text" name="telefono" value="<%= filtros.telefono %>" placeholder="Buscar por teléfono...">
+            </div>
+            <button type="submit" class="btn-primary">Buscar</button>
+            <% if (filtros.nombre || filtros.telefono) { %>
+                <a href="/clientes" class="btn-secondary">Limpiar</a>
+            <% } %>
+        </form>
 
         <div class="table-wrapper">
             <table class="data-table">
@@ -24,15 +43,14 @@
                         <th>Teléfono</th>
                         <th>Email</th>
                         <th>Dirección</th>
+                        <th>Cuenta corriente</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% if (clientes.length === 0) { %>
                         <tr>
-                            <td colspan="6" class="td-vacia">
-                                No hay clientes registrados
-                            </td>
+                            <td colspan="7" class="td-vacia">No se encontraron clientes</td>
                         </tr>
                     <% } %>
                     <% clientes.forEach(c => { %>
@@ -42,6 +60,13 @@
                             <td><%= c.telefono || '—' %></td>
                             <td><%= c.email || '—' %></td>
                             <td><%= c.direccion || '—' %></td>
+                            <td>
+                                <% if (c.cuentaCorriente) { %>
+                                    <span class="badge badge--con-stock">Habilitada</span>
+                                <% } else { %>
+                                    <span class="badge badge--sin-stock">No</span>
+                                <% } %>
+                            </td>
                             <td>
                                 <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver detalle</a>
                             </td>

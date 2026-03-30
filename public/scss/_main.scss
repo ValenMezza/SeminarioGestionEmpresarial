@@ -9,16 +9,6 @@ main {
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#home {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-    padding: 0 5%;
-}
-
 #ventas {
     width: 95%;
     display: grid;

@@ -67,7 +67,11 @@
                             <td><%= c.finAlquiler ? formatFecha(c.finAlquiler) : '—' %></td>
                             <td><%= c.estado === 'Alquilado' ? '$' + c.precioAlquiler?.toLocaleString('es-AR') : '—' %></td>
                             <td>
-                                <a href="/contenedores/<%= c.id %>/edit" class="btn btn-sm btn-outline">Editar</a>
+                                <% if (c.estado === 'Alquilado') { %>
+                                    <a href="/contenedores/<%= c.id %>/edit" class="btn-secondary">Editar</a>
+                                <% } else { %>
+                                    <span class="text-muted-sm">—</span>
+                                <% } %>
                             </td>
                         </tr>
                     <% }) %>

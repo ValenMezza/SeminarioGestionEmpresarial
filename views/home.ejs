@@ -1,47 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Inicio</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-
     <%- include("./partials/sidebar") %>
 
-        <main id="home">
+    <main id="home">
+
+        <div class="home-modules-header">
+            <h1 class="page-title">Panel principal</h1>
+        </div>
+
+        <!-- Métricas del negocio -->
+        <section class="home-metricas">
+            <div class="metrica-card">
+                <span class="metrica-icon">📦</span>
+                <span class="metrica-valor"><%= metricas.alquileresActivos %></span>
+                <span class="metrica-label">Alquileres activos</span>
+            </div>
+            <div class="metrica-card metrica-card--green">
+                <span class="metrica-icon">✅</span>
+                <span class="metrica-valor"><%= metricas.contenedoresDisponibles %></span>
+                <span class="metrica-label">Contenedores disponibles</span>
+            </div>
+            <div class="metrica-card">
+                <span class="metrica-icon">👥</span>
+                <span class="metrica-valor"><%= metricas.totalClientes %></span>
+                <span class="metrica-label">Clientes registrados</span>
+            </div>
+            <div class="metrica-card metrica-card--blue">
+                <span class="metrica-icon">💰</span>
+                <span class="metrica-valor">$<%= metricas.ingresoMensual.toLocaleString('es-AR') %></span>
+                <span class="metrica-label">Ingresos del mes</span>
+            </div>
+            <div class="metrica-card metrica-card--<%= metricas.stockBajo > 0 ? 'warn' : 'green' %>">
+                <span class="metrica-icon">⚠️</span>
+                <span class="metrica-valor"><%= metricas.stockBajo %></span>
+                <span class="metrica-label">Productos con stock bajo</span>
+            </div>
+            <div class="metrica-card metrica-card--<%= metricas.sinStock > 0 ? 'danger' : 'green' %>">
+                <span class="metrica-icon">🚫</span>
+                <span class="metrica-valor"><%= metricas.sinStock %></span>
+                <span class="metrica-label">Sin stock</span>
+            </div>
+        </section>
+
+        <!-- Módulos de acceso rápido -->
+        <h2 class="home-modules-title">Módulos</h2>
+        <div class="home-modules-grid">
             <div class="cards_main">
-                <b>Ventas</b>
+                <span class="cards_main__icon">🛒</span>
+                <b class="cards_main__title">Ventas</b>
+                <span class="cards_main__desc">Registrá ventas en cantera o en viaje</span>
                 <a href="/ventas" class="btn_card">Acceder</a>
             </div>
             <div class="cards_main">
-                <b>Alquileres</b>
+                <span class="cards_main__icon">📦</span>
+                <b class="cards_main__title">Alquileres</b>
+                <span class="cards_main__desc">Gestioná alquileres de contenedores</span>
                 <a href="/alquileres" class="btn_card">Acceder</a>
             </div>
             <div class="cards_main">
-                <b>Contenedores</b>
+                <span class="cards_main__icon">🏗️</span>
+                <b class="cards_main__title">Contenedores</b>
+                <span class="cards_main__desc">Estado y configuración de contenedores</span>
                 <a href="/contenedores" class="btn_card">Acceder</a>
             </div>
             <div class="cards_main">
-                <b>Stock</b>
+                <span class="cards_main__icon">🪨</span>
+                <b class="cards_main__title">Stock</b>
+                <span class="cards_main__desc">Inventario de productos disponibles</span>
                 <a href="/stock" class="btn_card">Acceder</a>
             </div>
             <div class="cards_main">
-                <b>Clientes</b>
+                <span class="cards_main__icon">👤</span>
+                <b class="cards_main__title">Clientes</b>
+                <span class="cards_main__desc">Clientes y cuentas corrientes</span>
                 <a href="/clientes" class="btn_card">Acceder</a>
             </div>
             <div class="cards_main">
-                <b>Transacciones</b>
+                <span class="cards_main__icon">📊</span>
+                <b class="cards_main__title">Transacciones</b>
+                <span class="cards_main__desc">Historial de movimientos del negocio</span>
                 <a href="/transacciones" class="btn_card">Acceder</a>
             </div>
-        </main>
-        <script src="../services/sidebar.js"></script>
-        <script src="/javascript/sidebar.js?v=<%= Date.now() %>"></script>
-        <%- include('./partials/scripts.ejs') %> 
-        
-</body>
+        </div>
+    </main>
 
+    <script src="/javascript/sidebar.js"></script>
+</body>
 </html>

@@ -37,8 +37,13 @@
                                     <%= p.stock > 0 ? p.stock + ' unid.' : 'Sin stock' %>
                                 </span>
                             </td>
-                            <td>
-                                <a href="/stock/detalle/<%= p.id %>" class="btn-secondary">Ver detalle</a>
+                            <td class="acciones-col">
+                                <a href="/stock/detalle/<%= p.id %>" class="btn-secondary">Observar</a>
+                                <a href="/stock/editar/<%= p.id %>" class="btn-primary">Editar</a>
+                                <form action="/stock/eliminar/<%= p.id %>" method="POST" style="display:inline"
+                                      onsubmit="return confirm('¿Eliminar <%= p.producto %>?')">
+                                    <button type="submit" class="btn-danger">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     <% }) %>

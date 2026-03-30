@@ -1,7 +1,7 @@
 const dbClientes = {
     lista: [
-        { id: 1, nombre: 'Juan Perez',   telefono: '351 000 0001', email: 'juan@email.com',  direccion: 'Calle Falsa 123' },
-        { id: 2, nombre: 'Maria Lopez',  telefono: '351 000 0002', email: 'maria@email.com', direccion: 'Avenida Siempre Viva 456' },
+        { id: 1, nombre: 'Juan Perez',   telefono: '351 000 0001', email: 'juan@email.com',  direccion: 'Calle Falsa 123',           cuentaCorriente: false, saldo: 0, movimientos: [] },
+        { id: 2, nombre: 'Maria Lopez',  telefono: '351 000 0002', email: 'maria@email.com', direccion: 'Avenida Siempre Viva 456',  cuentaCorriente: false, saldo: 0, movimientos: [] },
     ],
     nextId: 3
 };
@@ -14,8 +14,25 @@ function clienteById(id) {
     return dbClientes.lista.find(c => c.id === id);
 }
 
+function buscarClientes({ nombre, telefono } = {}) {
+    return dbClientes.lista.filter(c => {
+        const matchNombre   = !nombre   || c.nombre.toLowerCase().includes(nombre.toLowerCase());
+        const matchTelefono = !telefono || (c.telefono && c.telefono.includes(telefono));
+        return matchNombre && matchTelefono;
+    });
+}
+
 function crearCliente(datos) {
-    const nuevo = { id: dbClientes.nextId++, ...datos };
+    const nuevo = {
+        id: dbClientes.nextId++,
+        nombre: datos.nombre,
+        telefono: datos.telefono || null,
+        email: datos.email || null,
+        direccion: datos.direccion || null,
+        cuentaCorriente: datos.cuentaCorriente === true || datos.cuentaCorriente === 'true',
+        saldo: 0,
+        movimientos: []
+    };
     dbClientes.lista.push(nuevo);
     return nuevo;
 }
@@ -26,4 +43,34 @@ function eliminarCliente(id) {
     return dbClientes.lista.splice(idx, 1)[0];
 }
 
-module.exports = { listClientes, clienteById, crearCliente, eliminarCliente };
+function habilitarCuentaCorriente(id) {
+    const c = dbClientes.lista.find(c => c.id === id);
+    if (!c) return null;
+    c.cuentaCorriente = true;
+    return c;
+}
+
+function agregarMovimiento(id, { tipo, descripcion, monto }) {
+    const c = dbClientes.lista.find(c => c.id === id);
+    if (!c) return null;
+    const mov = {
+        id: (c.movimientos.length + 1),
+        tipo,
+        descripcion,
+        monto,
+        fecha: new Date().toISOString().split('T')[0]
+    };
+    c.movimientos.push(mov);
+    c.saldo += monto;
+    return mov;
+}
+
+function clientesConCuenta() {
+    return dbClientes.lista.filter(c => c.cuentaCorriente === true);
+}
+
+function clientesSinCuenta() {
+    return dbClientes.lista.filter(c => !c.cuentaCorriente);
+}
+
+module.exports = { listClientes, clienteById, buscarClientes, crearCliente, eliminarCliente, habilitarCuentaCorriente, agregarMovimiento, clientesConCuenta, clientesSinCuenta };

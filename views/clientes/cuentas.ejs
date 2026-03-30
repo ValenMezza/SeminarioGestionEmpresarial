@@ -17,11 +17,90 @@
             </div>
         </div>
 
-        <div class="wip-placeholder">
-            <div class="wip-icon">📒</div>
-            <div class="wip-text">Módulo en desarrollo</div>
-            <div class="wip-sub">Las cuentas corrientes estarán disponibles próximamente</div>
-        </div>
+        <!-- Cuentas activas -->
+        <section class="cuentas-section">
+            <h2 class="section-title">Cuentas habilitadas</h2>
+
+            <% if (conCuenta.length === 0) { %>
+                <div class="empty-state">
+                    <p>No hay cuentas corrientes habilitadas aún.</p>
+                </div>
+            <% } else { %>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Saldo</th>
+                                <th>Movimientos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% conCuenta.forEach(c => { %>
+                                <tr>
+                                    <td>#<%= c.id %></td>
+                                    <td><%= c.nombre %></td>
+                                    <td><%= c.telefono || '—' %></td>
+                                    <td class="<%= c.saldo >= 0 ? 'saldo-positivo' : 'saldo-negativo' %>">
+                                        $<%= c.saldo.toLocaleString('es-AR') %>
+                                    </td>
+                                    <td><%= c.movimientos.length %></td>
+                                    <td>
+                                        <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver historial</a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </section>
+
+        <!-- Agregar cuenta corriente a clientes sin cuenta -->
+        <section class="cuentas-section">
+            <div class="section-header-row">
+                <h2 class="section-title">Agregar una cuenta corriente</h2>
+                <span class="section-subtitle">Clientes sin cuenta corriente habilitada</span>
+            </div>
+
+            <% if (sinCuenta.length === 0) { %>
+                <div class="empty-state">
+                    <p>Todos los clientes ya tienen cuenta corriente habilitada.</p>
+                </div>
+            <% } else { %>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% sinCuenta.forEach(c => { %>
+                                <tr>
+                                    <td>#<%= c.id %></td>
+                                    <td><%= c.nombre %></td>
+                                    <td><%= c.telefono || '—' %></td>
+                                    <td><%= c.email || '—' %></td>
+                                    <td>
+                                        <form action="/clientes/<%= c.id %>/habilitar-cuenta" method="POST" style="display:inline">
+                                            <button type="submit" class="btn-primary-green">+ Habilitar cuenta</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </section>
 
     </main>
     <script src="/javascript/sidebar.js"></script>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('../partials/sidebar.ejs') %>
+    <main id="config-page">
+
+        <div class="page-header">
+            <div>
+                <a href="/configuraciones" class="back-link">← Configuraciones</a>
+                <h1 class="page-title">Usuarios del sistema</h1>
+            </div>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (usuarios.length === 0) { %>
+                        <tr>
+                            <td colspan="5" class="td-vacia">No hay usuarios registrados</td>
+                        </tr>
+                    <% } %>
+                    <% usuarios.forEach(u => { %>
+                        <tr>
+                            <td>#<%= u.id %></td>
+                            <td><b><%= u.user %></b></td>
+                            <td>
+                                <span class="badge badge--rol-<%= u.rol %>">
+                                    <%= u.rol === 'admin' ? 'Administrador' : 'Operador' %>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge--<%= u.activo ? 'con-stock' : 'sin-stock' %>">
+                                    <%= u.activo ? 'Activo' : 'Pausado' %>
+                                </span>
+                            </td>
+                            <td class="acciones-col">
+                                <form action="/configuraciones/usuarios/pausar/<%= u.id %>" method="POST" style="display:inline">
+                                    <button type="submit" class="btn-secondary btn-sm">
+                                        <%= u.activo ? 'Pausar' : 'Activar' %>
+                                    </button>
+                                </form>
+                                <form action="/configuraciones/usuarios/reset/<%= u.id %>" method="POST" style="display:inline"
+                                      onsubmit="return confirm('¿Resetear contraseña de <%= u.user %>? La nueva contraseña será: 123456')">
+                                    <button type="submit" class="btn-primary btn-sm">Resetear pass</button>
+                                </form>
+                                <% if (u.id !== 1) { %>
+                                <form action="/configuraciones/usuarios/eliminar/<%= u.id %>" method="POST" style="display:inline"
+                                      onsubmit="return confirm('¿Eliminar usuario <%= u.user %>?')">
+                                    <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                                </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Crear nuevo usuario -->
+        <div class="form-card" style="margin-top:2rem">
+            <h2 class="form-section-title">+ Nuevo usuario</h2>
+            <form action="/configuraciones/usuarios/crear" method="POST" class="form-grid">
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="user">Nombre de usuario</label>
+                        <input type="text" name="user" id="user" placeholder="Ej: operador1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña inicial</label>
+                        <input type="password" name="password" id="password" placeholder="Mín. 6 caracteres" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rol">Rol</label>
+                        <select name="rol" id="rol">
+                            <option value="operador">Operador</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Crear usuario</button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
+</body>
+</html>

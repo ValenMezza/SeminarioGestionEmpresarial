@@ -1,10 +1,12 @@
-const { listClientes, clienteById, crearCliente, eliminarCliente } = require('../store/dbClientes');
+const { listClientes, clienteById, buscarClientes, crearCliente, eliminarCliente, habilitarCuentaCorriente, clientesConCuenta, clientesSinCuenta } = require('../store/dbClientes');
 const { listContenedores } = require('../store/dbContenedor');
+const { listTransacciones } = require('../store/dbTransacciones');
 
 const clienteController = {
     index: (req, res) => {
-        const clientes = listClientes();
-        res.render('clientes/index', { clientes });
+        const { nombre, telefono } = req.query;
+        const clientes = buscarClientes({ nombre, telefono });
+        res.render('clientes/index', { clientes, filtros: { nombre: nombre || '', telefono: telefono || '' } });
     },
 
     detalle: async (req, res) => {
@@ -12,13 +14,29 @@ const clienteController = {
         const cliente = clienteById(id);
         if (!cliente) return res.status(404).send('Cliente no encontrado');
 
-        const contenedores = await listContenedores();
-        const alquileres = contenedores.filter(c => c.cliente === cliente.nombre);
-        res.render('clientes/detalle', { cliente, alquileres });
+        const { fechaDesde, fechaHasta, tipoOp } = req.query;
+
+        const contenedores  = await listContenedores();
+        let alquileres      = contenedores.filter(c => c.cliente === cliente.nombre);
+        const transacciones = listTransacciones().filter(t => t.cliente === cliente.nombre);
+
+        // Filtros
+        if (fechaDesde) {
+            alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler >= fechaDesde);
+        }
+        if (fechaHasta) {
+            alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler <= fechaHasta);
+        }
+
+        const filtros = { fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', tipoOp: tipoOp || '' };
+
+        res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros });
     },
 
     cuentas: (req, res) => {
-        res.render('clientes/cuentas');
+        const conCuenta    = clientesConCuenta();
+        const sinCuenta    = clientesSinCuenta();
+        res.render('clientes/cuentas', { conCuenta, sinCuenta });
     },
 
     nuevo: (req, res) => {
@@ -26,8 +44,8 @@ const clienteController = {
     },
 
     crearCliente: (req, res) => {
-        const { nombre, telefono, email, direccion } = req.body;
-        crearCliente({ nombre, telefono, email, direccion });
+        const { nombre, telefono, email, direccion, cuentaCorriente } = req.body;
+        crearCliente({ nombre, telefono, email, direccion, cuentaCorriente });
         res.redirect('/clientes');
     },
 
@@ -35,6 +53,12 @@ const clienteController = {
         const id = Number(req.params.id);
         eliminarCliente(id);
         res.redirect('/clientes');
+    },
+
+    habilitarCuenta: (req, res) => {
+        const id = Number(req.params.id);
+        habilitarCuentaCorriente(id);
+        res.redirect('/clientes/cuentas');
     }
 };
 

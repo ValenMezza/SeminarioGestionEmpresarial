@@ -1,66 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ventas</title>
     <link rel="stylesheet" href="/css/styles.css">
-
 </head>
-
 <body>
     <%- include("../partials/sidebar.ejs") %>
-        <main id="ventas" class="ventas-layout">
-            <section class="productos">
-                <ul class="lista-productos">
-                    <% productos.forEach(p=> { %>
-                        <% if (p.stock> 0) { %>
-                            <li>
-                                <div class="cards_main">
-                                    <b>
-                                        <%= p.producto %>
-                                    </b>
-                                    <b>
-                                        <%= p.id %>
-                                    </b>
-                                    <b>$<%= p.precio %></b>
-                                    <button class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
-                                        data-precio="<%= p.precio %>">
-                                        Agregar
-                                    </button>
-                                </div>
-                            </li>
-                            <% } else { %>
-                                <li>
-                                    <div class="cards_main sin-stock">
-                                        <b>
-                                            <%= p.producto %>
-                                        </b>
-                                        <b>
-                                            <%= p.id %>
-                                        </b>
-                                        <b>$<%= p.precio %></b>
-                                        <button disabled class="addToCart" data-id="<%= p.id %>" data-nombre="<%= p.producto %>"
-                                            data-precio="<%= p.precio %>">
-                                            Agregar
-                                        </button>
-                                    </div>
-                                </li>
-                                <% } %>
-                                    <% }) %>
-                </ul>
-            </section>
 
-            <aside id="carrito">
-                <h3>Carrito</h3>
-                <div id="cart">
-                    <ul id="cart_items"></ul>
-                </div>
-            </aside>
-        </main>
-        <script src="/javascript/ventas.js"></script>
-        <script src="/javascript/sidebar.js"></script>
+    <main id="ventas" class="ventas-layout">
+
+        <!-- Lista de productos -->
+        <section class="ventas-productos">
+            <div class="ventas-productos__header">
+                <h2 class="ventas-productos__title">Productos disponibles</h2>
+            </div>
+            <ul class="ventas-lista-productos">
+                <% productos.forEach(p => { %>
+                    <li>
+                        <div class="ventas-card <%= p.stock === 0 ? 'ventas-card--sin-stock' : '' %>">
+                            <div class="ventas-card__top">
+                                <span class="ventas-card__nombre"><%= p.producto %></span>
+                                <span class="badge badge--<%= p.stock > 0 ? 'con-stock' : 'sin-stock' %>">
+                                    <%= p.stock > 0 ? p.stock + ' unid.' : 'Sin stock' %>
+                                </span>
+                            </div>
+                            <div class="ventas-card__precio">$<%= p.precio.toLocaleString('es-AR') %></div>
+                            <button
+                                class="addToCart btn-primary"
+                                data-id="<%= p.id %>"
+                                data-nombre="<%= p.producto %>"
+                                data-precio="<%= p.precio %>"
+                                <%= p.stock === 0 ? 'disabled' : '' %>
+                            >
+                                <%= p.stock === 0 ? 'Sin stock' : '+ Agregar' %>
+                            </button>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        </section>
+
+        <!-- Carrito -->
+        <aside id="carrito">
+            <h3 class="carrito-title">Carrito</h3>
+            <div id="cart">
+                <ul id="cart_items"></ul>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Modales de finalización -->
+    <%- include("../partials/form_venta_cantera.ejs") %>
+    <%- include("../partials/form_venta_viaje.ejs") %>
+
+    <script>
+        // Datos del servidor disponibles para ventas.js
+        window.__clientes      = <%- JSON.stringify(clientes) %>;
+        window.__contenedores  = <%- JSON.stringify(contenedoresLibres) %>;
+    </script>
+    <script src="/javascript/ventas.js"></script>
+    <script src="/javascript/sidebar.js"></script>
 </body>
-
 </html>

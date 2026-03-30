@@ -1,14 +1,11 @@
 var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
+var express     = require('express');
+var path        = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
+var logger      = require('morgan');
+var session     = require('express-session');
 
 var app = express();
-
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,78 +24,111 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'gestion-empresarial-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 8 } // 8 horas
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ── Middleware de autenticación ───────────────────────────────
+const requireAuth = require('./middleware/requireAuth');
 
-
-//controladores
-const authController = require('./controllers/login.controller.js');
-const homeController = require('./controllers/home.controller.js');
-const ventasController = require('./controllers/ventas.controller.js')
-const alquilerController = require('./controllers/alquiler.controller.js');
+// ── Controladores ─────────────────────────────────────────────
+const authController         = require('./controllers/login.controller.js');
+const homeController         = require('./controllers/home.controller.js');
+const ventasController       = require('./controllers/ventas.controller.js');
+const alquilerController     = require('./controllers/alquiler.controller.js');
 const contenedoresController = require('./controllers/contenedores.controller.js');
-const stockController = require('./controllers/stock.controller.js');
-const clienteController = require('./controllers/clientes.controller.js');
-const transaccionesController = require('./controllers/transacciones.controller.js')
+const stockController        = require('./controllers/stock.controller.js');
+const clienteController      = require('./controllers/clientes.controller.js');
+const transaccionesController = require('./controllers/transacciones.controller.js');
+const configController       = require('./controllers/config.controller.js');
 
-//rutas
-app.get('/', authController.index) //login
-app.get('/create', authController.createUser)//para crear usuario
-app.post('/create', authController.postUser); //método post para la creacion 
-app.get('/home', homeController.index) //home
-app.get('/ventas', ventasController.index)
+// ── Auth (rutas públicas) ─────────────────────────────────────
+app.get('/',        authController.index);
+app.post('/login',  authController.login);
+app.get('/logout',  authController.logout);
+app.get('/create',  authController.createUser);
+app.post('/create', authController.postUser);
 
-//transacciones
-app.get('/transacciones', transaccionesController.index)
-app.get('/transacciones/detalle/:id', transaccionesController.detalle)
+// ── Rutas protegidas ──────────────────────────────────────────
+app.use(requireAuth);
 
+// ── Home ──────────────────────────────────────────────────────
+app.get('/home', homeController.index);
 
-//alquiler
-app.get('/alquileres', alquilerController.index);
-app.get('/alquileres/detalle/:id', alquilerController.detalle);
-app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler)
-app.get('/alquileres/editar/:id', alquilerController.edicionAlquiler)
-app.post('/alquileres/editar/:id', alquilerController.guardarEdicion);
-app.post('/alquileres/crear', alquilerController.crearAlquiler);
-app.post('/alquileres/cancelar/:id', alquilerController.cancelarAlquiler);
+// ── Ventas ────────────────────────────────────────────────────
+app.get('/ventas',                     ventasController.index);
+app.post('/ventas/finalizar-cantera',  ventasController.finalizarVentaCantera);
+app.post('/ventas/finalizar-viaje',    ventasController.finalizarVentaViaje);
+
+// ── Transacciones ─────────────────────────────────────────────
+app.get('/transacciones',            transaccionesController.index);
+app.get('/transacciones/detalle/:id', transaccionesController.detalle);
+
+// ── Alquileres ────────────────────────────────────────────────
+app.get('/alquileres',                alquilerController.index);
+app.get('/alquileres/detalle/:id',    alquilerController.detalle);
+app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler);
+app.get('/alquileres/editar/:id',     alquilerController.edicionAlquiler);
+app.post('/alquileres/editar/:id',    alquilerController.guardarEdicion);
+app.post('/alquileres/crear',         alquilerController.crearAlquiler);
+app.post('/alquileres/cancelar/:id',  alquilerController.cancelarAlquiler);
 app.post('/alquileres/finalizar/:id', alquilerController.finalizarAlquiler);
 
-//contendedor
-app.get('/contenedores', contenedoresController.index)
-app.get('/contenedores/detalle', contenedoresController.detalle)
-app.get('/contenedores/config', contenedoresController.config)
-app.post('/contenedores/config', contenedoresController.guardarConfig)
-//stock
-app.get('/stock', stockController.index)
-app.get('/stock/detalle/:id', stockController.detalle)
-app.get('/stock/nuevo_stock', stockController.nuevoStock)
+// ── Contenedores ──────────────────────────────────────────────
+app.get('/contenedores',           contenedoresController.index);
+app.get('/contenedores/detalle',   contenedoresController.detalle);
+app.get('/contenedores/config',    contenedoresController.config);
+app.post('/contenedores/config',   contenedoresController.guardarConfig);
+// Editar contenedor reutiliza la misma lógica de alquileres/editar
+app.get('/contenedores/:id/edit',  alquilerController.edicionAlquiler);
+app.post('/contenedores/:id/edit', alquilerController.guardarEdicion);
 
-//cliente
-app.get('/clientes', clienteController.index)
-app.get('/clientes/nuevo_cliente', clienteController.nuevo)
-app.post('/clientes/nuevo_cliente', clienteController.crearCliente)
-app.get('/clientes/detalle/:id', clienteController.detalle)
-app.post('/clientes/eliminar/:id', clienteController.eliminar)
-app.get('/clientes/cuentas', clienteController.cuentas)
+// ── Stock ─────────────────────────────────────────────────────
+app.get('/stock',                stockController.index);
+app.get('/stock/nuevo_stock',    stockController.nuevoStock);
+app.post('/stock/nuevo_stock',   stockController.crearStock);
+app.get('/stock/detalle/:id',    stockController.detalle);
+app.get('/stock/editar/:id',     stockController.editarStock);
+app.post('/stock/editar/:id',    stockController.guardarEdicionStock);
+app.post('/stock/eliminar/:id',  stockController.eliminarStock);
 
-//para evitar un eerro 404 que ensucia consola
+// ── Clientes ──────────────────────────────────────────────────
+app.get('/clientes',                    clienteController.index);
+app.get('/clientes/nuevo_cliente',      clienteController.nuevo);
+app.post('/clientes/nuevo_cliente',     clienteController.crearCliente);
+app.get('/clientes/detalle/:id',        clienteController.detalle);
+app.post('/clientes/eliminar/:id',      clienteController.eliminar);
+app.get('/clientes/cuentas',            clienteController.cuentas);
+app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
+
+// ── Configuraciones ───────────────────────────────────────────
+app.get('/configuraciones',                          configController.index);
+app.get('/configuraciones/usuarios',                 configController.usuarios);
+app.post('/configuraciones/usuarios/crear',          configController.crearUsuario);
+app.post('/configuraciones/usuarios/pausar/:id',     configController.pausarUsuario);
+app.post('/configuraciones/usuarios/eliminar/:id',   configController.eliminarUsuario);
+app.post('/configuraciones/usuarios/reset/:id',      configController.resetPassword);
+
+// ── Utilidades ────────────────────────────────────────────────
 app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
-  res.status(204).end();
+    res.status(204).end();
 });
-// catch 404 and forward to error handler
+
+// 404
 app.use(function (req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
-// error handler
+// Error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    res.locals.message = err.message;
+    res.locals.error   = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

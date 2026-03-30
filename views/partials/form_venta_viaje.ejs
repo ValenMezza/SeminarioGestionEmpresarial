@@ -1,0 +1,80 @@
+<!-- Modal: Finalizar Venta - Viaje -->
+<div id="modal-viaje" class="modal-overlay" style="display:none">
+    <div class="modal-box modal-box--lg">
+        <div class="modal-header">
+            <h2 class="modal-title">Finalizar venta — Viaje</h2>
+            <button type="button" class="modal-close" id="cerrarModalViaje">✕</button>
+        </div>
+
+        <div id="alertaMultiProducto" class="alerta-warning" style="display:none">
+            ⚠️ Para una venta en viaje solo se puede incluir un tipo de producto. Por favor, limpiá el carrito y agregá solo un tipo.
+        </div>
+
+        <form action="/ventas/finalizar-viaje" method="POST" class="form-grid" id="formViaje">
+            <input type="hidden" name="items" id="itemsViaje">
+
+            <div class="form-group">
+                <label for="clienteNombre">Nombre del cliente</label>
+                <input type="text" name="clienteNombre" id="clienteNombreViaje" placeholder="Ej: Juan Pérez" required>
+                <span class="form-hint">O escribí el nombre si es un nuevo cliente</span>
+            </div>
+
+            <% if (typeof clientes !== 'undefined' && clientes.length > 0) { %>
+            <div class="form-group">
+                <label>O seleccioná cliente existente</label>
+                <select id="selectorClienteViaje" onchange="document.getElementById('clienteNombreViaje').value = this.value">
+                    <option value="">— Escribir manualmente —</option>
+                    <% clientes.forEach(c => { %>
+                        <option value="<%= c.nombre %>"><%= c.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <% } %>
+
+            <div class="form-group">
+                <label for="contenedor">Contenedor</label>
+                <select name="contenedor" id="contenedorViaje" required>
+                    <option value="">— Seleccioná contenedor disponible —</option>
+                    <% if (typeof contenedoresLibres !== 'undefined') { %>
+                        <% contenedoresLibres.forEach(c => { %>
+                            <option value="<%= c.id %>">Contenedor #<%= c.id %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="fechaInicio">Fecha de inicio</label>
+                    <input type="date" name="fechaInicio" id="fechaInicioViaje" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaFin">Fecha de fin</label>
+                    <input type="date" name="fechaFin" id="fechaFinViaje" required>
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="calle">Calle</label>
+                    <input type="text" name="calle" id="calleViaje" placeholder="Ej: Yrigoyen" required>
+                </div>
+                <div class="form-group">
+                    <label for="numero">Número</label>
+                    <input type="text" name="numero" id="numeroViaje" placeholder="Ej: 123">
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="form-group">
+                <label>Resumen del pedido</label>
+                <div id="resumenViaje" class="resumen-box"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-finalizar" id="btnConfirmarViaje">Confirmar venta</button>
+                <button type="button" class="btn-secondary" id="cancelarModalViaje">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>

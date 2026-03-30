@@ -14,6 +14,43 @@
             <h1 class="page-title">Transacciones</h1>
         </div>
 
+        <!-- Filtros -->
+        <form method="GET" action="/transacciones" class="filtros-bar filtros-bar--extended">
+            <div class="filtro-group">
+                <label>Tipo</label>
+                <select name="tipo">
+                    <option value="todos" <%= filtros.tipo === 'todos' || !filtros.tipo ? 'selected' : '' %>>Todos</option>
+                    <% tipos.forEach(t => { %>
+                        <option value="<%= t %>" <%= filtros.tipo === t ? 'selected' : '' %>><%= t %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="filtro-group">
+                <label>Cliente</label>
+                <input type="text" name="cliente" value="<%= filtros.cliente %>" placeholder="Nombre del cliente...">
+            </div>
+            <div class="filtro-group">
+                <label>Desde</label>
+                <input type="date" name="fechaDesde" value="<%= filtros.fechaDesde %>">
+            </div>
+            <div class="filtro-group">
+                <label>Hasta</label>
+                <input type="date" name="fechaHasta" value="<%= filtros.fechaHasta %>">
+            </div>
+            <div class="filtro-group">
+                <label>Monto mín.</label>
+                <input type="number" name="montoMin" value="<%= filtros.montoMin %>" placeholder="0" min="0">
+            </div>
+            <div class="filtro-group">
+                <label>Monto máx.</label>
+                <input type="number" name="montoMax" value="<%= filtros.montoMax %>" placeholder="Sin límite" min="0">
+            </div>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            <% if (filtros.tipo || filtros.cliente || filtros.fechaDesde || filtros.fechaHasta || filtros.montoMin || filtros.montoMax) { %>
+                <a href="/transacciones" class="btn-secondary">Limpiar</a>
+            <% } %>
+        </form>
+
         <div class="table-wrapper">
             <table class="data-table">
                 <thead>
@@ -29,13 +66,17 @@
                 <tbody>
                     <% if (transacciones.length === 0) { %>
                         <tr>
-                            <td colspan="6" class="td-vacia">No hay transacciones registradas</td>
+                            <td colspan="6" class="td-vacia">No hay transacciones que coincidan con los filtros</td>
                         </tr>
                     <% } %>
-                    <% transacciones.slice().reverse().forEach(t => { %>
+                    <% transacciones.forEach(t => { %>
                         <tr>
                             <td>#<%= t.id %></td>
-                            <td><span class="badge badge--<%= t.tipo.toLowerCase() %>"><%= t.tipo %></span></td>
+                            <td>
+                                <span class="badge badge--tipo-<%= t.tipo.toLowerCase().replace(/ /g,'-') %>">
+                                    <%= t.tipo %>
+                                </span>
+                            </td>
                             <td><%= t.cliente %></td>
                             <td><%= t.descripcion %></td>
                             <td><%= t.fecha %></td>

@@ -1,9 +1,19 @@
-const { listTransacciones } = require('../store/dbTransacciones');
+const { listTransacciones, filtrarTransacciones } = require('../store/dbTransacciones');
+
+const TIPOS = ['Alquiler', 'Venta Cantera', 'Venta Viaje'];
 
 const transaccionesController = {
     index: (req, res) => {
-        const transacciones = listTransacciones();
-        res.render('transacciones/index', { transacciones });
+        const { tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = req.query;
+
+        const tienesFiltros = tipo || cliente || fechaDesde || fechaHasta || montoMin || montoMax;
+        const transacciones = tienesFiltros
+            ? filtrarTransacciones({ tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax })
+            : listTransacciones().slice().reverse();
+
+        const filtros = { tipo: tipo || '', cliente: cliente || '', fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', montoMin: montoMin || '', montoMax: montoMax || '' };
+
+        res.render('transacciones/index', { transacciones, filtros, tipos: TIPOS });
     },
     detalle: (req, res) => {
         const transacciones = listTransacciones();
@@ -12,6 +22,6 @@ const transaccionesController = {
         if (!transaccion) return res.status(404).send('Transacción no encontrada');
         res.render('transacciones/detalle', { transaccion });
     }
-}
+};
 
 module.exports = transaccionesController;
