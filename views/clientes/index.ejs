@@ -1,82 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
     <%- include('../partials/sidebar.ejs') %>
-    <main id="clientes-page">
+        <main id="clientes-page">
 
-        <div class="page-header">
-            <h1 class="page-title">Clientes</h1>
-            <div class="page-header-actions">
-                <a href="/clientes/cuentas" class="btn-secondary">Cuentas corrientes</a>
-                <a href="/clientes/nuevo_cliente" class="btn-primary-green">+ Nuevo cliente</a>
+            <div class="page-header">
+                <h1 class="page-title">Clientes</h1>
+                <div class="page-header-actions">
+                    <a href="/clientes/cuentas" class="btn-secondary">Cuentas corrientes</a>
+                    <a href="/clientes/nuevo_cliente" class="btn-primary-green">+ Nuevo cliente</a>
+                </div>
             </div>
-        </div>
 
-        <!-- Filtros de búsqueda -->
-        <form method="GET" action="/clientes" class="filtros-bar">
-            <div class="filtro-group">
-                <label>Nombre</label>
-                <input type="text" name="nombre" value="<%= filtros.nombre %>" placeholder="Buscar por nombre...">
-            </div>
-            <div class="filtro-group">
-                <label>Teléfono</label>
-                <input type="text" name="telefono" value="<%= filtros.telefono %>" placeholder="Buscar por teléfono...">
-            </div>
-            <button type="submit" class="btn-primary">Buscar</button>
-            <% if (filtros.nombre || filtros.telefono) { %>
-                <a href="/clientes" class="btn-secondary">Limpiar</a>
-            <% } %>
-        </form>
-
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>#ID</th>
-                        <th>Nombre</th>
-                        <th>Teléfono</th>
-                        <th>Email</th>
-                        <th>Dirección</th>
-                        <th>Cuenta corriente</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (clientes.length === 0) { %>
-                        <tr>
-                            <td colspan="7" class="td-vacia">No se encontraron clientes</td>
-                        </tr>
+            <!-- Filtros de búsqueda -->
+            <form method="GET" action="/clientes" class="filtros-bar">
+                <div class="filtro-group">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" value="<%= filtros.nombre %>" placeholder="Buscar por nombre...">
+                </div>
+                <div class="filtro-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" value="<%= filtros.telefono %>"
+                        placeholder="Buscar por teléfono...">
+                </div>
+                <button type="submit" class="btn-primary">Buscar</button>
+                <% if (filtros.nombre || filtros.telefono) { %>
+                    <a href="/clientes" class="btn-secondary">Limpiar</a>
                     <% } %>
-                    <% clientes.forEach(c => { %>
-                        <tr>
-                            <td>#<%= c.id %></td>
-                            <td><%= c.nombre %></td>
-                            <td><%= c.telefono || '—' %></td>
-                            <td><%= c.email || '—' %></td>
-                            <td><%= c.direccion || '—' %></td>
-                            <td>
-                                <% if (c.cuentaCorriente) { %>
-                                    <span class="badge badge--con-stock">Habilitada</span>
-                                <% } else { %>
-                                    <span class="badge badge--sin-stock">No</span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver detalle</a>
-                            </td>
-                        </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        </div>
+            </form>
 
-    </main>
-    <script src="/javascript/sidebar.js"></script>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th>Cuenta corriente</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (clientes.length===0) { %>
+                            <tr>
+                                <td colspan="7" class="td-vacia">No se encontraron clientes</td>
+                            </tr>
+                            <% } %>
+                                <% clientes.forEach(c=> { %>
+                                    <tr>
+                                        <td>#<%= c.id %>
+                                        </td>
+                                        <td>
+                                            <%= c.nombre %>
+                                        </td>
+                                        <td>
+                                            <%= c.telefono || '—' %>
+                                        </td>
+                                        <td>
+                                            <%= c.email || '—' %>
+                                        </td>
+                                        <td>
+                                            <%= c.direccion || '—' %>
+                                        </td>
+                                        <td>
+                                            <% if (c.cuentaCorriente) { %>
+                                                <span class="badge badge--con-stock">Habilitada</span>
+                                                <% } else { %>
+                                                    <span class="badge badge--sin-stock">No</span>
+                                                    <% } %>
+                                        </td>
+                                        <td>
+                                            <div style="display:flex; gap:0.4rem">
+                                                <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver</a>
+                                                <a href="/clientes/editar/<%= c.id %>" class="btn-secondary-yellow">Editar</a>
+                                                <form action="/clientes/eliminar/<%= c.id %>" method="POST"
+                                                    onsubmit="return confirm('¿Eliminar a <%= c.nombre %>?')">
+                                                    <button type="submit" class="btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+        <script src="/javascript/sidebar.js"></script>
 </body>
+
 </html>

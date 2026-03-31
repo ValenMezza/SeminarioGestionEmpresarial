@@ -9,19 +9,15 @@
 
 <body>
     <main>
-        <form action="/">
+        <% if (error) { %><p style="color:red"><%= error %></p><% } %>
+        <form action="/login" method="post">
             <label for="user">user:</label>
             <input type="text" name="user" id="user">
-            <label for="user">Contraseña:</label>
-            <input type="password" name="user" id="user">
-            <button>
-                <a href="/home">Acceder</a>
-            </button>
+            <label for="password">Contraseña:</label>
+            <input type="password" name="password" id="password">
+            <button type="submit">Acceder</button>
             <a href="/create">crear usuario</a>
         </form>
-        <button>
-            <a href="/home">Acceder</a>
-        </button>
 
     </main>
 </body>

@@ -103,6 +103,8 @@ app.post('/clientes/nuevo_cliente',     clienteController.crearCliente);
 app.get('/clientes/detalle/:id',        clienteController.detalle);
 app.post('/clientes/eliminar/:id',      clienteController.eliminar);
 app.get('/clientes/cuentas',            clienteController.cuentas);
+app.get('/clientes/editar/:id',         clienteController.editar);
+app.post('/clientes/editar/:id',        clienteController.guardarEdicion);
 app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
 
 // ── Configuraciones ───────────────────────────────────────────

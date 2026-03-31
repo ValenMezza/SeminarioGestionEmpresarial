@@ -867,9 +867,11 @@ main {
 }
 
 .page-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   margin: 0;
 }
 
@@ -937,6 +939,24 @@ main {
   transition: background 0.2s ease;
 }
 .btn-secondary:hover {
+  background: rgb(234, 234, 234);
+  color: black;
+}
+
+.btn-secondary-yellow {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  background: #f59e0b;
+  color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.btn-secondary-yellow:hover {
   background: rgb(234, 234, 234);
   color: black;
 }
@@ -2126,7 +2146,8 @@ main {
 
 .home-metricas {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, 180px);
+  justify-content: center;
   gap: 1rem;
 }
 
@@ -2232,3 +2253,5 @@ main {
 .cards_main .btn_card:hover {
   background: #2d5a8e;
 }
+
+/*# sourceMappingURL=styles.css.map */

@@ -1,4 +1,4 @@
-const { listClientes, clienteById, buscarClientes, crearCliente, eliminarCliente, habilitarCuentaCorriente, clientesConCuenta, clientesSinCuenta } = require('../store/dbClientes');
+const { listClientes, clienteById, buscarClientes, crearCliente, editarCliente, eliminarCliente, habilitarCuentaCorriente, clientesConCuenta, clientesSinCuenta } = require('../store/dbClientes');
 const { listContenedores } = require('../store/dbContenedor');
 const { listTransacciones } = require('../store/dbTransacciones');
 
@@ -47,6 +47,24 @@ const clienteController = {
         const { nombre, telefono, email, direccion, cuentaCorriente } = req.body;
         crearCliente({ nombre, telefono, email, direccion, cuentaCorriente });
         res.redirect('/clientes');
+    },
+
+    editar: (req, res) => {
+        const id = Number(req.params.id);
+        const cliente = clienteById(id);
+        if (!cliente) return res.status(404).send('Cliente no encontrado');
+        res.render('clientes/editar', { cliente, error: null });
+    },
+
+    guardarEdicion: (req, res) => {
+        const id = Number(req.params.id);
+        const { nombre, telefono, email, direccion, cuentaCorriente } = req.body;
+        if (!nombre) {
+            const cliente = clienteById(id);
+            return res.render('clientes/editar', { cliente, error: 'El nombre es obligatorio.' });
+        }
+        editarCliente(id, { nombre, telefono, email, direccion, cuentaCorriente });
+        res.redirect(`/clientes/detalle/${id}`);
     },
 
     eliminar: (req, res) => {

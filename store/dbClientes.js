@@ -37,6 +37,17 @@ function crearCliente(datos) {
     return nuevo;
 }
 
+function editarCliente(id, datos) {
+    const c = dbClientes.lista.find(c => c.id === id);
+    if (!c) return null;
+    if (datos.nombre    !== undefined) c.nombre    = datos.nombre;
+    if (datos.telefono  !== undefined) c.telefono  = datos.telefono  || null;
+    if (datos.email     !== undefined) c.email     = datos.email     || null;
+    if (datos.direccion !== undefined) c.direccion = datos.direccion || null;
+    c.cuentaCorriente = datos.cuentaCorriente === true || datos.cuentaCorriente === 'true';
+    return c;
+}
+
 function eliminarCliente(id) {
     const idx = dbClientes.lista.findIndex(c => c.id === id);
     if (idx === -1) return null;
@@ -73,4 +84,4 @@ function clientesSinCuenta() {
     return dbClientes.lista.filter(c => !c.cuentaCorriente);
 }
 
-module.exports = { listClientes, clienteById, buscarClientes, crearCliente, eliminarCliente, habilitarCuentaCorriente, agregarMovimiento, clientesConCuenta, clientesSinCuenta };
+module.exports = { listClientes, clienteById, buscarClientes, crearCliente, editarCliente, eliminarCliente, habilitarCuentaCorriente, agregarMovimiento, clientesConCuenta, clientesSinCuenta };

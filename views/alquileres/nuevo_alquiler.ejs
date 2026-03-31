@@ -1,227 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo alquiler</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
     <%- include('../partials/sidebar.ejs') %>
 
-    <main id="alquiler-nuevo">
+        <main id="alquiler-nuevo">
 
-        <div class="page-header">
-            <div>
-                <a href="/alquileres" class="back-link">← Alquileres</a>
-                <h1 class="page-title">Nuevo alquiler</h1>
+            <div class="page-header">
+                <div>
+                    <a href="/alquileres" class="back-link">← Alquileres</a>
+                    <h1 class="page-title">Nuevo alquiler</h1>
+                </div>
+            </div>
+
+            <div class="alquiler-layout">
+
+
+                <section class="alquiler-contenedores">
+
+                    <div class="alquiler-contenedores__header">
+                        <h2 class="alquiler-contenedores__title">Contenedores disponibles</h2>
+                        <% if (contenedoresPorFinalizar.length> 0) { %>
+                            <label class="toggle-row">
+                                <input type="checkbox" id="contenedorPorFinalizar">
+                                <span>Ver por finalizar (≤ 2 días)</span>
+                            </label>
+                            <% } %>
+                    </div>
+
+                    <!-- Disponibles -->
+                    <div id="listaDisponibles" class="alquiler-cards-grid">
+                        <% if (contenedorlibre.length===0) { %>
+                            <div class="empty-state">No hay contenedores disponibles.</div>
+                            <% } %>
+                                <% contenedorlibre.forEach(c=> { %>
+                                    <div class="alquiler-card" data-id="<%= c.id %>"
+                                        data-precio="<%= c.precioAlquiler %>" data-tipo="disponible">
+                                        <div class="alquiler-card__id">Contenedor #<%= c.id %>
+                                        </div>
+                                        <span class="badge badge--disponible">Disponible</span>
+                                        <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR')
+                                                %>
+                                        </div>
+                                        <div class="alquiler-card__pdia">$<%= c.precioDia.toLocaleString('es-AR') %> /
+                                                día</div>
+                                        <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
+                                    </div>
+                                    <% }) %>
+                    </div>
+
+                    <!-- Por finalizar -->
+                    <div id="listaPorFinalizar" class="alquiler-cards-grid" style="display:none">
+                        <% if (contenedoresPorFinalizar.length===0) { %>
+                            <div class="empty-state">No hay contenedores por finalizar.</div>
+                            <% } %>
+                                <% contenedoresPorFinalizar.forEach(c=> { %>
+                                    <div class="alquiler-card alquiler-card--por-finalizar" data-id="<%= c.id %>"
+                                        data-precio="<%= c.precioAlquiler %>" data-fin="<%= c.finAlquiler %>"
+                                        data-tipo="por-finalizar">
+                                        <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
+                                        <span class="badge badge--alquilado">Por finalizar</span>
+                                        <div class="alquiler-card__vence">Vence: <%= formatFecha(c.finAlquiler) %></div>
+                                        <div class="alquiler-card__vence"><%= c.direccionAlquiler || '—' %>
+                                        </div>
+                                        <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR')
+                                                %>
+                                        </div>
+                                        <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
+                                    </div>
+                                    <% }) %>
+                    </div>
+
+                </section>
+
+                <!-- Columna derecha: resumen (como el carrito) -->
+                <aside class="alquiler-resumen">
+                    <div class="alquiler-resumen__card">
+                        <p class="alquiler-resumen__title">Resumen del alquiler</p>
+
+                        <div class="alquiler-resumen__rows">
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Contenedor</span>
+                                <span class="alquiler-resumen__value" id="res-contenedor">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Cliente</span>
+                                <span class="alquiler-resumen__value" id="res-cliente">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Inicio</span>
+                                <span class="alquiler-resumen__value" id="res-inicio">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Fin</span>
+                                <span class="alquiler-resumen__value" id="res-fin">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Días</span>
+                                <span class="alquiler-resumen__value" id="res-dias">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Dirección</span>
+                                <span class="alquiler-resumen__value" id="res-direccion">—</span>
+                            </div>
+                            <div class="alquiler-resumen__row">
+                                <span class="alquiler-resumen__label">Pago</span>
+                                <span class="alquiler-resumen__value" id="res-pago">—</span>
+                            </div>
+                        </div>
+
+                        <div class="alquiler-resumen__total" id="res-total">
+                            <span>Total estimado</span>
+                            <span id="res-total-valor"></span>
+                        </div>
+
+                        <button type="button" id="btnConfirmarAlquiler" class="btn-confirmar-alquiler" disabled>
+                            Confirmar alquiler
+                        </button>
+                    </div>
+                </aside>
+
+            </div><!-- /.alquiler-layout -->
+
+        </main>
+
+        <!-- ── Modal: formulario de alquiler ─────────────────────── -->
+        <div id="modal-alquiler" class="modal-overlay" style="display:none">
+            <div class="modal-box modal-box--lg">
+                <div class="modal-header">
+                    <h2 class="modal-title">Completar alquiler — <span id="modal-cont-label">Contenedor</span></h2>
+                    <button type="button" class="modal-close" id="cerrarModalAlquiler">✕</button>
+                </div>
+
+                <form action="/alquileres/crear" method="POST" class="alquiler-form" id="formNuevoAlquiler">
+                    <input type="hidden" name="contenedor" id="inputContenedorId">
+
+                    <!-- Cliente -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Cliente</h3>
+                        <div class="form-group">
+                            <label for="cliente">Cliente existente</label>
+                            <select name="cliente" id="cliente">
+                                <option value="">— Seleccionar cliente —</option>
+                                <% clientes.forEach(c=> { %>
+                                    <option value="<%= c.nombre %>">
+                                        <%= c.nombre %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="toggle-row">
+                            <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
+                            <label for="nuevoCliente">Crear nuevo cliente</label>
+                        </div>
+                        <div id="creacionCliente" class="form-subsection">
+                            <p class="form-hint">La creación impactará en el sistema para futuras operaciones.</p>
+                            <div class="form-group">
+                                <label for="nameNuevoCliente">Nombre</label>
+                                <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente"
+                                    placeholder="Nombre completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefonoNuevoCliente">Teléfono</label>
+                                <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente"
+                                    placeholder="351 000 0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Período -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Período</h3>
+                        <p class="form-hint">Mínimo 4 días — máximo 9 días.</p>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha de inicio</label>
+                                <input type="date" name="fechaInicio" id="fechaInicio">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaFin">Fecha de fin</label>
+                                <input type="date" name="fechaFin" id="fechaFin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Dirección de entrega</h3>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="calle">Calle</label>
+                                <input type="text" name="calle" id="calle" placeholder="Av. Siempre Viva">
+                            </div>
+                            <div class="form-group">
+                                <label for="numero">Número</label>
+                                <input type="text" name="numero" id="numero" placeholder="123">
+                            </div>
+                        </div>
+                        <button type="button" id="btnBuscarDireccion" class="btn-secondary">Buscar en mapa</button>
+                        <p id="msgMapa">Ingresá calle y número para buscar.</p>
+                        <div id="mapaEntrega">
+                            <iframe id="iframeMapa" allowfullscreen loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Método de pago -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Método de pago</h3>
+                        <div class="form-group">
+                            <label for="metodoPago">Método</label>
+                            <select name="metodoPago" id="metodoPago">
+                                <option value="efectivo">Efectivo</option>
+                                <option value="transferencia">Transferencia bancaria</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-finalizar">Confirmar alquiler</button>
+                        <button type="button" class="btn-secondary" id="cancelarModalAlquiler">Cancelar</button>
+                    </div>
+
+                </form>
             </div>
         </div>
 
-        <div class="alquiler-layout">
-
-            <!-- Columna izquierda: cards de contenedores -->
-            <section class="alquiler-contenedores">
-
-                <div class="alquiler-contenedores__header">
-                    <h2 class="alquiler-contenedores__title">Contenedores disponibles</h2>
-                    <% if (contenedoresPorFinalizar.length > 0) { %>
-                        <label class="toggle-row">
-                            <input type="checkbox" id="contenedorPorFinalizar">
-                            <span>Ver por finalizar (≤ 2 días)</span>
-                        </label>
-                    <% } %>
-                </div>
-
-                <!-- Disponibles -->
-                <div id="listaDisponibles" class="alquiler-cards-grid">
-                    <% if (contenedorlibre.length === 0) { %>
-                        <div class="empty-state">No hay contenedores disponibles.</div>
-                    <% } %>
-                    <% contenedorlibre.forEach(c => { %>
-                        <div class="alquiler-card"
-                             data-id="<%= c.id %>"
-                             data-precio="<%= c.precioAlquiler %>"
-                             data-tipo="disponible">
-                            <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
-                            <span class="badge badge--disponible">Disponible</span>
-                            <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR') %></div>
-                            <div class="alquiler-card__pdia">$<%= c.precioDia.toLocaleString('es-AR') %> / día</div>
-                            <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
-                        </div>
-                    <% }) %>
-                </div>
-
-                <!-- Por finalizar -->
-                <div id="listaPorFinalizar" class="alquiler-cards-grid" style="display:none">
-                    <% if (contenedoresPorFinalizar.length === 0) { %>
-                        <div class="empty-state">No hay contenedores por finalizar.</div>
-                    <% } %>
-                    <% contenedoresPorFinalizar.forEach(c => { %>
-                        <div class="alquiler-card alquiler-card--por-finalizar"
-                             data-id="<%= c.id %>"
-                             data-precio="<%= c.precioAlquiler %>"
-                             data-fin="<%= c.finAlquiler %>"
-                             data-tipo="por-finalizar">
-                            <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
-                            <span class="badge badge--alquilado">Por finalizar</span>
-                            <div class="alquiler-card__vence">Vence: <%= formatFecha(c.finAlquiler) %></div>
-                            <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR') %></div>
-                            <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
-                        </div>
-                    <% }) %>
-                </div>
-
-            </section>
-
-            <!-- Columna derecha: resumen (como el carrito) -->
-            <aside class="alquiler-resumen">
-                <div class="alquiler-resumen__card">
-                    <p class="alquiler-resumen__title">Resumen del alquiler</p>
-
-                    <div class="alquiler-resumen__rows">
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Contenedor</span>
-                            <span class="alquiler-resumen__value" id="res-contenedor">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Cliente</span>
-                            <span class="alquiler-resumen__value" id="res-cliente">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Inicio</span>
-                            <span class="alquiler-resumen__value" id="res-inicio">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Fin</span>
-                            <span class="alquiler-resumen__value" id="res-fin">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Días</span>
-                            <span class="alquiler-resumen__value" id="res-dias">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Dirección</span>
-                            <span class="alquiler-resumen__value" id="res-direccion">—</span>
-                        </div>
-                        <div class="alquiler-resumen__row">
-                            <span class="alquiler-resumen__label">Pago</span>
-                            <span class="alquiler-resumen__value" id="res-pago">—</span>
-                        </div>
-                    </div>
-
-                    <div class="alquiler-resumen__total" id="res-total">
-                        <span>Total estimado</span>
-                        <span id="res-total-valor"></span>
-                    </div>
-
-                    <button type="button" id="btnConfirmarAlquiler" class="btn-confirmar-alquiler" disabled>
-                        Confirmar alquiler
-                    </button>
-                </div>
-            </aside>
-
-        </div><!-- /.alquiler-layout -->
-
-    </main>
-
-    <!-- ── Modal: formulario de alquiler ─────────────────────── -->
-    <div id="modal-alquiler" class="modal-overlay" style="display:none">
-        <div class="modal-box modal-box--lg">
-            <div class="modal-header">
-                <h2 class="modal-title">Completar alquiler — <span id="modal-cont-label">Contenedor</span></h2>
-                <button type="button" class="modal-close" id="cerrarModalAlquiler">✕</button>
-            </div>
-
-            <form action="/alquileres/crear" method="POST" class="alquiler-form" id="formNuevoAlquiler">
-                <input type="hidden" name="contenedor" id="inputContenedorId">
-
-                <!-- Cliente -->
-                <div class="form-section">
-                    <h3 class="form-section__title">Cliente</h3>
-                    <div class="form-group">
-                        <label for="cliente">Cliente existente</label>
-                        <select name="cliente" id="cliente">
-                            <option value="">— Seleccionar cliente —</option>
-                            <% clientes.forEach(c => { %>
-                                <option value="<%= c.nombre %>"><%= c.nombre %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    <div class="toggle-row">
-                        <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
-                        <label for="nuevoCliente">Crear nuevo cliente</label>
-                    </div>
-                    <div id="creacionCliente" class="form-subsection">
-                        <p class="form-hint">La creación impactará en el sistema para futuras operaciones.</p>
-                        <div class="form-group">
-                            <label for="nameNuevoCliente">Nombre</label>
-                            <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente" placeholder="Nombre completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="telefonoNuevoCliente">Teléfono</label>
-                            <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente" placeholder="351 000 0000">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Período -->
-                <div class="form-section">
-                    <h3 class="form-section__title">Período</h3>
-                    <p class="form-hint">Mínimo 4 días — máximo 9 días.</p>
-                    <div class="form-row-2">
-                        <div class="form-group">
-                            <label for="fechaInicio">Fecha de inicio</label>
-                            <input type="date" name="fechaInicio" id="fechaInicio">
-                        </div>
-                        <div class="form-group">
-                            <label for="fechaFin">Fecha de fin</label>
-                            <input type="date" name="fechaFin" id="fechaFin">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dirección -->
-                <div class="form-section">
-                    <h3 class="form-section__title">Dirección de entrega</h3>
-                    <div class="form-row-2">
-                        <div class="form-group">
-                            <label for="calle">Calle</label>
-                            <input type="text" name="calle" id="calle" placeholder="Av. Siempre Viva">
-                        </div>
-                        <div class="form-group">
-                            <label for="numero">Número</label>
-                            <input type="text" name="numero" id="numero" placeholder="123">
-                        </div>
-                    </div>
-                    <button type="button" id="btnBuscarDireccion" class="btn-secondary">Buscar en mapa</button>
-                    <p id="msgMapa">Ingresá calle y número para buscar.</p>
-                    <div id="mapaEntrega">
-                        <iframe id="iframeMapa" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                </div>
-
-                <!-- Método de pago -->
-                <div class="form-section">
-                    <h3 class="form-section__title">Método de pago</h3>
-                    <div class="form-group">
-                        <label for="metodoPago">Método</label>
-                        <select name="metodoPago" id="metodoPago">
-                            <option value="efectivo">Efectivo</option>
-                            <option value="transferencia">Transferencia bancaria</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn-finalizar">Confirmar alquiler</button>
-                    <button type="button" class="btn-secondary" id="cancelarModalAlquiler">Cancelar</button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-
-    <%- include('../partials/scripts.ejs') %>
+        <%- include('../partials/scripts.ejs') %>
 </body>
+
 </html>
