@@ -20,7 +20,7 @@
                 </div>
                 <% if (contenedor.estado==="Alquilado" ) { %>
                     <div class="detalle-acciones">
-                        <a href="/alquileres/editar/<%= contenedor.id %>" class="btn-secondary">Editar</a>
+                        <a href="/alquileres/editar/<%= contenedor.id %>" class="btn-secondary-yellow">Editar</a>
                         <form action="/alquileres/cancelar/<%= contenedor.id %>" method="POST"
                             class="detalle-finalizar-form"
                             onsubmit="return confirm('¿Cancelar el alquiler del Contenedor #<%= contenedor.id %>?')">

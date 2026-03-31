@@ -16,7 +16,7 @@
                 <h1 class="page-title"><%= cliente.nombre %></h1>
             </div>
             <div style="display:flex; gap:0.5rem">
-                <a href="/clientes/editar/<%= cliente.id %>" class="btn-secondary">Editar</a>
+                <a href="/clientes/editar/<%= cliente.id %>" class="btn-secondary-yellow">Editar</a>
                 <form action="/clientes/eliminar/<%= cliente.id %>" method="POST" class="cliente-eliminar-form"
                       onsubmit="return confirm('¿Eliminar a <%= cliente.nombre %>?')">
                     <button type="submit" class="btn-danger">Eliminar cliente</button>
