@@ -11,15 +11,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use((_req, res, next) => {
-    res.locals.formatFecha = (fecha) => {
-        if (!fecha) return '';
-        const [y, m, d] = fecha.split('-');
-        return `${d}-${m}-${y}`;
-    };
-    next();
-});
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,8 +23,19 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    res.locals.formatFecha = (fecha) => {
+        if (!fecha) return '';
+        const [y, m, d] = fecha.split('-');
+        return `${d}-${m}-${y}`;
+    };
+    res.locals.sessionUser = req.session?.user ?? null;
+    next();
+});
+
 // ── Middleware de autenticación ───────────────────────────────
-const requireAuth = require('./middleware/requireAuth');
+const requireAuth  = require('./middleware/requireAuth');
+const requireAdmin = require('./middleware/requireAdmin');
 
 // ── Controladores ─────────────────────────────────────────────
 const authController         = require('./controllers/login.controller.js');
@@ -107,13 +109,13 @@ app.get('/clientes/editar/:id',         clienteController.editar);
 app.post('/clientes/editar/:id',        clienteController.guardarEdicion);
 app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
 
-// ── Configuraciones ───────────────────────────────────────────
-app.get('/configuraciones',                          configController.index);
-app.get('/configuraciones/usuarios',                 configController.usuarios);
-app.post('/configuraciones/usuarios/crear',          configController.crearUsuario);
-app.post('/configuraciones/usuarios/pausar/:id',     configController.pausarUsuario);
-app.post('/configuraciones/usuarios/eliminar/:id',   configController.eliminarUsuario);
-app.post('/configuraciones/usuarios/reset/:id',      configController.resetPassword);
+// ── Configuraciones (solo admin) ──────────────────────────────
+app.get('/configuraciones',                          requireAdmin, configController.index);
+app.get('/configuraciones/usuarios',                 requireAdmin, configController.usuarios);
+app.post('/configuraciones/usuarios/crear',          requireAdmin, configController.crearUsuario);
+app.post('/configuraciones/usuarios/pausar/:id',     requireAdmin, configController.pausarUsuario);
+app.post('/configuraciones/usuarios/eliminar/:id',   requireAdmin, configController.eliminarUsuario);
+app.post('/configuraciones/usuarios/reset/:id',      requireAdmin, configController.resetPassword);
 
 // ── Utilidades ────────────────────────────────────────────────
 app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {

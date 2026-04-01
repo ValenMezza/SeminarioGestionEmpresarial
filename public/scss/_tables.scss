@@ -1,0 +1,52 @@
+@use "variables";
+
+// ── Tabla genérica ────────────────────────────────────────────
+
+.table-wrapper {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    thead {
+        background: variables.$bg-thead;
+        border-bottom: 1px solid #e2e8f0;
+
+        th {
+            padding: 0.85rem 1.1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+    }
+
+    tbody {
+        tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s ease;
+
+            &:last-child { border-bottom: none; }
+            &:hover      { background: #f8fafc; }
+        }
+
+        td {
+            padding: 0.85rem 1.1rem;
+            color: #1e293b;
+        }
+    }
+}
+
+// ── Helpers de celdas ─────────────────────────────────────────
+.td-vacia   { text-align: center; padding: 2rem; color: #94a3b8; font-style: italic; }
+.td-acciones { display: flex; gap: 0.5rem; }

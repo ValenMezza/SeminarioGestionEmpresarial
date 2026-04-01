@@ -1,8 +1,8 @@
 @use "variables";
 
 // ── Card de ventas (lista de productos) ───────────────────────
-// Las cards del home se gestionan en _home.scss
-// Este archivo maneja las cards de la lista de productos en ventas
+// Las cards del home se gestionan en home
+// aca manejamos cards de lavs ventas
 
 .ventas-card {
     display: flex;

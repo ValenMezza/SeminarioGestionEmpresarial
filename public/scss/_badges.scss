@@ -1,0 +1,26 @@
+// ── Badges ────────────────────────────────────────────────────
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    // Estado contenedor / stock
+    &--disponible  { background: #dcfce7; color: #15803d; }
+    &--alquilado   { background: #fef3c7; color: #b45309; }
+    &--sin-stock   { background: #fee2e2; color: #dc2626; }
+    &--con-stock   { background: #dcfce7; color: #15803d; }
+
+    // Roles de usuario
+    &--rol-admin    { background: #ede9fe; color: #7c3aed; }
+    &--rol-operador { background: #e0f2fe; color: #0369a1; }
+
+    // Tipos de transacción
+    &--tipo-alquiler      { background: #fef3c7; color: #b45309; }
+    &--tipo-venta-cantera { background: #dcfce7; color: #15803d; }
+    &--tipo-venta-viaje   { background: #dbeafe; color: #1d4ed8; }
+    &--alquiler           { background: #dbeafe; color: #1d4ed8; }
+    &--venta              { background: #dcfce7; color: #15803d; }
+}

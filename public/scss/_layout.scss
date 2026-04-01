@@ -1,0 +1,73 @@
+@use "variables";
+
+// ── Mixin base de página ───────────────────────────────────────
+@mixin page-layout {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 2rem 2.5%;
+}
+
+// ── IDs de páginas (aplican el mixin) ─────────────────────────
+#mainAlquileres,
+#alquiler-detalle,
+#alquiler-editar,
+#alquiler-nuevo,
+#stock-page,
+#stock-detalle,
+#stock-nuevo,
+#clientes-page,
+#clientes-detalle,
+#clientes-cuentas,
+#clientes-nuevo,
+#transacciones-page,
+#transacciones-detalle,
+#contenedores,
+#contenedores-detalle,
+#config-page {
+    @include page-layout;
+}
+
+// ── Header de página ──────────────────────────────────────────
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: variables.$sidebar-bg;
+    }
+}
+
+.page-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.acciones-col { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.btn-sm       { padding: 0.3rem 0.7rem !important; font-size: 0.78rem !important; }
+.text-muted-sm { color: #94a3b8; font-size: 0.85rem; }

@@ -6,65 +6,13 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 2rem;
     padding: 2rem 5%;
 }
 
 .home-modules-header {
     margin-bottom: 0;
-}
-
-// ── Métricas ──────────────────────────────────────────────────
-.home-metricas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 180px);
-    justify-content: center;
-    gap: 1rem;
-}
-
-.metrica-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 1.25rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    text-align: center;
-
-    .metrica-icon {
-        font-size: 1.6rem;
-    }
-
-    .metrica-valor {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #0f172a;
-    }
-
-    .metrica-label {
-        font-size: 0.78rem;
-        color: #64748b;
-        font-weight: 500;
-    }
-
-    &--green {
-        border-left: 4px solid #22c55e;
-    }
-
-    &--blue {
-        border-left: 4px solid #3b82f6;
-    }
-
-    &--warn {
-        border-left: 4px solid #f59e0b;
-    }
-
-    &--danger {
-        border-left: 4px solid #ef4444;
-    }
 }
 
 // ── Módulos grid ──────────────────────────────────────────────
@@ -79,7 +27,9 @@
 
 .home-modules-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    margin: 0;
+    justify-content: center;
     gap: 1.25rem;
 }
 

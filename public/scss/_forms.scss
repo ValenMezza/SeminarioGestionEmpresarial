@@ -1,0 +1,174 @@
+@use "variables";
+
+// ── Formulario genérico ───────────────────────────────────────
+
+.form-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 2rem;
+    max-width: 560px;
+
+    min-width: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 0.6rem 0.85rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:focus {
+            border-color: variables.$sidebar-accent;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+    }
+}
+
+.form-group--checkbox {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.form-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 0.2rem;
+}
+
+.form-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+// ── Filtros bar ───────────────────────────────────────────────
+.filtros-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+
+    &--extended {
+        gap: 0.75rem;
+    }
+}
+
+.filtro-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    input,
+    select {
+        padding: 0.45rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        color: #0f172a;
+        min-width: 150px;
+        outline: none;
+
+        &:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+    }
+}
+
+// ── Radio group ───────────────────────────────────────────────
+.radio-group {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+
+    input[type="radio"] {
+        cursor: pointer;
+    }
+}

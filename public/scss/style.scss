@@ -3,21 +3,34 @@
 /* 1) Config */
 @use "variables";
 @use "body";
-@use "sidebar";
 
-/* 2) Base */
-@use "main";
+/* 2) Estructura base */
+@use "layout";
+@use "sidebar";
 @use "aside";
-@use "cardsMain";
+@use "main";
 
 /* 3) Componentes compartidos */
-@use "pages";
+@use "buttons";
+@use "badges";
+@use "tables";
+@use "forms";
+@use "modal";
+@use "detail-card";
+@use "alerts";
 
-/* 4) Secciones */
+/* 4) Módulos */
+@use "metricas";
+@use "home";
+@use "ventas";
+@use "cardsMain";
 @use "alquileres";
 @use "clientes";
 @use "stock";
 @use "contenedores";
 @use "transacciones";
-@use "home";
+@use "config";
 @use "login";
+
+/* legacy - vacío */
+@use "pages";

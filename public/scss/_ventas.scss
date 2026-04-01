@@ -1,0 +1,54 @@
+// ── Módulo de ventas ──────────────────────────────────────────
+
+.ventas-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    padding: 2rem 5%;
+    align-items: start;
+    width: 100%;
+
+    @media (max-width: 768px) { grid-template-columns: 1fr; }
+}
+
+.ventas-productos { min-width: 0; }
+
+.ventas-productos__header { margin-bottom: 1rem; }
+
+.ventas-productos__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.ventas-lista-productos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+// ── Carrito ───────────────────────────────────────────────────
+#carrito {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.25rem;
+    position: sticky;
+    top: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.carrito-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#cart_items { list-style: none; padding: 0; margin: 0; }

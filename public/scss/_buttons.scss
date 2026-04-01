@@ -1,0 +1,136 @@
+@use "variables";
+
+// ── Botones globales ──────────────────────────────────────────
+
+.btn-primary {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: variables.$sidebar-bg;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-primary-green {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: variables.$btn-green;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #1e3a5f;
+    color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
+}
+
+.btn-secondary-yellow {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #f59e0b;
+    color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
+}
+
+.btn-secondary-cancel {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #dc2626;
+    color: #fefefe;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
+}
+
+.btn-finalizar {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #10b981;
+    color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: variables.$hoover;
+        color: black;
+    }
+}
+
+.btn-danger {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: #b91c1c;
+    }
+}

@@ -1,25 +1,36 @@
-@use "variables";
-
-// ── Estilos de clientes ───────────────────────────────────────
+// ── Módulo de clientes ────────────────────────────────────────
 // Vistas: index, detalle, nuevo_cliente, cuentas
 
 .cliente-eliminar-form {
     margin: 0;
 }
 
-.td-vacia {
-    text-align: center;
-    color: #94a3b8;
-    padding: 2rem;
+// ── Cuentas corrientes ────────────────────────────────────────
+.cuentas-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.detalle-section-title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #64748b;
-    margin: 0 0 1rem 0;
+.section-title    { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0; }
+.section-subtitle { font-size: 0.85rem; color: #64748b; }
+
+.section-header-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.saldo-positivo { color: #15803d; font-weight: 700; }
+.saldo-negativo { color: #dc2626; font-weight: 700; }
+
+// ── Historial de cliente ──────────────────────────────────────
+.historial-filtros-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
 }
 
 .clientes-historial {
@@ -27,20 +38,13 @@
     flex-direction: column;
     gap: 1rem;
 
-    &__title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 0;
-    }
-
+    &__title { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0; }
     &__empty {
-        padding: 2rem;
+        padding: 1.5rem;
         text-align: center;
         color: #94a3b8;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        font-size: 0.9rem;
+        background: #f8fafc;
+        border-radius: 10px;
+        font-size: 0.875rem;
     }
 }
