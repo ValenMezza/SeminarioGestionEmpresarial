@@ -38,7 +38,7 @@
                                 </span>
                             </td>
                             <td class="acciones-col">
-                                <a href="/stock/detalle/<%= p.id %>" class="btn-secondary">Observar</a>
+                                <a href="/stock/detalle/<%= p.id %>" class="btn-secondary">Ver detalles</a>
                                 <a href="/stock/editar/<%= p.id %>" class="btn-secondary-yellow">Editar</a>
                                 <form action="/stock/eliminar/<%= p.id %>" method="POST" style="display:inline"
                                     onsubmit="return confirm('¿Eliminar <%= p.producto %>?')">

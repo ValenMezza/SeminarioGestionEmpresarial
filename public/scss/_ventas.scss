@@ -2,13 +2,13 @@
 
 .ventas-layout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr 520px;
     gap: 1.5rem;
     padding: 2rem 5%;
     align-items: start;
     width: 100%;
 
-    @media (max-width: 768px) { grid-template-columns: 1fr; }
+    @media (max-width: 1100px) { grid-template-columns: 1fr; }
 }
 
 .ventas-productos { min-width: 0; }
@@ -52,3 +52,187 @@
 }
 
 #cart_items { list-style: none; padding: 0; margin: 0; }
+
+// ── Ventas landing ──────────────────────────────────────────
+#ventas-landing {
+    padding: 2rem 5%;
+    width: 100%;
+}
+
+.ventas-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ventas-modulo-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 2rem;
+    text-decoration: none;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+        border-color: #60a5fa;
+        box-shadow: 0 4px 16px rgba(96, 165, 250, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+.ventas-modulo-card__icon {
+    font-size: 2.5rem;
+}
+
+.ventas-modulo-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.ventas-modulo-card__desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.ventas-viajes-section {
+    margin-top: 1rem;
+}
+
+// ── Venta viaje layout ──────────────────────────────────────
+#venta-viaje {
+    padding: 2rem 5%;
+    width: 100%;
+}
+
+.viaje-form-layout {
+    display: grid;
+    grid-template-columns: 1fr 520px;
+    gap: 2rem;
+    align-items: start;
+
+    @media (max-width: 1100px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.viaje-form-main {
+    min-width: 0;
+}
+
+.viaje-form-aside {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+// ── Confirmacion ────────────────────────────────────────────
+#confirmacion-page {
+    padding: 2rem 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.confirmacion-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.confirmacion-icon {
+    width: 60px;
+    height: 60px;
+    background: #dcfce7;
+    color: #16a34a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+}
+
+.confirmacion-titulo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1.5rem;
+}
+
+.confirmacion-detalles {
+    text-align: left;
+    margin-bottom: 1.5rem;
+
+    .info-row {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+}
+
+.confirmacion-acciones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+// ── Cart empty ──────────────────────────────────────────────
+.cart_empty {
+    text-align: center;
+    color: #94a3b8;
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+// ── Ventas card ─────────────────────────────────────────────
+.ventas-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    &--sin-stock {
+        opacity: 0.5;
+    }
+}
+
+.ventas-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ventas-card__nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.ventas-card__precio {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #0f172a;
+}

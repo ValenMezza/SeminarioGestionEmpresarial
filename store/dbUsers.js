@@ -1,6 +1,6 @@
 const dbUsers = {
     lista: [
-        { id: 1, user: 'admin', password: 'admin123', rol: 'admin', activo: true }
+        { id: 1, nombre: 'Admin', apellido: 'Sistema', user: 'admin', password: 'admin123', rol: 'admin', activo: true }
     ],
     nextId: 2
 };
@@ -17,8 +17,8 @@ function buscarPorUser(user) {
     return dbUsers.lista.find(u => u.user === user);
 }
 
-function crearUsuario({ user, password, rol }) {
-    const nuevo = { id: dbUsers.nextId++, user, password, rol: rol || 'operador', activo: true };
+function crearUsuario({ nombre, apellido, user, password, rol }) {
+    const nuevo = { id: dbUsers.nextId++, nombre: nombre || '', apellido: apellido || '', user, password, rol: rol || 'operador', activo: true };
     dbUsers.lista.push(nuevo);
     return nuevo;
 }

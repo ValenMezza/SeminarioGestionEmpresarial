@@ -15,42 +15,124 @@
             <a href="/alquileres/nuevo_alquiler" class="btn-primary-green">+ Nuevo alquiler</a>
         </div>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>#ID</th>
-                        <th>Cliente</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Dirección</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% const alquilados = contenedores.filter(c => c.estado === "Alquilado"); %>
-                    <% if (alquilados.length === 0) { %>
+        <!-- Proximos a finalizar (FIFO) -->
+        <% if (porFinalizar.length > 0) { %>
+        <div class="alquileres-seccion">
+            <h2 class="section-title">Proximos a finalizar (≤ 2 dias)</h2>
+            <div class="table-wrapper">
+                <table class="data-table data-table--warning">
+                    <thead>
                         <tr>
-                            <td colspan="6" class="td-vacia">
-                                No hay alquileres activos
-                            </td>
+                            <th>#ID</th>
+                            <th>Cliente</th>
+                            <th>Fin</th>
+                            <th>Direccion</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
                         </tr>
-                    <% } %>
-                    <% alquilados.forEach(c => { %>
+                    </thead>
+                    <tbody>
+                        <% porFinalizar.forEach(c => { %>
+                            <tr>
+                                <td>#<%= c.id %></td>
+                                <td><%= c.cliente %></td>
+                                <td><%= formatFecha(c.finAlquiler) %></td>
+                                <td><%= c.direccionAlquiler %></td>
+                                <td>$<%= c.precioAlquiler?.toLocaleString('es-AR') %></td>
+                                <td class="td-acciones">
+                                    <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
+                                    <a href="/alquileres/nuevo_alquiler?renovar=<%= c.id %>" class="btn-primary btn-sm">Renovar</a>
+                                    <form action="/alquileres/finalizar/<%= c.id %>" method="POST" style="display:inline"
+                                          onsubmit="return confirm('¿Finalizar alquiler del Contenedor #<%= c.id %>?')">
+                                        <button type="submit" class="btn-primary-green btn-sm">Finalizar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Proximos a iniciar (programados) -->
+        <% if (programados.length > 0) { %>
+        <div class="alquileres-seccion">
+            <h2 class="section-title">Proximos a iniciar (programados)</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <td>#<%= c.id %></td>
-                            <td><%= c.cliente %></td>
-                            <td><%= formatFecha(c.inicioAlquiler) %></td>
-                            <td><%= formatFecha(c.finAlquiler) %></td>
-                            <td><%= c.direccionAlquiler %></td>
-                            <td class="td-acciones">
-                                <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary">Ver detalle</a>
-                                <a href="/alquileres/editar/<%= c.id %>" class="btn-secondary-yellow">Editar</a>
-                            </td>
+                            <th>#Alquiler</th>
+                            <th>Contenedor</th>
+                            <th>Cliente</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Direccion</th>
+                            <th>Estado</th>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% programados.forEach(a => { %>
+                            <tr>
+                                <td>#<%= a.id %></td>
+                                <td>#<%= a.contenedorId %></td>
+                                <td><%= a.clienteNombre %></td>
+                                <td><%= formatFecha(a.inicioAlquiler) %></td>
+                                <td><%= formatFecha(a.finAlquiler) %></td>
+                                <td><%= a.direccionAlquiler %></td>
+                                <td><span class="badge badge--alquilado">Programado</span></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Todos los alquileres activos -->
+        <div class="alquileres-seccion">
+            <h2 class="section-title">Alquileres activos</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Cliente</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Direccion</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% const alquilados = contenedores.filter(c => c.estado === "Alquilado"); %>
+                        <% if (alquilados.length === 0) { %>
+                            <tr>
+                                <td colspan="6" class="td-vacia">No hay alquileres activos</td>
+                            </tr>
+                        <% } %>
+                        <% alquilados.forEach(c => { %>
+                            <tr>
+                                <td>#<%= c.id %></td>
+                                <td><%= c.cliente %></td>
+                                <td><%= formatFecha(c.inicioAlquiler) %></td>
+                                <td><%= formatFecha(c.finAlquiler) %></td>
+                                <td><%= c.direccionAlquiler %></td>
+                                <td class="td-acciones">
+                                    <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
+                                    <a href="/alquileres/editar/<%= c.id %>" class="btn-secondary-yellow btn-sm">Editar</a>
+                                    <a href="/alquileres/nuevo_alquiler?renovar=<%= c.id %>" class="btn-primary btn-sm">Renovar</a>
+                                    <form action="/alquileres/finalizar/<%= c.id %>" method="POST" style="display:inline"
+                                          onsubmit="return confirm('¿Finalizar alquiler del Contenedor #<%= c.id %>?')">
+                                        <button type="submit" class="btn-primary-green btn-sm">Finalizar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </main>

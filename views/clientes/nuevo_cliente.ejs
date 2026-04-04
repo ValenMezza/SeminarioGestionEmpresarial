@@ -18,16 +18,28 @@
         </div>
 
         <div class="form-card">
-            <form action="/clientes/nuevo_cliente" method="POST" class="form-grid">
+            <form action="/clientes/nuevo_cliente" method="POST" class="form-grid" id="formNuevoCliente">
 
-                <div class="form-group">
-                    <label for="nombre">Nombre completo</label>
-                    <input type="text" name="nombre" id="nombre" placeholder="Ej: Juan Pérez" required>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" name="nombre" id="nombre" placeholder="Ej: Juan" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" name="apellido" id="apellido" placeholder="Ej: Perez" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="telefono">Teléfono</label>
-                    <input type="text" name="telefono" id="telefono" placeholder="Ej: 351 000 0000">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="telefono">Telefono *</label>
+                        <input type="text" name="telefono" id="telefono" placeholder="Ej: 351 000 0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dni">DNI (opcional)</label>
+                        <input type="text" name="dni" id="dni" placeholder="Ej: 30000000">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -36,7 +48,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="direccion">Dirección</label>
+                    <label for="direccion">Direccion</label>
                     <input type="text" name="direccion" id="direccion" placeholder="Ej: Av. Siempre Viva 123">
                 </div>
 
@@ -57,6 +69,14 @@
         </div>
 
     </main>
+    <script src="/javascript/formValidation.js"></script>
     <script src="/javascript/sidebar.js"></script>
+    <script>
+        document.getElementById('formNuevoCliente').addEventListener('submit', function(e) {
+            if (!validarFormulario(this, ['#nombre', '#apellido', '#telefono'])) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

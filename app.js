@@ -62,29 +62,37 @@ app.use(requireAuth);
 app.get('/home', homeController.index);
 
 // ── Ventas ────────────────────────────────────────────────────
-app.get('/ventas',                     ventasController.index);
-app.post('/ventas/finalizar-cantera',  ventasController.finalizarVentaCantera);
-app.post('/ventas/finalizar-viaje',    ventasController.finalizarVentaViaje);
+app.get('/ventas',                         ventasController.index);
+app.get('/ventas/cantera',                 ventasController.cantera);
+app.post('/ventas/finalizar-cantera',      ventasController.finalizarVentaCantera);
+app.get('/ventas/cantera/confirmacion',    ventasController.confirmacionCantera);
+app.get('/ventas/viaje',                   ventasController.viaje);
+app.post('/ventas/crear-viaje',            ventasController.crearViajeProgramado);
+app.post('/ventas/finalizar-viaje/:id',    ventasController.finalizarViajeProgramado);
+app.get('/ventas/viaje/detalle/:id',       ventasController.detalleViaje);
 
 // ── Transacciones ─────────────────────────────────────────────
 app.get('/transacciones',            transaccionesController.index);
 app.get('/transacciones/detalle/:id', transaccionesController.detalle);
 
 // ── Alquileres ────────────────────────────────────────────────
-app.get('/alquileres',                alquilerController.index);
-app.get('/alquileres/detalle/:id',    alquilerController.detalle);
-app.get('/alquileres/nuevo_alquiler', alquilerController.nuevoAlquiler);
-app.get('/alquileres/editar/:id',     alquilerController.edicionAlquiler);
-app.post('/alquileres/editar/:id',    alquilerController.guardarEdicion);
-app.post('/alquileres/crear',         alquilerController.crearAlquiler);
-app.post('/alquileres/cancelar/:id',  alquilerController.cancelarAlquiler);
-app.post('/alquileres/finalizar/:id', alquilerController.finalizarAlquiler);
+app.get('/alquileres',                    alquilerController.index);
+app.get('/alquileres/detalle/:id',        alquilerController.detalle);
+app.get('/alquileres/nuevo_alquiler',     alquilerController.nuevoAlquiler);
+app.get('/alquileres/confirmacion/:id',   alquilerController.confirmacion);
+app.get('/alquileres/editar/:id',         alquilerController.edicionAlquiler);
+app.post('/alquileres/editar/:id',        alquilerController.guardarEdicion);
+app.post('/alquileres/crear',             alquilerController.crearAlquiler);
+app.post('/alquileres/cancelar/:id',      alquilerController.cancelarAlquiler);
+app.post('/alquileres/finalizar/:id',     alquilerController.finalizarAlquiler);
 
 // ── Contenedores ──────────────────────────────────────────────
-app.get('/contenedores',           contenedoresController.index);
-app.get('/contenedores/detalle',   contenedoresController.detalle);
-app.get('/contenedores/config',    contenedoresController.config);
-app.post('/contenedores/config',   contenedoresController.guardarConfig);
+app.get('/contenedores',                contenedoresController.index);
+app.get('/contenedores/detalle/:id',    contenedoresController.detalle);
+app.get('/contenedores/config',         contenedoresController.config);
+app.post('/contenedores/config',        contenedoresController.guardarConfig);
+app.post('/contenedores/crear',         contenedoresController.crear);
+app.post('/contenedores/eliminar/:id',  contenedoresController.eliminar);
 // Editar contenedor reutiliza la misma lógica de alquileres/editar
 app.get('/contenedores/:id/edit',  alquilerController.edicionAlquiler);
 app.post('/contenedores/:id/edit', alquilerController.guardarEdicion);
@@ -108,6 +116,11 @@ app.get('/clientes/cuentas',            clienteController.cuentas);
 app.get('/clientes/editar/:id',         clienteController.editar);
 app.post('/clientes/editar/:id',        clienteController.guardarEdicion);
 app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
+app.post('/clientes/:id/abonar',          clienteController.abonar);
+
+// ── API Clientes (JSON) ──────────────────────────────────────
+app.get('/api/clientes/buscar',  clienteController.buscarApi);
+app.post('/api/clientes/crear',  clienteController.crearApi);
 
 // ── Configuraciones (solo admin) ──────────────────────────────
 app.get('/configuraciones',                          requireAdmin, configController.index);

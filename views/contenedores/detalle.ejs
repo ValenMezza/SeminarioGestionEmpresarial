@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle contenedor</title>
+    <title>Contenedor #<%= contenedor.id %></title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -13,15 +13,67 @@
         <div class="page-header">
             <div>
                 <a href="/contenedores" class="back-link">← Contenedores</a>
-                <h1 class="page-title">Detalle contenedor</h1>
+                <h1 class="page-title">Contenedor #<%= contenedor.id %></h1>
+            </div>
+            <% if (contenedor.estado === 'Alquilado') { %>
+            <a href="/contenedores/<%= contenedor.id %>/edit" class="btn-secondary-yellow">Editar</a>
+            <% } %>
+        </div>
+
+        <div class="detail-card">
+            <p class="detalle-section-title">Informacion del contenedor</p>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Estado</span>
+                    <span class="info-value">
+                        <span class="badge badge--<%= contenedor.estado === 'Alquilado' ? 'alquilado' : 'disponible' %>">
+                            <%= contenedor.estado %>
+                        </span>
+                    </span>
+                </div>
+                <% if (contenedor.estado === 'Alquilado') { %>
+                <div class="info-row">
+                    <span class="info-label">Cliente</span>
+                    <span class="info-value"><%= contenedor.cliente %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Inicio</span>
+                    <span class="info-value"><%= formatFecha(contenedor.inicioAlquiler) %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fin</span>
+                    <span class="info-value"><%= formatFecha(contenedor.finAlquiler) %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Direccion</span>
+                    <span class="info-value"><%= contenedor.direccionAlquiler %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Precio</span>
+                    <span class="info-value detalle-precio">$<%= contenedor.precioAlquiler?.toLocaleString('es-AR') %></span>
+                </div>
+                <% } else { %>
+                <div class="info-row">
+                    <span class="info-label">Precio por dia</span>
+                    <span class="info-value">$<%= contenedor.precioDia?.toLocaleString('es-AR') %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Precio alquiler</span>
+                    <span class="info-value">$<%= contenedor.precioAlquiler?.toLocaleString('es-AR') %></span>
+                </div>
+                <% } %>
             </div>
         </div>
 
-        <div class="wip-placeholder">
-            <div class="wip-icon">📦</div>
-            <div class="wip-text">Módulo en desarrollo</div>
-            <div class="wip-sub">El detalle de contenedores estará disponible próximamente</div>
+        <% if (contenedor.estado === 'Alquilado' && contenedor.direccionAlquiler) { %>
+        <div class="detail-card" style="margin-top:1rem">
+            <p class="detalle-section-title">Ubicacion</p>
+            <iframe style="width:100%;height:300px;border:none;border-radius:8px" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?q=<%= encodeURIComponent(contenedor.direccionAlquiler + ', Cordoba, Argentina') %>&output=embed&hl=es">
+            </iframe>
         </div>
+        <% } %>
 
     </main>
     <script src="/javascript/sidebar.js"></script>

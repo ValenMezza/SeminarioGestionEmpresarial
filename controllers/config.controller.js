@@ -11,9 +11,9 @@ const configController = {
     },
 
     crearUsuario: (req, res) => {
-        const { user, password, rol } = req.body;
-        if (!user || !password) return res.redirect('/configuraciones/usuarios');
-        crearUsuario({ user, password, rol });
+        const { nombre, apellido, user, password, rol } = req.body;
+        if (!user || !password || !nombre || !apellido) return res.redirect('/configuraciones/usuarios');
+        crearUsuario({ nombre, apellido, user, password, rol });
         res.redirect('/configuraciones/usuarios');
     },
 

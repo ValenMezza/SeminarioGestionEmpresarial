@@ -91,6 +91,16 @@
     letter-spacing: 0.5px;
 }
 
+.sidebar__brand-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: #fff;
+    padding: 2px;
+}
+
 .sidebar__brand-name {
     color: #ffffff;
     font-weight: 700;

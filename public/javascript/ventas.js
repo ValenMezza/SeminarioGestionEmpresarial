@@ -164,14 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cerrarModalViaje')?.addEventListener('click', () => cerrarModal('modal-viaje'));
     document.getElementById('cancelarModalViaje')?.addEventListener('click', () => cerrarModal('modal-viaje'));
 
-    // Cerrar modal al hacer click fuera del box
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                cerrarModal(overlay.id);
-            }
-        });
-    });
-
     renderCarrito();
 });

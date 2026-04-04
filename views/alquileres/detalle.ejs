@@ -26,6 +26,11 @@
                             onsubmit="return confirm('¿Cancelar el alquiler del Contenedor #<%= contenedor.id %>?')">
                             <button type="submit" class="btn-secondary-cancel">Cancelar alquiler</button>
                         </form>
+
+
+                        <a href="/alquileres/nuevo_alquiler?renovar=<%= contenedor.id %>" class="btn-secondary">Renovar alquiler</a>
+
+
                         <form action="/alquileres/finalizar/<%= contenedor.id %>" method="POST"
                             class="detalle-finalizar-form">
                             <button type="submit" class="btn-primary-green">Finalizar alquiler</button>

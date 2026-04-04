@@ -14,7 +14,12 @@
 
         <div class="page-header">
             <h1 class="page-title">Contenedores</h1>
-            <a href="/contenedores/config" class="btn-config">Configurar precios</a>
+            <div class="page-header-actions">
+                <a href="/contenedores/config" class="btn-config">Configurar precios</a>
+                <form action="/contenedores/crear" method="POST" style="display:inline">
+                    <button type="submit" class="btn-primary-green">+ Nuevo contenedor</button>
+                </form>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -31,7 +36,7 @@
                 <span class="stat-value"><%= contenedores.filter(c => c.estado === "Alquilado").length %></span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Precio / día</span>
+                <span class="stat-label">Precio / dia</span>
                 <span class="stat-value">$<%= contenedores[0]?.precioDia?.toLocaleString('es-AR') %></span>
             </div>
             <div class="stat-card">
@@ -66,11 +71,15 @@
                             <td><%= c.inicioAlquiler ? formatFecha(c.inicioAlquiler) : '—' %></td>
                             <td><%= c.finAlquiler ? formatFecha(c.finAlquiler) : '—' %></td>
                             <td><%= c.estado === 'Alquilado' ? '$' + c.precioAlquiler?.toLocaleString('es-AR') : '—' %></td>
-                            <td>
+                            <td class="td-acciones">
                                 <% if (c.estado === 'Alquilado') { %>
-                                    <a href="/contenedores/<%= c.id %>/edit" class="btn-secondary-yellow">Editar</a>
+                                    <a href="/contenedores/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
+                                    <a href="/contenedores/<%= c.id %>/edit" class="btn-secondary-yellow btn-sm">Editar</a>
                                 <% } else { %>
-                                    <span class="text-muted-sm">—</span>
+                                    <form action="/contenedores/eliminar/<%= c.id %>" method="POST" style="display:inline"
+                                          onsubmit="return confirm('¿Eliminar Contenedor #<%= c.id %>?')">
+                                        <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                                    </form>
                                 <% } %>
                             </td>
                         </tr>

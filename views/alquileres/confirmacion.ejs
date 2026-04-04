@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alquiler confirmado</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('../partials/sidebar.ejs') %>
+
+    <main id="confirmacion-page">
+
+        <div class="confirmacion-card">
+            <div class="confirmacion-icon">&#10003;</div>
+            <h1 class="confirmacion-titulo">
+                Alquiler <%= alquiler.estado === 'programado' ? 'programado' : 'confirmado' %>
+            </h1>
+
+            <% if (alquiler.estado === 'programado') { %>
+                <p class="form-hint" style="text-align:center;margin-bottom:1rem">
+                    Este alquiler se activara automaticamente cuando finalice el alquiler actual del contenedor.
+                </p>
+            <% } %>
+
+            <div class="confirmacion-detalles">
+                <div class="info-row">
+                    <span class="info-label">Alquiler #</span>
+                    <span class="info-value"><%= alquiler.id %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Contenedor</span>
+                    <span class="info-value">#<%= alquiler.contenedorId %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Cliente</span>
+                    <span class="info-value"><%= alquiler.clienteNombre %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Inicio</span>
+                    <span class="info-value"><%= alquiler.inicioAlquiler %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fin</span>
+                    <span class="info-value"><%= alquiler.finAlquiler %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Direccion</span>
+                    <span class="info-value"><%= alquiler.direccionAlquiler %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Precio</span>
+                    <span class="info-value detalle-precio">$<%= alquiler.precioAlquiler?.toLocaleString('es-AR') %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Metodo de pago</span>
+                    <span class="info-value"><%= alquiler.metodoPago %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Estado</span>
+                    <span class="info-value">
+                        <span class="badge badge--<%= alquiler.estado === 'programado' ? 'alquilado' : 'con-stock' %>">
+                            <%= alquiler.estado === 'programado' ? 'Programado' : 'Activo' %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="confirmacion-acciones">
+                <a href="/alquileres/nuevo_alquiler" class="btn-primary">Nuevo alquiler</a>
+                <a href="/alquileres" class="btn-secondary">Volver a alquileres</a>
+            </div>
+        </div>
+
+    </main>
+    <script src="/javascript/sidebar.js"></script>
+</body>
+</html>

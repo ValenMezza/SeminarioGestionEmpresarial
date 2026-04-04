@@ -9,6 +9,58 @@ main {
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+#login {
+
+    & form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 320px;
+        margin: 4rem auto;
+        padding: 2rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input {
+            padding: 0.6rem 0.85rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #0f172a;
+
+            &:focus {
+                border-color: variables.$sidebar-accent;
+                box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+                outline: none;
+            }
+        }
+
+        button {
+            padding: 0.6rem 1.3rem;
+            background: variables.$sidebar-bg;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease;
+
+            &:hover {
+                background: darken(#1e3a5f, 8%);
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
 #ventas {
     width: 95%;
     display: grid;
@@ -82,7 +134,7 @@ main {
         background: #fff;
         border: 1px solid #e2e8f0;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
         .stat-label {
             font-size: 0.78rem;
@@ -98,8 +150,13 @@ main {
             color: #0f172a;
         }
 
-        &--disponible .stat-value { color: #16a34a; }
-        &--alquilado  .stat-value { color: #d97706; }
+        &--disponible .stat-value {
+            color: #16a34a;
+        }
+
+        &--alquilado .stat-value {
+            color: #d97706;
+        }
     }
 
     // ── Table ──────────────────────────────
@@ -108,7 +165,7 @@ main {
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .contenedores-table {
@@ -137,8 +194,13 @@ main {
                 border-bottom: 1px solid #f1f5f9;
                 transition: background 0.15s ease;
 
-                &:last-child { border-bottom: none; }
-                &:hover { background: #f8fafc; }
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background: #f8fafc;
+                }
             }
 
             td {
@@ -159,6 +221,7 @@ main {
             background: #dcfce7;
             color: #15803d;
         }
+
         &--alquilado {
             background: #fef3c7;
             color: #b45309;
@@ -186,7 +249,9 @@ main {
         margin-bottom: 0.4rem;
         transition: color 0.15s ease;
 
-        &:hover { color: #1e3a5f; }
+        &:hover {
+            color: #1e3a5f;
+        }
     }
 
     .page-title {
@@ -202,7 +267,7 @@ main {
         border-radius: 14px;
         padding: 2rem;
         max-width: 480px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .config-form {
@@ -290,7 +355,9 @@ main {
         cursor: pointer;
         transition: background 0.2s ease;
 
-        &:hover { background: #f8fafc; }
+        &:hover {
+            background: #f8fafc;
+        }
     }
 }
 

@@ -13,27 +13,31 @@
         <div class="page-header">
             <div>
                 <a href="/clientes" class="back-link">← Clientes</a>
-                <h1 class="page-title"><%= cliente.nombre %></h1>
+                <h1 class="page-title"><%= cliente.nombre %> <%= cliente.apellido %></h1>
             </div>
             <div style="display:flex; gap:0.5rem">
                 <a href="/clientes/editar/<%= cliente.id %>" class="btn-secondary-yellow">Editar</a>
                 <form action="/clientes/eliminar/<%= cliente.id %>" method="POST" class="cliente-eliminar-form"
-                      onsubmit="return confirm('¿Eliminar a <%= cliente.nombre %>?')">
+                      onsubmit="return confirm('¿Eliminar a <%= cliente.nombre %> <%= cliente.apellido %>?')">
                     <button type="submit" class="btn-danger">Eliminar cliente</button>
                 </form>
             </div>
         </div>
 
-        <!-- Info básica -->
+        <!-- Info basica -->
         <div class="detail-card">
-            <p class="detalle-section-title">Información del cliente</p>
+            <p class="detalle-section-title">Informacion del cliente</p>
             <div class="info-grid">
                 <div class="info-row">
                     <span class="info-label">Nombre</span>
-                    <span class="info-value"><%= cliente.nombre %></span>
+                    <span class="info-value"><%= cliente.nombre %> <%= cliente.apellido %></span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Teléfono</span>
+                    <span class="info-label">DNI</span>
+                    <span class="info-value"><%= cliente.dni || '—' %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Telefono</span>
                     <span class="info-value"><%= cliente.telefono || '—' %></span>
                 </div>
                 <div class="info-row">
@@ -41,7 +45,7 @@
                     <span class="info-value"><%= cliente.email || '—' %></span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Dirección</span>
+                    <span class="info-label">Direccion</span>
                     <span class="info-value"><%= cliente.direccion || '—' %></span>
                 </div>
                 <div class="info-row">
@@ -73,7 +77,7 @@
                     <input type="date" name="fechaHasta" value="<%= filtros.fechaHasta %>">
                 </div>
                 <div class="filtro-group">
-                    <label>Operación</label>
+                    <label>Operacion</label>
                     <select name="tipoOp">
                         <option value="">Todas</option>
                         <option value="alquiler"     <%= filtros.tipoOp === 'alquiler'     ? 'selected' : '' %>>Alquileres</option>
@@ -101,7 +105,7 @@
                                 <th>Contenedor</th>
                                 <th>Inicio</th>
                                 <th>Fin</th>
-                                <th>Dirección</th>
+                                <th>Direccion</th>
                                 <th>Estado</th>
                                 <th>Monto</th>
                             </tr>
@@ -141,7 +145,7 @@
                             <tr>
                                 <th>#ID</th>
                                 <th>Tipo</th>
-                                <th>Descripción</th>
+                                <th>Descripcion</th>
                                 <th>Fecha</th>
                                 <th>Monto</th>
                             </tr>

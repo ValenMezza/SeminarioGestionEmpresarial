@@ -9,59 +9,107 @@
 <body>
     <%- include("../partials/sidebar.ejs") %>
 
-    <main id="ventas" class="ventas-layout">
+    <main id="ventas-landing">
 
-        <!-- Lista de productos -->
-        <section class="ventas-productos">
-            <div class="ventas-productos__header">
-                <h2 class="ventas-productos__title">Productos disponibles</h2>
-            </div>
-            <ul class="ventas-lista-productos">
-                <% productos.forEach(p => { %>
-                    <li>
-                        <div class="ventas-card <%= p.stock === 0 ? 'ventas-card--sin-stock' : '' %>">
-                            <div class="ventas-card__top">
-                                <span class="ventas-card__nombre"><%= p.producto %></span>
-                                <span class="badge badge--<%= p.stock > 0 ? 'con-stock' : 'sin-stock' %>">
-                                    <%= p.stock > 0 ? p.stock + ' unid.' : 'Sin stock' %>
-                                </span>
-                            </div>
-                            <div class="ventas-card__precio">$<%= p.precio.toLocaleString('es-AR') %></div>
-                            <button
-                                class="addToCart btn-primary"
-                                data-id="<%= p.id %>"
-                                data-nombre="<%= p.producto %>"
-                                data-precio="<%= p.precio %>"
-                                <%= p.stock === 0 ? 'disabled' : '' %>
-                            >
-                                <%= p.stock === 0 ? 'Sin stock' : '+ Agregar' %>
-                            </button>
-                        </div>
-                    </li>
-                <% }) %>
-            </ul>
-        </section>
+        <div class="page-header">
+            <h1 class="page-title">Ventas</h1>
+        </div>
 
-        <!-- Carrito -->
-        <aside id="carrito">
-            <h3 class="carrito-title">Carrito</h3>
-            <div id="cart">
-                <ul id="cart_items"></ul>
+        <div class="ventas-cards-grid">
+            <a href="/ventas/cantera" class="ventas-modulo-card">
+                <h2 class="ventas-modulo-card__title">Venta en Cantera</h2>
+                <p class="ventas-modulo-card__desc">Venta directa de productos en cantera</p>
+            </a>
+            <a href="/ventas/viaje" class="ventas-modulo-card">
+                <h2 class="ventas-modulo-card__title">Venta con Viaje</h2>
+                <p class="ventas-modulo-card__desc">Programar o realizar una venta con entrega a domicilio</p>
+            </a>
+        </div>
+
+        <!-- Viajes programados del dia -->
+        <div class="ventas-viajes-section">
+            <h2 class="section-title">Viajes programados del dia</h2>
+            <% if (viajesHoy.length === 0) { %>
+                <div class="empty-state">No hay viajes programados para hoy.</div>
+            <% } else { %>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Cliente</th>
+                                <th>Producto</th>
+                                <th>Cant.</th>
+                                <th>Direccion</th>
+                                <th>Hora</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% viajesHoy.forEach(v => { %>
+                                <tr>
+                                    <td>#<%= v.id %></td>
+                                    <td><%= v.clienteNombre %></td>
+                                    <td><%= v.productoNombre %></td>
+                                    <td><%= v.cantidad %></td>
+                                    <td><%= v.direccion || '—' %></td>
+                                    <td><%= v.hora || '—' %></td>
+                                    <td>$<%= v.precioTotal?.toLocaleString('es-AR') %></td>
+                                    <td class="td-acciones">
+                                        <a href="/ventas/viaje/detalle/<%= v.id %>" class="btn-secondary btn-sm">Ver detalle</a>
+                                        <form action="/ventas/finalizar-viaje/<%= v.id %>" method="POST" style="display:inline"
+                                              onsubmit="return confirm('¿Finalizar este viaje?')">
+                                            <button type="submit" class="btn-primary-green btn-sm">Finalizar viaje</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Todos los viajes pendientes -->
+        <% if (viajesTotales.length > 0 && viajesTotales.length !== viajesHoy.length) { %>
+        <div class="ventas-viajes-section" style="margin-top:1.5rem">
+            <h2 class="section-title">Otros viajes pendientes</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Cliente</th>
+                            <th>Producto</th>
+                            <th>Fecha</th>
+                            <th>Direccion</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% viajesTotales.filter(v => v.fecha !== new Date().toISOString().split('T')[0]).forEach(v => { %>
+                            <tr>
+                                <td>#<%= v.id %></td>
+                                <td><%= v.clienteNombre %></td>
+                                <td><%= v.productoNombre %></td>
+                                <td><%= formatFecha(v.fecha) %></td>
+                                <td><%= v.direccion || '—' %></td>
+                                <td>$<%= v.precioTotal?.toLocaleString('es-AR') %></td>
+                                <td class="td-acciones">
+                                    <a href="/ventas/viaje/detalle/<%= v.id %>" class="btn-secondary btn-sm">Ver detalle</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
-        </aside>
+        </div>
+        <% } %>
 
     </main>
 
-    <!-- Modales de finalización -->
-    <%- include("../partials/form_venta_cantera.ejs") %>
-    <%- include("../partials/form_venta_viaje.ejs") %>
-
-    <script>
-        // Datos del servidor disponibles para ventas.js
-        window.__clientes      = <%- JSON.stringify(clientes) %>;
-        window.__contenedores  = <%- JSON.stringify(contenedoresLibres) %>;
-    </script>
-    <script src="/javascript/ventas.js"></script>
     <script src="/javascript/sidebar.js"></script>
 </body>
 </html>

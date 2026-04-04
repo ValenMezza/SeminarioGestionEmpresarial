@@ -20,21 +20,25 @@
                 </div>
             </div>
 
-            <!-- Filtros de búsqueda -->
+            <!-- Filtros de busqueda -->
             <form method="GET" action="/clientes" class="filtros-bar">
                 <div class="filtro-group">
-                    <label>Nombre</label>
+                    <label name="id">ID</label>
+                    <input type="text" name="id" value="<%= filtros.id %>" placeholder="Buscar por ID...">
+
+                </div>
+                <div class="filtro-group">
+                    <label>Nombre / Apellido</label>
                     <input type="text" name="nombre" value="<%= filtros.nombre %>" placeholder="Buscar por nombre...">
                 </div>
                 <div class="filtro-group">
-                    <label>Teléfono</label>
-                    <input type="text" name="telefono" value="<%= filtros.telefono %>"
-                        placeholder="Buscar por teléfono...">
+                    <label>DNI</label>
+                    <input type="text" name="dni" value="<%= filtros.dni %>" placeholder="Buscar por DNI...">
                 </div>
                 <button type="submit" class="btn-primary">Buscar</button>
-                <% if (filtros.nombre || filtros.telefono) { %>
+                <% if (filtros.id || filtros.nombre || filtros.dni) { %>
                     <a href="/clientes" class="btn-secondary">Limpiar</a>
-                    <% } %>
+                <% } %>
             </form>
 
             <div class="table-wrapper">
@@ -43,9 +47,10 @@
                         <tr>
                             <th>#ID</th>
                             <th>Nombre</th>
-                            <th>Teléfono</th>
+                            <th>Apellido</th>
+                            <th>DNI</th>
+                            <th>Telefono</th>
                             <th>Email</th>
-                            <th>Dirección</th>
                             <th>Cuenta corriente</th>
                             <th>Acciones</th>
                         </tr>
@@ -53,44 +58,36 @@
                     <tbody>
                         <% if (clientes.length===0) { %>
                             <tr>
-                                <td colspan="7" class="td-vacia">No se encontraron clientes</td>
+                                <td colspan="8" class="td-vacia">No se encontraron clientes</td>
                             </tr>
-                            <% } %>
-                                <% clientes.forEach(c=> { %>
-                                    <tr>
-                                        <td>#<%= c.id %>
-                                        </td>
-                                        <td>
-                                            <%= c.nombre %>
-                                        </td>
-                                        <td>
-                                            <%= c.telefono || '—' %>
-                                        </td>
-                                        <td>
-                                            <%= c.email || '—' %>
-                                        </td>
-                                        <td>
-                                            <%= c.direccion || '—' %>
-                                        </td>
-                                        <td>
-                                            <% if (c.cuentaCorriente) { %>
-                                                <span class="badge badge--con-stock">Habilitada</span>
-                                                <% } else { %>
-                                                    <span class="badge badge--sin-stock">No</span>
-                                                    <% } %>
-                                        </td>
-                                        <td>
-                                            <div style="display:flex; gap:0.4rem">
-                                                <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary">Ver</a>
-                                                <a href="/clientes/editar/<%= c.id %>" class="btn-secondary-yellow">Editar</a>
-                                                <form action="/clientes/eliminar/<%= c.id %>" method="POST"
-                                                    onsubmit="return confirm('¿Eliminar a <%= c.nombre %>?')">
-                                                    <button type="submit" class="btn-danger">Eliminar</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
+                        <% } %>
+                        <% clientes.forEach(c => { %>
+                            <tr>
+                                <td>#<%= c.id %></td>
+                                <td><%= c.nombre %></td>
+                                <td><%= c.apellido || '—' %></td>
+                                <td><%= c.dni || '—' %></td>
+                                <td><%= c.telefono || '—' %></td>
+                                <td><%= c.email || '—' %></td>
+                                <td>
+                                    <% if (c.cuentaCorriente) { %>
+                                        <span class="badge badge--con-stock">Habilitada</span>
+                                    <% } else { %>
+                                        <span class="badge badge--sin-stock">No</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div style="display:flex; gap:0.4rem">
+                                        <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary btn-sm">Ver</a>
+                                        <a href="/clientes/editar/<%= c.id %>" class="btn-secondary-yellow btn-sm">Editar</a>
+                                        <form action="/clientes/eliminar/<%= c.id %>" method="POST"
+                                            onsubmit="return confirm('¿Eliminar a <%= c.nombre %> <%= c.apellido %>?')">
+                                            <button type="submit" class="btn-danger btn-sm">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
                     </tbody>
                 </table>
             </div>

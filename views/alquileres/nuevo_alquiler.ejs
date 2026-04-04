@@ -22,7 +22,6 @@
 
             <div class="alquiler-layout">
 
-
                 <section class="alquiler-contenedores">
 
                     <div class="alquiler-contenedores__header">
@@ -30,57 +29,50 @@
                         <% if (contenedoresPorFinalizar.length> 0) { %>
                             <label class="toggle-row">
                                 <input type="checkbox" id="contenedorPorFinalizar">
-                                <span>Ver por finalizar (≤ 2 días)</span>
+                                <span>Ver por finalizar (≤ 2 dias)</span>
                             </label>
-                            <% } %>
+                        <% } %>
                     </div>
 
                     <!-- Disponibles -->
                     <div id="listaDisponibles" class="alquiler-cards-grid">
                         <% if (contenedorlibre.length===0) { %>
                             <div class="empty-state">No hay contenedores disponibles.</div>
-                            <% } %>
-                                <% contenedorlibre.forEach(c=> { %>
-                                    <div class="alquiler-card" data-id="<%= c.id %>"
-                                        data-precio="<%= c.precioAlquiler %>" data-tipo="disponible">
-                                        <div class="alquiler-card__id">Contenedor #<%= c.id %>
-                                        </div>
-                                        <span class="badge badge--disponible">Disponible</span>
-                                        <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR')
-                                                %>
-                                        </div>
-                                        <div class="alquiler-card__pdia">$<%= c.precioDia.toLocaleString('es-AR') %> /
-                                                día</div>
-                                        <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
-                                    </div>
-                                    <% }) %>
+                        <% } %>
+                        <% contenedorlibre.forEach(c=> { %>
+                            <div class="alquiler-card" data-id="<%= c.id %>"
+                                data-precio="<%= c.precioAlquiler %>" data-tipo="disponible">
+                                <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
+                                <span class="badge badge--disponible">Disponible</span>
+                                <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR') %></div>
+                                <div class="alquiler-card__pdia">$<%= c.precioDia.toLocaleString('es-AR') %> / dia</div>
+                                <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
+                            </div>
+                        <% }) %>
                     </div>
 
                     <!-- Por finalizar -->
                     <div id="listaPorFinalizar" class="alquiler-cards-grid" style="display:none">
                         <% if (contenedoresPorFinalizar.length===0) { %>
                             <div class="empty-state">No hay contenedores por finalizar.</div>
-                            <% } %>
-                                <% contenedoresPorFinalizar.forEach(c=> { %>
-                                    <div class="alquiler-card alquiler-card--por-finalizar" data-id="<%= c.id %>"
-                                        data-precio="<%= c.precioAlquiler %>" data-fin="<%= c.finAlquiler %>"
-                                        data-tipo="por-finalizar">
-                                        <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
-                                        <span class="badge badge--alquilado">Por finalizar</span>
-                                        <div class="alquiler-card__vence">Vence: <%= formatFecha(c.finAlquiler) %></div>
-                                        <div class="alquiler-card__vence"><%= c.direccionAlquiler || '—' %>
-                                        </div>
-                                        <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR')
-                                                %>
-                                        </div>
-                                        <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
-                                    </div>
-                                    <% }) %>
+                        <% } %>
+                        <% contenedoresPorFinalizar.forEach(c=> { %>
+                            <div class="alquiler-card alquiler-card--por-finalizar" data-id="<%= c.id %>"
+                                data-precio="<%= c.precioAlquiler %>" data-fin="<%= c.finAlquiler %>"
+                                data-tipo="por-finalizar">
+                                <div class="alquiler-card__id">Contenedor #<%= c.id %></div>
+                                <span class="badge badge--alquilado">Por finalizar</span>
+                                <div class="alquiler-card__vence">Vence: <%= formatFecha(c.finAlquiler) %></div>
+                                <div class="alquiler-card__vence"><%= c.direccionAlquiler || '—' %></div>
+                                <div class="alquiler-card__precio">$<%= c.precioAlquiler.toLocaleString('es-AR') %></div>
+                                <button type="button" class="btn_card btn-seleccionar-cont">Seleccionar</button>
+                            </div>
+                        <% }) %>
                     </div>
 
                 </section>
 
-                <!-- Columna derecha: resumen (como el carrito) -->
+                <!-- Columna derecha: resumen -->
                 <aside class="alquiler-resumen">
                     <div class="alquiler-resumen__card">
                         <p class="alquiler-resumen__title">Resumen del alquiler</p>
@@ -103,11 +95,11 @@
                                 <span class="alquiler-resumen__value" id="res-fin">—</span>
                             </div>
                             <div class="alquiler-resumen__row">
-                                <span class="alquiler-resumen__label">Días</span>
+                                <span class="alquiler-resumen__label">Dias</span>
                                 <span class="alquiler-resumen__value" id="res-dias">—</span>
                             </div>
                             <div class="alquiler-resumen__row">
-                                <span class="alquiler-resumen__label">Dirección</span>
+                                <span class="alquiler-resumen__label">Direccion</span>
                                 <span class="alquiler-resumen__value" id="res-direccion">—</span>
                             </div>
                             <div class="alquiler-resumen__row">
@@ -127,11 +119,11 @@
                     </div>
                 </aside>
 
-            </div><!-- /.alquiler-layout -->
+            </div>
 
         </main>
 
-        <!-- ── Modal: formulario de alquiler ─────────────────────── -->
+        <!-- Modal: formulario de alquiler -->
         <div id="modal-alquiler" class="modal-overlay" style="display:none">
             <div class="modal-box modal-box--lg">
                 <div class="modal-header">
@@ -144,41 +136,13 @@
 
                     <!-- Cliente -->
                     <div class="form-section">
-                        <h3 class="form-section__title">Cliente</h3>
-                        <div class="form-group">
-                            <label for="cliente">Cliente existente</label>
-                            <select name="cliente" id="cliente">
-                                <option value="">— Seleccionar cliente —</option>
-                                <% clientes.forEach(c=> { %>
-                                    <option value="<%= c.nombre %>">
-                                        <%= c.nombre %>
-                                    </option>
-                                    <% }) %>
-                            </select>
-                        </div>
-                        <div class="toggle-row">
-                            <input type="checkbox" name="nuevoCliente" id="nuevoCliente">
-                            <label for="nuevoCliente">Crear nuevo cliente</label>
-                        </div>
-                        <div id="creacionCliente" class="form-subsection">
-                            <p class="form-hint">La creación impactará en el sistema para futuras operaciones.</p>
-                            <div class="form-group">
-                                <label for="nameNuevoCliente">Nombre</label>
-                                <input type="text" name="nombreNuevoCliente" id="nameNuevoCliente"
-                                    placeholder="Nombre completo">
-                            </div>
-                            <div class="form-group">
-                                <label for="telefonoNuevoCliente">Teléfono</label>
-                                <input type="text" name="telefonoNuevoCliente" id="telefonoNuevoCliente"
-                                    placeholder="351 000 0000">
-                            </div>
-                        </div>
+                        <%- include('../partials/buscar_cliente.ejs') %>
                     </div>
 
-                    <!-- Período -->
+                    <!-- Periodo -->
                     <div class="form-section">
-                        <h3 class="form-section__title">Período</h3>
-                        <p class="form-hint">Mínimo 4 días — máximo 9 días.</p>
+                        <h3 class="form-section__title">Periodo</h3>
+                        <p class="form-hint">Minimo 4 dias — maximo 9 dias.</p>
                         <div class="form-row-2">
                             <div class="form-group">
                                 <label for="fechaInicio">Fecha de inicio</label>
@@ -191,38 +155,42 @@
                         </div>
                     </div>
 
-                    <!-- Dirección -->
+                    <!-- Direccion -->
                     <div class="form-section">
-                        <h3 class="form-section__title">Dirección de entrega</h3>
+                        <h3 class="form-section__title">Direccion de entrega</h3>
                         <div class="form-row-2">
                             <div class="form-group">
                                 <label for="calle">Calle</label>
                                 <input type="text" name="calle" id="calle" placeholder="Av. Siempre Viva">
                             </div>
                             <div class="form-group">
-                                <label for="numero">Número</label>
+                                <label for="numero">Numero</label>
                                 <input type="text" name="numero" id="numero" placeholder="123">
                             </div>
                         </div>
                         <button type="button" id="btnBuscarDireccion" class="btn-secondary">Buscar en mapa</button>
-                        <p id="msgMapa">Ingresá calle y número para buscar.</p>
+                        <p id="msgMapa">Ingresa calle y numero para buscar.</p>
                         <div id="mapaEntrega">
                             <iframe id="iframeMapa" allowfullscreen loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
 
-                    <!-- Método de pago -->
+                    <!-- Precio editable -->
                     <div class="form-section">
-                        <h3 class="form-section__title">Método de pago</h3>
-                        <div class="form-group">
-                            <label for="metodoPago">Método</label>
-                            <select name="metodoPago" id="metodoPago">
-                                <option value="efectivo">Efectivo</option>
-                                <option value="transferencia">Transferencia bancaria</option>
-                            </select>
+                        <h3 class="form-section__title">Precio</h3>
+                        <div class="precio-total-row">
+                            <span id="precioAlquilerDisplay"></span>
+                            <label class="toggle-row toggle-sm">
+                                <input type="checkbox" id="checkEditarPrecio">
+                                <span>Modificar precio</span>
+                            </label>
                         </div>
+                        <input type="number" name="precioAlquiler" id="precioAlquilerInput" style="display:none" min="0" step="100">
                     </div>
+
+                    <!-- Metodo de pago -->
+                    <%- include('../partials/metodo_pago.ejs') %>
 
                     <div class="modal-actions">
                         <button type="submit" class="btn-finalizar">Confirmar alquiler</button>
@@ -233,6 +201,11 @@
             </div>
         </div>
 
+        <% if (renovarDatos) { %>
+        <script id="renovar-datos" type="application/json"><%- JSON.stringify(renovarDatos) %></script>
+        <% } %>
+        <script src="/javascript/formValidation.js"></script>
+        <script src="/javascript/buscarCliente.js"></script>
         <%- include('../partials/scripts.ejs') %>
 </body>
 

@@ -17,7 +17,7 @@ const iframeMapa = document.getElementById('iframeMapa');
 
 function cargarMapa(query) {
     if (!iframeMapa) return;
-    iframeMapa.src = `https://maps.google.com/maps?q=${encodeURIComponent(query + ', Córdoba, Argentina')}&output=embed&hl=es`;
+    iframeMapa.src = `https://maps.google.com/maps?q=${encodeURIComponent(query + ', Cordoba, Argentina')}&output=embed&hl=es`;
     if (mapaDiv)  mapaDiv.style.display  = 'block';
     if (msgMapa)  msgMapa.style.display  = 'none';
 }
@@ -34,7 +34,7 @@ if (btnBuscar) {
     });
 }
 
-// Precargar mapa si ya hay dirección (página editar)
+// Precargar mapa si ya hay direccion (pagina editar)
 const calleInicial  = document.getElementById('calle')?.value.trim();
 const numeroInicial = document.getElementById('numero')?.value.trim();
 if (calleInicial && numeroInicial) {
@@ -45,7 +45,7 @@ if (calleInicial && numeroInicial) {
 const fechaInicio = document.getElementById('fechaInicio');
 const fechaFin    = document.getElementById('fechaFin');
 
-// Validación de fechas: mínimo 4 días, máximo 9 días (solo en form nuevo)
+// Validacion de fechas: minimo 4 dias, maximo 9 dias (solo en form nuevo)
 const esFormNuevo = !!document.getElementById('btnConfirmarAlquiler');
 if (esFormNuevo && fechaInicio && fechaFin) {
     const hoy = new Date();
@@ -66,38 +66,28 @@ if (esFormNuevo && fechaInicio && fechaFin) {
     });
 }
 
-// ── Toggle nuevo cliente ───────────────────────────────────────
-const checkNuevoCliente = document.getElementById('nuevoCliente');
-const divCreacionCliente = document.getElementById('creacionCliente');
-const selectCliente     = document.getElementById('cliente');
+// ── Precio editable ───────────────────────────────────────────
+const checkEditarPrecio = document.getElementById('checkEditarPrecio');
+const precioDisplay     = document.getElementById('precioAlquilerDisplay');
+const precioInput       = document.getElementById('precioAlquilerInput');
 
-if (checkNuevoCliente && divCreacionCliente) {
-    checkNuevoCliente.addEventListener('change', () => {
-        const crear = checkNuevoCliente.checked;
-        divCreacionCliente.style.display = crear ? 'block' : 'none';
-        if (selectCliente) {
-            selectCliente.disabled = crear;
-            if (crear) selectCliente.value = '';
-        }
-        actualizarResumen();
+if (checkEditarPrecio) {
+    checkEditarPrecio.addEventListener('change', () => {
+        if (precioInput) precioInput.style.display = checkEditarPrecio.checked ? 'block' : 'none';
+        if (precioDisplay) precioDisplay.style.display = checkEditarPrecio.checked ? 'none' : '';
     });
 }
 
 // ── Resumen en tiempo real ─────────────────────────────────────
 function actualizarResumen() {
-    const clienteEl    = document.getElementById('cliente');
     const calleEl      = document.getElementById('calle');
     const numeroEl     = document.getElementById('numero');
     const metodoPagoEl = document.getElementById('metodoPago');
-    const nuevoCheck   = document.getElementById('nuevoCliente');
-    const nuevoInput   = document.getElementById('nameNuevoCliente');
 
-    // Cliente
-    const clienteVal = nuevoCheck?.checked
-        ? (nuevoInput?.value.trim() || '—')
-        : (clienteEl?.value || '—');
+    // Cliente (desde buscarCliente.js)
+    const clienteNombre = document.getElementById('inputClienteNombre')?.value || '—';
     const elCliente = document.getElementById('res-cliente');
-    if (elCliente) elCliente.textContent = clienteVal;
+    if (elCliente) elCliente.textContent = clienteNombre;
 
     // Fechas
     const inicioVal = fechaInicio?.value;
@@ -113,7 +103,7 @@ function actualizarResumen() {
 
     if (inicioVal && finVal) {
         const dias = Math.round((new Date(finVal) - new Date(inicioVal)) / 86400000);
-        if (elDias) elDias.textContent = dias > 0 ? `${dias} días` : '—';
+        if (elDias) elDias.textContent = dias > 0 ? `${dias} dias` : '—';
         const precio = Number(document.getElementById('inputContenedorPrecio')?.value || 0);
         if (elTotalV) elTotalV.textContent = '$' + precio.toLocaleString('es-AR');
         if (elTotal)  elTotal.style.display = 'flex';
@@ -122,26 +112,31 @@ function actualizarResumen() {
         if (elTotal) elTotal.style.display = 'none';
     }
 
-    // Dirección
+    // Direccion
     const calle  = calleEl?.value.trim();
     const numero = numeroEl?.value.trim();
     const elDir  = document.getElementById('res-direccion');
     if (elDir) elDir.textContent = calle && numero ? `${calle} ${numero}` : calle || '—';
 
     // Pago
-    const pagoMap = { efectivo: 'Efectivo', transferencia: 'Transferencia' };
+    const pagoMap = { efectivo: 'Efectivo', transferencia: 'Transferencia', cuenta_corriente: 'Cuenta corriente' };
     const elPago  = document.getElementById('res-pago');
     if (elPago) elPago.textContent = pagoMap[metodoPagoEl?.value] || '—';
 }
 
-// Escuchar cambios en campos del formulario para actualizar resumen
-['cliente','fechaInicio','fechaFin','calle','numero','metodoPago','nameNuevoCliente'].forEach(id => {
+// Escuchar cambios
+['fechaInicio','fechaFin','calle','numero','metodoPago'].forEach(id => {
     document.getElementById(id)?.addEventListener('change', actualizarResumen);
     document.getElementById(id)?.addEventListener('input',  actualizarResumen);
 });
+
+// Escuchar seleccion de cliente desde buscarCliente.js
+document.addEventListener('clienteSeleccionado', actualizarResumen);
+document.addEventListener('clienteDeseleccionado', actualizarResumen);
+
 actualizarResumen();
 
-// ── Selección de contenedor via cards ──────────────────────────
+// ── Seleccion de contenedor via cards ──────────────────────────
 let contenedorSeleccionado = null;
 
 const btnConfirmar = document.getElementById('btnConfirmarAlquiler');
@@ -151,10 +146,7 @@ document.querySelectorAll('.btn-seleccionar-cont').forEach(btn => {
         const card = btn.closest('.alquiler-card');
         if (!card) return;
 
-        // Quitar selección anterior
         document.querySelectorAll('.alquiler-card').forEach(c => c.classList.remove('alquiler-card--selected'));
-
-        // Marcar nueva selección
         card.classList.add('alquiler-card--selected');
         btn.textContent = 'Seleccionado ✓';
         document.querySelectorAll('.btn-seleccionar-cont').forEach(b => {
@@ -167,11 +159,9 @@ document.querySelectorAll('.btn-seleccionar-cont').forEach(btn => {
             fin:    card.dataset.fin || null
         };
 
-        // Actualizar resumen
         const elCont = document.getElementById('res-contenedor');
         if (elCont) elCont.textContent = `Contenedor #${contenedorSeleccionado.id}`;
 
-        // Habilitar botón confirmar
         if (btnConfirmar) {
             btnConfirmar.disabled = false;
             btnConfirmar.classList.add('btn-confirmar-alquiler--ready');
@@ -192,7 +182,6 @@ if (checkPorFinalizar) {
         if (listaDisponibles)  listaDisponibles.style.display  = usar ? 'none' : '';
         if (listaPorFinalizar) listaPorFinalizar.style.display = usar ? '' : 'none';
 
-        // Deseleccionar container al cambiar lista
         document.querySelectorAll('.alquiler-card').forEach(c => c.classList.remove('alquiler-card--selected'));
         document.querySelectorAll('.btn-seleccionar-cont').forEach(b => b.textContent = 'Seleccionar');
         contenedorSeleccionado = null;
@@ -208,11 +197,13 @@ if (checkPorFinalizar) {
 
 // ── Modal alquiler ─────────────────────────────────────────────
 function abrirModalAlquiler() {
-    document.getElementById('modal-alquiler').style.display = 'flex';
+    const modal = document.getElementById('modal-alquiler');
+    if (modal) modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 function cerrarModalAlquiler() {
-    document.getElementById('modal-alquiler').style.display = 'none';
+    const modal = document.getElementById('modal-alquiler');
+    if (modal) modal.style.display = 'none';
     document.body.style.overflow = '';
 }
 
@@ -220,11 +211,9 @@ if (btnConfirmar) {
     btnConfirmar.addEventListener('click', () => {
         if (!contenedorSeleccionado) return;
 
-        // Poner el ID y precio del contenedor seleccionado en el form
         const inputId = document.getElementById('inputContenedorId');
         if (inputId) inputId.value = contenedorSeleccionado.id;
 
-        // Guardar precio para el resumen
         let inputPrecio = document.getElementById('inputContenedorPrecio');
         if (!inputPrecio) {
             inputPrecio = document.createElement('input');
@@ -234,11 +223,13 @@ if (btnConfirmar) {
         }
         inputPrecio.value = contenedorSeleccionado.precio;
 
-        // Actualizar label del modal
+        // Actualizar display de precio
+        if (precioDisplay) precioDisplay.textContent = '$' + Number(contenedorSeleccionado.precio).toLocaleString('es-AR');
+        if (precioInput) precioInput.value = contenedorSeleccionado.precio;
+
         const labelModal = document.getElementById('modal-cont-label');
         if (labelModal) labelModal.textContent = `Contenedor #${contenedorSeleccionado.id}`;
 
-        // Si es por finalizar, fijar min fecha inicio
         if (contenedorSeleccionado.fin && fechaInicio) {
             fechaInicio.min = contenedorSeleccionado.fin;
             fechaInicio.value = '';
@@ -253,11 +244,20 @@ if (btnConfirmar) {
 document.getElementById('cerrarModalAlquiler')?.addEventListener('click', cerrarModalAlquiler);
 document.getElementById('cancelarModalAlquiler')?.addEventListener('click', cerrarModalAlquiler);
 
-document.getElementById('modal-alquiler')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modal-alquiler') cerrarModalAlquiler();
+// ── Validacion al submit ──────────────────────────────────────
+document.getElementById('formNuevoAlquiler')?.addEventListener('submit', (e) => {
+    const clienteId = document.getElementById('inputClienteId')?.value;
+    if (!clienteId) {
+        alert('Busca y selecciona un cliente antes de confirmar.');
+        e.preventDefault();
+        return;
+    }
+    if (!validarFormulario(e.target, ['#fechaInicio', '#fechaFin', '#calle', '#numero'])) {
+        e.preventDefault();
+    }
 });
 
-// ── Modal confirmación (página editar) ────────────────────────
+// ── Modal confirmacion (pagina editar) ────────────────────────
 const btnGuardar       = document.getElementById('btnGuardar');
 const modalConfirmar   = document.getElementById('modalConfirmar');
 const btnConfirmarModal = document.getElementById('btnConfirmarModal');
@@ -273,7 +273,69 @@ if (btnGuardar && modalConfirmar) {
     btnConfirmarModal?.addEventListener('click', () => {
         btnGuardar.closest('form').submit();
     });
-    modalConfirmar.addEventListener('click', (e) => {
-        if (e.target === modalConfirmar) modalConfirmar.style.display = 'none';
-    });
+}
+
+// ── Renovar alquiler (precarga desde detalle) ──────────────────
+const renovarEl = document.getElementById('renovar-datos');
+const renovar = renovarEl ? JSON.parse(renovarEl.textContent) : null;
+if (renovar) {
+    const inputId = document.getElementById('inputContenedorId');
+    if (inputId) inputId.value = renovar.id;
+
+    let inputPrecio = document.getElementById('inputContenedorPrecio');
+    if (!inputPrecio) {
+        inputPrecio = document.createElement('input');
+        inputPrecio.type  = 'hidden';
+        inputPrecio.id    = 'inputContenedorPrecio';
+        inputPrecio.name  = 'precioAlquiler';
+        document.getElementById('formNuevoAlquiler')?.appendChild(inputPrecio);
+    }
+    inputPrecio.value = renovar.precio;
+
+    if (precioDisplay) precioDisplay.textContent = '$' + Number(renovar.precio).toLocaleString('es-AR');
+    if (precioInput) precioInput.value = renovar.precio;
+
+    const labelModal = document.getElementById('modal-cont-label');
+    if (labelModal) labelModal.textContent = `Contenedor #${renovar.id}`;
+
+    const elCont = document.getElementById('res-contenedor');
+    if (elCont) elCont.textContent = `Contenedor #${renovar.id}`;
+
+    // Pre-cargar cliente
+    if (renovar.clienteId) {
+        const inputClienteId     = document.getElementById('inputClienteId');
+        const inputClienteNombre = document.getElementById('inputClienteNombre');
+        if (inputClienteId)     inputClienteId.value     = renovar.clienteId;
+        if (inputClienteNombre) inputClienteNombre.value = renovar.cliente || '';
+
+        const selDiv = document.getElementById('clienteSeleccionado');
+        const selNom = document.getElementById('clienteSeleccionadoNombre');
+        const busqDiv = document.getElementById('buscarClienteComponent');
+        if (selNom) selNom.textContent = renovar.cliente || '';
+        if (selDiv) selDiv.style.display = '';
+        if (busqDiv) {
+            const inputs = busqDiv.querySelectorAll('input:not([type=hidden]), button');
+            inputs.forEach(el => el.style.display = 'none');
+        }
+    }
+
+    // Pre-cargar direccion
+    const calleEl  = document.getElementById('calle');
+    const numeroEl = document.getElementById('numero');
+    if (calleEl)  calleEl.value  = renovar.calle  || '';
+    if (numeroEl) numeroEl.value = renovar.numero || '';
+    if (renovar.calle && renovar.numero) cargarMapa(`${renovar.calle} ${renovar.numero}`);
+
+    // Fijar fecha de inicio al dia siguiente del fin actual
+    if (renovar.finAlquilerActual && fechaInicio) {
+        const finActual = new Date(renovar.finAlquilerActual + 'T00:00:00');
+        finActual.setDate(finActual.getDate() + 1);
+        const minInicio = toInputDate(finActual);
+        fechaInicio.min   = minInicio;
+        fechaInicio.value = minInicio;
+        fechaInicio.dispatchEvent(new Event('change'));
+    }
+
+    actualizarResumen();
+    abrirModalAlquiler();
 }
