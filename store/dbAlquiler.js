@@ -1,71 +1,81 @@
-let nextId = 1;
+const supabase = require('../lib/supabase');
 
-const dbAlquileres = {
-    lista: []
-};
-
-function crearAlquiler(datos) {
-    const alquiler = {
-        id: nextId++,
-        contenedorId: datos.contenedorId,
-        clienteId: datos.clienteId || null,
-        clienteNombre: datos.clienteNombre,
-        inicioAlquiler: datos.inicioAlquiler,
-        finAlquiler: datos.finAlquiler,
-        direccionAlquiler: datos.direccionAlquiler,
-        precioAlquiler: datos.precioAlquiler || 0,
-        metodoPago: datos.metodoPago || 'efectivo',
-        estado: datos.estado || 'activo',
-        creadoEn: new Date().toISOString().split('T')[0]
+function mapRow(a) {
+    if (!a) return null;
+    return {
+        ...a,
+        contenedorId:      a.contenedor_id,
+        clienteId:         a.cliente_id,
+        clienteNombre:     a.cliente_nombre,
+        inicioAlquiler:    a.inicio_alquiler,
+        finAlquiler:       a.fin_alquiler,
+        direccionAlquiler: a.direccion_alquiler,
+        precioAlquiler:    a.precio_alquiler,
+        metodoPago:        a.metodo_pago,
+        creadoEn:          a.creado_en,
     };
-    dbAlquileres.lista.push(alquiler);
-    return alquiler;
 }
 
-function listAlquileres() {
-    return dbAlquileres.lista;
+async function crearAlquiler(datos) {
+    const { data } = await supabase.from('alquileres').insert({
+        contenedor_id:      datos.contenedorId,
+        cliente_id:         datos.clienteId || null,
+        cliente_nombre:     datos.clienteNombre,
+        inicio_alquiler:    datos.inicioAlquiler,
+        fin_alquiler:       datos.finAlquiler,
+        direccion_alquiler: datos.direccionAlquiler,
+        precio_alquiler:    datos.precioAlquiler || 0,
+        metodo_pago:        datos.metodoPago || 'efectivo',
+        estado:             datos.estado || 'activo'
+    }).select().single();
+    return mapRow(data);
 }
 
-function alquilerById(id) {
-    return dbAlquileres.lista.find(a => a.id === id);
+async function listAlquileres() {
+    const { data } = await supabase.from('alquileres').select('*').order('id', { ascending: false });
+    return (data || []).map(mapRow);
 }
 
-function alquileresProgramados() {
-    return dbAlquileres.lista.filter(a => a.estado === 'programado');
+async function alquilerById(id) {
+    const { data } = await supabase.from('alquileres').select('*').eq('id', id).single();
+    return mapRow(data);
 }
 
-function alquileresActivos() {
-    return dbAlquileres.lista.filter(a => a.estado === 'activo');
+async function alquileresProgramados() {
+    const { data } = await supabase.from('alquileres').select('*').eq('estado', 'programado');
+    return (data || []).map(mapRow);
 }
 
-function alquileresPorIniciar() {
+async function alquileresActivos() {
+    const { data } = await supabase.from('alquileres').select('*').eq('estado', 'activo');
+    return (data || []).map(mapRow);
+}
+
+async function alquileresPorIniciar() {
     const hoy = new Date().toISOString().split('T')[0];
-    return dbAlquileres.lista.filter(a => a.estado === 'programado' && a.inicioAlquiler > hoy);
+    const { data } = await supabase.from('alquileres').select('*').eq('estado', 'programado').gt('inicio_alquiler', hoy);
+    return (data || []).map(mapRow);
 }
 
-function alquileresProgramadosPorContenedor(contenedorId) {
-    return dbAlquileres.lista.find(a => a.contenedorId === contenedorId && a.estado === 'programado');
+async function alquileresProgramadosPorContenedor(contenedorId) {
+    const { data } = await supabase.from('alquileres').select('*')
+        .eq('contenedor_id', contenedorId).eq('estado', 'programado').maybeSingle();
+    return mapRow(data);
 }
 
-function activarAlquiler(id) {
-    const a = dbAlquileres.lista.find(a => a.id === id);
-    if (!a) return null;
-    a.estado = 'activo';
-    return a;
+async function activarAlquiler(id) {
+    const { data } = await supabase.from('alquileres').update({ estado: 'activo' }).eq('id', id).select().single();
+    return mapRow(data);
 }
 
-function finalizarAlquilerRecord(id) {
-    const a = dbAlquileres.lista.find(a => a.id === id);
-    if (!a) return null;
-    a.estado = 'finalizado';
-    return a;
+async function finalizarAlquilerRecord(id) {
+    const { data } = await supabase.from('alquileres').update({ estado: 'finalizado' }).eq('id', id).select().single();
+    return mapRow(data);
 }
 
-function cancelarAlquilerRecord(id) {
-    const a = dbAlquileres.lista.find(a => a.id === id);
-    if (!a) return null;
-    a.estado = 'cancelado';
-    return a;
+async function cancelarAlquilerRecord(id) {
+    const { data } = await supabase.from('alquileres').update({ estado: 'cancelado' }).eq('id', id).select().single();
+    return mapRow(data);
 }
 
 module.exports = {

@@ -6,9 +6,9 @@ const loginController = {
         res.render('login/index', { error: null });
     },
 
-    login: (req, res) => {
+    login: async (req, res) => {
         const { user, password } = req.body;
-        const usuario = buscarPorUser(user);
+        const usuario = await buscarPorUser(user);
 
         if (!usuario || usuario.password !== password) {
             return res.render('login/index', { error: 'Usuario o contraseña incorrectos.' });
@@ -29,15 +29,15 @@ const loginController = {
         res.render('login/create', { error: null });
     },
 
-    postUser: (req, res) => {
+    postUser: async (req, res) => {
         const { user, password } = req.body;
         if (!user || !password) {
             return res.render('login/create', { error: 'Completá todos los campos.' });
         }
-        if (buscarPorUser(user)) {
+        if (await buscarPorUser(user)) {
             return res.render('login/create', { error: 'Ese nombre de usuario ya existe.' });
         }
-        crearUsuario({ user, password, rol: 'operador' });
+        await crearUsuario({ user, password, rol: 'operador' });
         res.redirect('/');
     }
 };

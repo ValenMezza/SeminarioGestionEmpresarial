@@ -1,109 +1,93 @@
-const dbClientes = {
-    lista: [
-        { id: 1, nombre: 'Juan', apellido: 'Perez', dni: '30000001', telefono: '351 000 0001', email: 'juan@email.com', direccion: 'Calle Falsa 123', cuentaCorriente: false, saldo: 0, movimientos: [] },
-        { id: 2, nombre: 'Maria', apellido: 'Lopez', dni: '30000002', telefono: '351 000 0002', email: 'maria@email.com', direccion: 'Avenida Siempre Viva 456', cuentaCorriente: false, saldo: 0, movimientos: [] },
-    ],
-    nextId: 3
-};
+const supabase = require('../lib/supabase');
 
-function listClientes() {
-    return dbClientes.lista;
+function nombreCompleto(c) {
+    return `${c.nombre} ${c.apellido}`.trim();
 }
 
-function clienteById(id) {
-    return dbClientes.lista.find(c => c.id === id);
+async function listClientes() {
+    const { data } = await supabase.from('clientes').select('*').order('id');
+    return data || [];
 }
 
-function buscarClientes({ id, dni, nombre } = {}) {
-    return dbClientes.lista.filter(c => {
-        if (id) return c.id === Number(id);
-        if (dni) return c.dni && c.dni === dni;
-        if (nombre) {
-            const q = nombre.toLowerCase();
-            return c.nombre.toLowerCase().includes(q) || c.apellido.toLowerCase().includes(q);
-        }
-        return false;
-    });
+async function clienteById(id) {
+    const { data } = await supabase.from('clientes').select('*').eq('id', id).single();
+    return data;
 }
 
-function crearCliente(datos) {
-    const nuevo = {
-        id: dbClientes.nextId++,
+async function buscarClientes({ id, dni, nombre } = {}) {
+    let query = supabase.from('clientes').select('*');
+    if (id)     query = query.eq('id', Number(id));
+    else if (dni)    query = query.eq('dni', dni);
+    else if (nombre) query = query.or(`nombre.ilike.%${nombre}%,apellido.ilike.%${nombre}%`);
+    const { data } = await query.order('id');
+    return data || [];
+}
+
+async function crearCliente(datos) {
+    const { data } = await supabase.from('clientes').insert({
         nombre: datos.nombre,
         apellido: datos.apellido || '',
         dni: datos.dni || null,
         telefono: datos.telefono || null,
         email: datos.email || null,
         direccion: datos.direccion || null,
-        cuentaCorriente: datos.cuentaCorriente === true || datos.cuentaCorriente === 'true',
-        saldo: 0,
-        movimientos: []
-    };
-    dbClientes.lista.push(nuevo);
-    return nuevo;
+        cuenta_corriente: datos.cuentaCorriente === true || datos.cuentaCorriente === 'true',
+        saldo: 0
+    }).select().single();
+    return data;
 }
 
-function editarCliente(id, datos) {
-    const c = dbClientes.lista.find(c => c.id === id);
-    if (!c) return null;
-    if (datos.nombre    !== undefined) c.nombre    = datos.nombre;
-    if (datos.apellido  !== undefined) c.apellido  = datos.apellido;
-    if (datos.dni       !== undefined) c.dni       = datos.dni || null;
-    if (datos.telefono  !== undefined) c.telefono  = datos.telefono || null;
-    if (datos.email     !== undefined) c.email     = datos.email || null;
-    if (datos.direccion !== undefined) c.direccion = datos.direccion || null;
-    if (datos.cuentaCorriente !== undefined) {
-        c.cuentaCorriente = datos.cuentaCorriente === true || datos.cuentaCorriente === 'true';
-    }
-    return c;
+async function editarCliente(id, datos) {
+    const update = {};
+    if (datos.nombre     !== undefined) update.nombre     = datos.nombre;
+    if (datos.apellido   !== undefined) update.apellido   = datos.apellido;
+    if (datos.dni        !== undefined) update.dni        = datos.dni || null;
+    if (datos.telefono   !== undefined) update.telefono   = datos.telefono || null;
+    if (datos.email      !== undefined) update.email      = datos.email || null;
+    if (datos.direccion  !== undefined) update.direccion  = datos.direccion || null;
+    if (datos.cuentaCorriente !== undefined)
+        update.cuenta_corriente = datos.cuentaCorriente === true || datos.cuentaCorriente === 'true';
+    const { data } = await supabase.from('clientes').update(update).eq('id', id).select().single();
+    if (data) data.cuentaCorriente = data.cuenta_corriente;
+    return data;
 }
 
-function eliminarCliente(id) {
-    const idx = dbClientes.lista.findIndex(c => c.id === id);
-    if (idx === -1) return null;
-    return dbClientes.lista.splice(idx, 1)[0];
+async function eliminarCliente(id) {
+    const { data } = await supabase.from('clientes').delete().eq('id', id).select().single();
+    return data;
 }
 
-function habilitarCuentaCorriente(id) {
-    const c = dbClientes.lista.find(c => c.id === id);
-    if (!c) return null;
-    c.cuentaCorriente = true;
-    return c;
+async function habilitarCuentaCorriente(id) {
+    const { data } = await supabase.from('clientes').update({ cuenta_corriente: true }).eq('id', id).select().single();
+    return data;
 }
 
-function agregarMovimiento(id, { tipo, descripcion, monto }) {
-    const c = dbClientes.lista.find(c => c.id === id);
-    if (!c) return null;
-    const mov = {
-        id: (c.movimientos.length + 1),
-        tipo,
-        descripcion,
-        monto,
-        fecha: new Date().toISOString().split('T')[0]
-    };
-    c.movimientos.push(mov);
-    c.saldo += monto;
+async function agregarMovimiento(id, { tipo, descripcion, monto }) {
+    const cliente = await clienteById(id);
+    if (!cliente) return null;
+    const { data: mov } = await supabase.from('movimientos_cuenta').insert({
+        cliente_id: id, tipo, descripcion, monto: Number(monto)
+    }).select().single();
+    await supabase.from('clientes').update({ saldo: (cliente.saldo || 0) + Number(monto) }).eq('id', id);
     return mov;
 }
 
-function abonarCuenta(id, monto) {
-    return agregarMovimiento(id, {
-        tipo: 'pago',
-        descripcion: 'Pago / abono de deuda',
-        monto: Number(monto)
-    });
+async function abonarCuenta(id, monto) {
+    return agregarMovimiento(id, { tipo: 'pago', descripcion: 'Pago / abono de deuda', monto: Number(monto) });
 }
 
-function clientesConCuenta() {
-    return dbClientes.lista.filter(c => c.cuentaCorriente === true);
+async function clientesConCuenta() {
+    const { data } = await supabase.from('clientes').select('*').eq('cuenta_corriente', true).order('id');
+    return (data || []).map(c => ({ ...c, cuentaCorriente: c.cuenta_corriente }));
 }
 
-function clientesSinCuenta() {
-    return dbClientes.lista.filter(c => !c.cuentaCorriente);
+async function clientesSinCuenta() {
+    const { data } = await supabase.from('clientes').select('*').eq('cuenta_corriente', false).order('id');
+    return (data || []).map(c => ({ ...c, cuentaCorriente: c.cuenta_corriente }));
 }
 
-function nombreCompleto(c) {
-    return `${c.nombre} ${c.apellido}`.trim();
-}
-
-module.exports = { listClientes, clienteById, buscarClientes, crearCliente, editarCliente, eliminarCliente, habilitarCuentaCorriente, agregarMovimiento, abonarCuenta, clientesConCuenta, clientesSinCuenta, nombreCompleto };
+module.exports = {
+    listClientes, clienteById, buscarClientes, crearCliente, editarCliente,
+    eliminarCliente, habilitarCuentaCorriente, agregarMovimiento, abonarCuenta,
+    clientesConCuenta, clientesSinCuenta, nombreCompleto
+};

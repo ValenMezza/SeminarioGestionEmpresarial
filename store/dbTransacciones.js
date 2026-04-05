@@ -1,39 +1,33 @@
-let nextId = 1;
+const supabase = require('../lib/supabase');
 
-const dbTransacciones = {
-    listaTransacciones: []
-};
-
-function crearTransaccion({ tipo, clienteId, cliente, monto, descripcion, metodoPago }) {
-    const transaccion = {
-        id: nextId++,
+async function crearTransaccion({ tipo, clienteId, cliente, monto, descripcion, metodoPago }) {
+    const { data } = await supabase.from('transacciones').insert({
         tipo,
-        clienteId: clienteId || null,
+        cliente_id:  clienteId || null,
         cliente,
         monto,
         descripcion,
-        metodoPago: metodoPago || 'efectivo',
-        fecha: new Date().toISOString().split('T')[0]
-    };
-    dbTransacciones.listaTransacciones.push(transaccion);
-    return transaccion;
+        metodo_pago: metodoPago || 'efectivo'
+    }).select().single();
+    return data;
 }
 
-function listTransacciones() {
-    return dbTransacciones.listaTransacciones;
+async function listTransacciones() {
+    const { data } = await supabase.from('transacciones').select('*').order('id', { ascending: false });
+    return (data || []).map(t => ({ ...t, metodoPago: t.metodo_pago, clienteId: t.cliente_id }));
 }
 
-function filtrarTransacciones({ id, tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = {}) {
-    return dbTransacciones.listaTransacciones.filter(t => {
-        if (id        && t.id !== Number(id))                                          return false;
-        if (tipo      && tipo !== 'todos' && t.tipo !== tipo)                          return false;
-        if (cliente   && !t.cliente.toLowerCase().includes(cliente.toLowerCase()))     return false;
-        if (fechaDesde && t.fecha < fechaDesde)                                        return false;
-        if (fechaHasta && t.fecha > fechaHasta)                                        return false;
-        if (montoMin  && t.monto < Number(montoMin))                                   return false;
-        if (montoMax  && t.monto > Number(montoMax))                                   return false;
-        return true;
-    });
+async function filtrarTransacciones({ id, tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = {}) {
+    let query = supabase.from('transacciones').select('*');
+    if (id)        query = query.eq('id', Number(id));
+    if (tipo && tipo !== 'todos') query = query.eq('tipo', tipo);
+    if (cliente)   query = query.ilike('cliente', `%${cliente}%`);
+    if (fechaDesde) query = query.gte('fecha', fechaDesde);
+    if (fechaHasta) query = query.lte('fecha', fechaHasta);
+    if (montoMin)  query = query.gte('monto', Number(montoMin));
+    if (montoMax)  query = query.lte('monto', Number(montoMax));
+    const { data } = await query.order('id', { ascending: false });
+    return (data || []).map(t => ({ ...t, metodoPago: t.metodo_pago, clienteId: t.cliente_id }));
 }
 
 module.exports = { crearTransaccion, listTransacciones, filtrarTransacciones };

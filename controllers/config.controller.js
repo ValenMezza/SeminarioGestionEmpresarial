@@ -5,33 +5,33 @@ const configController = {
         res.render('configuraciones/index');
     },
 
-    usuarios: (req, res) => {
-        const usuarios = listUsuarios();
+    usuarios: async (req, res) => {
+        const usuarios = await listUsuarios();
         res.render('configuraciones/usuarios', { usuarios });
     },
 
-    crearUsuario: (req, res) => {
+    crearUsuario: async (req, res) => {
         const { nombre, apellido, user, password, rol } = req.body;
         if (!user || !password || !nombre || !apellido) return res.redirect('/configuraciones/usuarios');
-        crearUsuario({ nombre, apellido, user, password, rol });
+        await crearUsuario({ nombre, apellido, user, password, rol });
         res.redirect('/configuraciones/usuarios');
     },
 
-    pausarUsuario: (req, res) => {
+    pausarUsuario: async (req, res) => {
         const id = Number(req.params.id);
-        pausarUsuario(id);
+        await pausarUsuario(id);
         res.redirect('/configuraciones/usuarios');
     },
 
-    eliminarUsuario: (req, res) => {
+    eliminarUsuario: async (req, res) => {
         const id = Number(req.params.id);
-        eliminarUsuario(id);
+        await eliminarUsuario(id);
         res.redirect('/configuraciones/usuarios');
     },
 
-    resetPassword: (req, res) => {
+    resetPassword: async (req, res) => {
         const id = Number(req.params.id);
-        resetPassword(id, '123456');
+        await resetPassword(id, '123456');
         res.redirect('/configuraciones/usuarios');
     }
 };

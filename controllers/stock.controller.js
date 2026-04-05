@@ -17,9 +17,9 @@ const stockController = {
         res.render('stock/nuevo_stock');
     },
 
-    crearStock: (req, res) => {
+    crearStock: async (req, res) => {
         const { producto, precio, stock } = req.body;
-        crearProducto({ producto, precio, stock });
+        await crearProducto({ producto, precio, stock });
         res.redirect('/stock');
     },
 
@@ -30,16 +30,16 @@ const stockController = {
         res.render('stock/editar', { producto });
     },
 
-    guardarEdicionStock: (req, res) => {
+    guardarEdicionStock: async (req, res) => {
         const { id } = req.params;
         const { producto, precio, stock } = req.body;
-        actualizarProducto(id, { producto, precio, stock });
+        await actualizarProducto(id, { producto, precio, stock });
         res.redirect('/stock');
     },
 
-    eliminarStock: (req, res) => {
+    eliminarStock: async (req, res) => {
         const { id } = req.params;
-        eliminarProducto(id);
+        await eliminarProducto(id);
         res.redirect('/stock');
     },
 };

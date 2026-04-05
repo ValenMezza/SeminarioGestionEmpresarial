@@ -5,13 +5,15 @@ const { listProds }        = require('../store/dbStock');
 
 const homeController = {
     index: async (req, res) => {
-        const contenedores   = await listContenedores();
-        const clientes       = listClientes();
-        const transacciones  = listTransacciones();
-        const productos      = await listProds();
+        const [contenedores, clientes, transacciones, productos] = await Promise.all([
+            listContenedores(),
+            listClientes(),
+            listTransacciones(),
+            listProds(),
+        ]);
 
-        const hoy       = new Date();
-        const mesActual = hoy.getMonth();
+        const hoy        = new Date();
+        const mesActual  = hoy.getMonth();
         const anioActual = hoy.getFullYear();
 
         const ingresoMensual = transacciones

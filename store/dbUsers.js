@@ -1,53 +1,48 @@
-const dbUsers = {
-    lista: [
-        { id: 1, nombre: 'Admin', apellido: 'Sistema', user: 'admin', password: 'admin123', rol: 'admin', activo: true }
-    ],
-    nextId: 2
-};
+const supabase = require('../lib/supabase');
 
-function listUsuarios() {
-    return dbUsers.lista;
+async function listUsuarios() {
+    const { data } = await supabase.from('usuarios').select('*').order('id');
+    return data || [];
 }
 
-function usuarioById(id) {
-    return dbUsers.lista.find(u => u.id === id);
+async function usuarioById(id) {
+    const { data } = await supabase.from('usuarios').select('*').eq('id', id).single();
+    return data;
 }
 
-function buscarPorUser(user) {
-    return dbUsers.lista.find(u => u.user === user);
+async function buscarPorUser(user) {
+    const { data } = await supabase.from('usuarios').select('*').eq('user', user).single();
+    return data;
 }
 
-function crearUsuario({ nombre, apellido, user, password, rol }) {
-    const nuevo = { id: dbUsers.nextId++, nombre: nombre || '', apellido: apellido || '', user, password, rol: rol || 'operador', activo: true };
-    dbUsers.lista.push(nuevo);
-    return nuevo;
+async function crearUsuario({ nombre, apellido, user, password, rol }) {
+    const { data } = await supabase.from('usuarios').insert({
+        nombre: nombre || '', apellido: apellido || '', user, password,
+        rol: rol || 'operador', activo: true
+    }).select().single();
+    return data;
 }
 
-function actualizarUsuario(id, datos) {
-    const u = dbUsers.lista.find(u => u.id === id);
-    if (!u) return null;
-    Object.assign(u, datos);
-    return u;
+async function actualizarUsuario(id, datos) {
+    const { data } = await supabase.from('usuarios').update(datos).eq('id', id).select().single();
+    return data;
 }
 
-function eliminarUsuario(id) {
-    const idx = dbUsers.lista.findIndex(u => u.id === id);
-    if (idx === -1) return null;
-    return dbUsers.lista.splice(idx, 1)[0];
+async function eliminarUsuario(id) {
+    const { data } = await supabase.from('usuarios').delete().eq('id', id).select().single();
+    return data;
 }
 
-function pausarUsuario(id) {
-    const u = dbUsers.lista.find(u => u.id === id);
-    if (!u) return null;
-    u.activo = !u.activo;
-    return u;
+async function pausarUsuario(id) {
+    const usuario = await usuarioById(id);
+    if (!usuario) return null;
+    const { data } = await supabase.from('usuarios').update({ activo: !usuario.activo }).eq('id', id).select().single();
+    return data;
 }
 
-function resetPassword(id, newPassword) {
-    const u = dbUsers.lista.find(u => u.id === id);
-    if (!u) return null;
-    u.password = newPassword;
-    return u;
+async function resetPassword(id, newPassword) {
+    const { data } = await supabase.from('usuarios').update({ password: newPassword }).eq('id', id).select().single();
+    return data;
 }
 
-module.exports = { dbUsers, listUsuarios, usuarioById, buscarPorUser, crearUsuario, actualizarUsuario, eliminarUsuario, pausarUsuario, resetPassword };
+module.exports = { listUsuarios, usuarioById, buscarPorUser, crearUsuario, actualizarUsuario, eliminarUsuario, pausarUsuario, resetPassword };

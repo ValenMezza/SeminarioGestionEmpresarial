@@ -18,23 +18,20 @@ const contenedoresController = {
         res.render('contenedores/config', { contenedores });
     },
 
-    guardarConfig: (req, res) => {
+    guardarConfig: async (req, res) => {
         const { precioPorDia, precioAlquiler } = req.body;
-        actualizarPrecios(Number(precioPorDia), Number(precioAlquiler));
+        await actualizarPrecios(Number(precioPorDia), Number(precioAlquiler));
         res.redirect('/contenedores/config');
     },
 
-    crear: (req, res) => {
-        crearContenedor();
+    crear: async (req, res) => {
+        await crearContenedor();
         res.redirect('/contenedores');
     },
 
-    eliminar: (req, res) => {
+    eliminar: async (req, res) => {
         const id = Number(req.params.id);
-        const resultado = eliminarContenedor(id);
-        if (!resultado) {
-            return res.redirect('/contenedores');
-        }
+        await eliminarContenedor(id);
         res.redirect('/contenedores');
     }
 };

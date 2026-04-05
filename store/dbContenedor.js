@@ -1,103 +1,110 @@
-const config = { precioDia: 5000, precioAlquiler: 30000 };
-let nextId = 6;
+const supabase = require('../lib/supabase');
 
-const dbContenedores = {
-    listaContenedores: [
-        { id: 1, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
-        { id: 2, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Juan Perez", inicioAlquiler: "2026-03-24", finAlquiler: "2026-04-03", direccionAlquiler: "Yrigoyen 123" },
-        { id: 3, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null },
-        { id: 4, estado: "Alquilado", precioAlquiler: 30000, precioDia: 5000, cliente: "Maria Lopez", inicioAlquiler: "2026-03-22", finAlquiler: "2026-03-29", direccionAlquiler: "San Lorenzo 501" },
-        { id: 5, estado: "Disponible", precioAlquiler: 30000, precioDia: 5000, cliente: null, inicioAlquiler: null, finAlquiler: null, direccionAlquiler: null }
-    ],
-};
+function mapRow(c) {
+    if (!c) return null;
+    return {
+        ...c,
+        clienteId:         c.cliente_id,
+        inicioAlquiler:    c.inicio_alquiler,
+        finAlquiler:       c.fin_alquiler,
+        direccionAlquiler: c.direccion_alquiler,
+        precioAlquiler:    c.precio_alquiler,
+        precioDia:         c.precio_dia,
+    };
+}
 
 async function listContenedores() {
-    return dbContenedores.listaContenedores;
+    const { data } = await supabase.from('contenedores').select('*').order('id');
+    return (data || []).map(mapRow);
 }
+
 async function contenedorById(id) {
-    return dbContenedores.listaContenedores.find(c => c.id === id);
+    const { data } = await supabase.from('contenedores').select('*').eq('id', id).single();
+    return mapRow(data);
 }
 
-async function listContenedoresAlquilados(){
-    return dbContenedores.listaContenedores.filter(c=> c.estado === "Alquilado");
+async function listContenedoresAlquilados() {
+    const { data } = await supabase.from('contenedores').select('*').eq('estado', 'Alquilado').order('id');
+    return (data || []).map(mapRow);
 }
 
-async function listContenedoresDisponibles (){
-    return dbContenedores.listaContenedores.filter(c=> c.estado === "Disponible");
+async function listContenedoresDisponibles() {
+    const { data } = await supabase.from('contenedores').select('*').eq('estado', 'Disponible').order('id');
+    return (data || []).map(mapRow);
 }
 
-async function contenedorLibre(){
-    return dbContenedores.listaContenedores.find(c=> c.estado === "Disponible")
+async function contenedorLibre() {
+    const { data } = await supabase.from('contenedores').select('*').eq('estado', 'Disponible').limit(1).single();
+    return mapRow(data);
 }
 
-function listContenedoresPorFinalizar() {
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    return dbContenedores.listaContenedores.filter(c => {
-        if (c.estado !== "Alquilado" || !c.finAlquiler) return false;
-        const fin = new Date(c.finAlquiler + 'T00:00:00');
-        fin.setHours(0, 0, 0, 0);
-        const diasRestantes = (fin - hoy) / (1000 * 60 * 60 * 24);
-        return diasRestantes >= 0 && diasRestantes <= 2;
-    });
+async function listContenedoresPorFinalizar() {
+    const hoy = new Date().toISOString().split('T')[0];
+    const en2dias = new Date();
+    en2dias.setDate(en2dias.getDate() + 2);
+    const limite = en2dias.toISOString().split('T')[0];
+    const { data } = await supabase.from('contenedores').select('*')
+        .eq('estado', 'Alquilado')
+        .gte('fin_alquiler', hoy)
+        .lte('fin_alquiler', limite)
+        .order('fin_alquiler');
+    return (data || []).map(mapRow);
 }
 
-function actualizarContenedor(id, datos) {
-    const contenedor = dbContenedores.listaContenedores.find(c => c.id === id);
-    if (!contenedor) return null;
-    Object.assign(contenedor, datos);
-    return contenedor;
+async function actualizarContenedor(id, datos) {
+    const update = {};
+    if (datos.estado             !== undefined) update.estado              = datos.estado;
+    if (datos.cliente            !== undefined) update.cliente             = datos.cliente;
+    if (datos.clienteId          !== undefined) update.cliente_id          = datos.clienteId;
+    if (datos.inicioAlquiler     !== undefined) update.inicio_alquiler     = datos.inicioAlquiler;
+    if (datos.finAlquiler        !== undefined) update.fin_alquiler        = datos.finAlquiler;
+    if (datos.direccionAlquiler  !== undefined) update.direccion_alquiler  = datos.direccionAlquiler;
+    if (datos.precioAlquiler     !== undefined) update.precio_alquiler     = datos.precioAlquiler;
+    if (datos.precioDia          !== undefined) update.precio_dia          = datos.precioDia;
+    const { data } = await supabase.from('contenedores').update(update).eq('id', id).select().single();
+    return mapRow(data);
 }
 
-function actualizarPrecios(precioDia, precioAlquiler) {
-    config.precioDia = precioDia;
-    config.precioAlquiler = precioAlquiler;
-    dbContenedores.listaContenedores.forEach(c => {
-        if (c.estado !== "Alquilado") {
-            c.precioDia = precioDia;
-            c.precioAlquiler = precioAlquiler;
-        }
-    });
+async function actualizarPrecios(precioDia, precioAlquiler) {
+    await supabase.from('contenedores').update({
+        precio_dia: precioDia, precio_alquiler: precioAlquiler
+    }).eq('estado', 'Disponible');
 }
 
-function finalizarAlquiler(id) {
-    const contenedor = dbContenedores.listaContenedores.find(c => c.id === id);
-    if (!contenedor) return null;
-    Object.assign(contenedor, {
-        estado: "Disponible",
-        cliente: null,
-        clienteId: null,
-        inicioAlquiler: null,
-        finAlquiler: null,
-        direccionAlquiler: null,
-        precioDia: config.precioDia,
-        precioAlquiler: config.precioAlquiler,
-    });
-    return contenedor;
+async function finalizarAlquiler(id) {
+    const { data: cfg } = await supabase.from('contenedores').select('precio_dia, precio_alquiler').eq('estado', 'Disponible').limit(1).single();
+    const { data } = await supabase.from('contenedores').update({
+        estado: 'Disponible',
+        cliente: null, cliente_id: null,
+        inicio_alquiler: null, fin_alquiler: null, direccion_alquiler: null,
+        precio_dia:      cfg?.precio_dia      ?? 5000,
+        precio_alquiler: cfg?.precio_alquiler ?? 30000,
+    }).eq('id', id).select().single();
+    return mapRow(data);
 }
 
-function crearContenedor() {
-    const nuevo = {
-        id: nextId++,
-        estado: "Disponible",
-        precioAlquiler: config.precioAlquiler,
-        precioDia: config.precioDia,
-        cliente: null,
-        clienteId: null,
-        inicioAlquiler: null,
-        finAlquiler: null,
-        direccionAlquiler: null
-    };
-    dbContenedores.listaContenedores.push(nuevo);
-    return nuevo;
+async function crearContenedor() {
+    const { data: ref } = await supabase.from('contenedores').select('precio_dia, precio_alquiler').limit(1).single();
+    const { data } = await supabase.from('contenedores').insert({
+        estado: 'Disponible',
+        precio_alquiler: ref?.precio_alquiler ?? 30000,
+        precio_dia:      ref?.precio_dia      ?? 5000,
+        cliente: null, cliente_id: null,
+        inicio_alquiler: null, fin_alquiler: null, direccion_alquiler: null
+    }).select().single();
+    return mapRow(data);
 }
 
-function eliminarContenedor(id) {
-    const idx = dbContenedores.listaContenedores.findIndex(c => c.id === id);
-    if (idx === -1) return null;
-    const cont = dbContenedores.listaContenedores[idx];
-    if (cont.estado === 'Alquilado') return null;
-    return dbContenedores.listaContenedores.splice(idx, 1)[0];
+async function eliminarContenedor(id) {
+    const cont = await contenedorById(id);
+    if (!cont || cont.estado === 'Alquilado') return null;
+    const { data } = await supabase.from('contenedores').delete().eq('id', id).select().single();
+    return mapRow(data);
 }
 
-module.exports = { dbContenedores, contenedorById, listContenedores, listContenedoresAlquilados, listContenedoresDisponibles, contenedorLibre, actualizarContenedor, listContenedoresPorFinalizar, actualizarPrecios, finalizarAlquiler, crearContenedor, eliminarContenedor }
+module.exports = {
+    contenedorById, listContenedores, listContenedoresAlquilados,
+    listContenedoresDisponibles, contenedorLibre, actualizarContenedor,
+    listContenedoresPorFinalizar, actualizarPrecios, finalizarAlquiler,
+    crearContenedor, eliminarContenedor
+};
