@@ -3,20 +3,20 @@ const { listContenedores } = require('../store/dbContenedor');
 const { listTransacciones } = require('../store/dbTransacciones');
 
 const clienteController = {
-    index: (req, res) => {
+    index: async (req, res) => {
         const { nombre, dni, id } = req.query;
         let clientes;
         if (nombre || dni || id) {
-            clientes = buscarClientes({ id, nombre, dni });
+            clientes = await buscarClientes({ id, nombre, dni });
         } else {
-            clientes = listClientes();
+            clientes = await listClientes();
         }
         res.render('clientes/index', { clientes, filtros: { id: id || '', nombre: nombre || '', dni: dni || '' } });
     },
 
     detalle: async (req, res) => {
         const id = Number(req.params.id);
-        const cliente = clienteById(id);
+        const cliente = await clienteById(id);
         if (!cliente) return res.status(404).send('Cliente no encontrado');
 
         const { fechaDesde, fechaHasta, tipoOp } = req.query;
@@ -39,9 +39,9 @@ const clienteController = {
         res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros });
     },
 
-    cuentas: (req, res) => {
-        const conCuenta    = clientesConCuenta();
-        const sinCuenta    = clientesSinCuenta();
+    cuentas: async (req, res) => {
+        const conCuenta    = await clientesConCuenta();
+        const sinCuenta    = await clientesSinCuenta();
         res.render('clientes/cuentas', { conCuenta, sinCuenta });
     },
 
@@ -49,59 +49,59 @@ const clienteController = {
         res.render('clientes/nuevo_cliente');
     },
 
-    crearCliente: (req, res) => {
+    crearCliente: async (req, res) => {
         const { nombre, apellido, dni, telefono, email, direccion, cuentaCorriente } = req.body;
-        crearCliente({ nombre, apellido, dni, telefono, email, direccion, cuentaCorriente });
+        await crearCliente({ nombre, apellido, dni, telefono, email, direccion, cuentaCorriente });
         res.redirect('/clientes');
     },
 
-    editar: (req, res) => {
+    editar: async (req, res) => {
         const id = Number(req.params.id);
-        const cliente = clienteById(id);
+        const cliente = await clienteById(id);
         if (!cliente) return res.status(404).send('Cliente no encontrado');
         res.render('clientes/editar', { cliente, error: null });
     },
 
-    guardarEdicion: (req, res) => {
+    guardarEdicion: async (req, res) => {
         const id = Number(req.params.id);
         const { nombre, apellido, dni, telefono, email, direccion, cuentaCorriente } = req.body;
         if (!nombre || !apellido) {
-            const cliente = clienteById(id);
+            const cliente = await clienteById(id);
             return res.render('clientes/editar', { cliente, error: 'Nombre y apellido son obligatorios.' });
         }
-        editarCliente(id, { nombre, apellido, dni, telefono, email, direccion, cuentaCorriente });
+        await editarCliente(id, { nombre, apellido, dni, telefono, email, direccion, cuentaCorriente });
         res.redirect(`/clientes/detalle/${id}`);
     },
 
-    eliminar: (req, res) => {
+    eliminar: async (req, res) => {
         const id = Number(req.params.id);
-        eliminarCliente(id);
+        await eliminarCliente(id);
         res.redirect('/clientes');
     },
 
-    habilitarCuenta: (req, res) => {
+    habilitarCuenta: async (req, res) => {
         const id = Number(req.params.id);
-        habilitarCuentaCorriente(id);
+        await habilitarCuentaCorriente(id);
         res.redirect('/clientes/cuentas');
     },
 
-    abonar: (req, res) => {
+    abonar: async (req, res) => {
         const id = Number(req.params.id);
-        const cliente = clienteById(id);
+        const cliente = await clienteById(id);
         if (!cliente || !cliente.cuentaCorriente) return res.redirect('/clientes/cuentas');
         const deuda = Math.abs(Math.min(cliente.saldo, 0)); // deuda real (positiva)
         let monto = Number(req.body.monto);
         if (!monto || monto <= 0) return res.redirect('/clientes/cuentas');
         if (monto > deuda) monto = deuda; // no puede exceder la deuda
-        abonarCuenta(id, monto);
+        await abonarCuenta(id, monto);
         res.redirect('/clientes/cuentas');
     },
 
     // API JSON endpoints
-    buscarApi: (req, res) => {
+    buscarApi: async (req, res) => {
         const { id, dni, nombre } = req.query;
         if (!id && !dni && !nombre) return res.json([]);
-        const resultados = buscarClientes({ id, dni, nombre });
+        const resultados = await buscarClientes({ id, dni, nombre });
         res.json(resultados.map(c => ({
             id: c.id,
             nombre: c.nombre,
@@ -114,12 +114,12 @@ const clienteController = {
         })));
     },
 
-    crearApi: (req, res) => {
+    crearApi: async (req, res) => {
         const { nombre, apellido, dni, telefono, email } = req.body;
         if (!nombre || !apellido || !telefono) {
             return res.status(400).json({ error: 'Nombre, apellido y telefono son obligatorios' });
         }
-        const nuevo = crearCliente({ nombre, apellido, dni, telefono, email });
+        const nuevo = await crearCliente({ nombre, apellido, dni, telefono, email });
         res.json({
             id: nuevo.id,
             nombre: nuevo.nombre,
