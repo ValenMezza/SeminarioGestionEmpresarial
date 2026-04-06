@@ -68,10 +68,6 @@
                                         <%= u.activo ? 'Pausar' : 'Activar' %>
                                     </button>
                                 </form>
-                                <form action="/configuraciones/usuarios/reset/<%= u.id %>" method="POST" style="display:inline"
-                                      onsubmit="return confirm('¿Resetear contraseña de <%= u.user %>? La nueva contraseña sera: 123456')">
-                                    <button type="submit" class="btn-primary btn-sm">Resetear pass</button>
-                                </form>
                                 <button type="button" class="btn-secondary-yellow btn-sm btn-cambiar-pass"
                                     data-id="<%= u.id %>"
                                     data-user="<%= u.user %>">

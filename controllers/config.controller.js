@@ -1,4 +1,4 @@
-const { listUsuarios, crearUsuario, pausarUsuario, eliminarUsuario, resetPassword } = require('../store/dbUsers');
+const { listUsuarios, crearUsuario, pausarUsuario, eliminarUsuario, resetPassword: cambiarPass } = require('../store/dbUsers');
 
 const configController = {
     index: (req, res) => {
@@ -29,17 +29,11 @@ const configController = {
         res.redirect('/configuraciones/usuarios');
     },
 
-    resetPassword: async (req, res) => {
-        const id = Number(req.params.id);
-        await resetPassword(id, '123456');
-        res.redirect('/configuraciones/usuarios');
-    },
-
     cambiarPassword: async (req, res) => {
         const id = Number(req.params.id);
         const { password } = req.body;
         if (!password || password.trim().length < 4) return res.redirect('/configuraciones/usuarios');
-        await resetPassword(id, password.trim());
+        await cambiarPass(id, password.trim());
         res.redirect('/configuraciones/usuarios');
     }
 };
