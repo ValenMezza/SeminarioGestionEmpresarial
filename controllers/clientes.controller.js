@@ -24,7 +24,7 @@ const clienteController = {
         const contenedores  = await listContenedores();
         const fullName = nombreCompleto(cliente);
         let alquileres      = contenedores.filter(c => c.clienteId === cliente.id || c.cliente === fullName);
-        const transacciones = listTransacciones().filter(t => t.clienteId === cliente.id || t.cliente === fullName);
+        const transacciones = (await listTransacciones()).filter(t => t.clienteId === cliente.id || t.cliente === fullName);
 
         // Filtros
         if (fechaDesde) {

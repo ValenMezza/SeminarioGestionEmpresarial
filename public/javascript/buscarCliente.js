@@ -1,20 +1,28 @@
 // ── Modulo reutilizable: Busqueda de clientes ──────────────────
 (function () {
-    const btnBuscar       = document.getElementById('btnBuscarCliente');
-    const inputId         = document.getElementById('buscarClienteId');
-    const inputDni        = document.getElementById('buscarClienteDni');
-    const inputNombre     = document.getElementById('buscarClienteNombre');
-    const divResultado    = document.getElementById('buscarClienteResultado');
-    const divSeleccionado = document.getElementById('clienteSeleccionado');
-    const spanNombre      = document.getElementById('clienteSeleccionadoNombre');
-    const btnCambiar      = document.getElementById('btnCambiarCliente');
-    const divCrear        = document.getElementById('crearClienteInline');
-    const btnCrear        = document.getElementById('btnCrearClienteInline');
-    const hiddenId        = document.getElementById('inputClienteId');
-    const hiddenNombre    = document.getElementById('inputClienteNombre');
-    const opcionCC        = document.getElementById('opcionCuentaCorriente');
+    const btnBuscar           = document.getElementById('btnBuscarCliente');
+    const btnMostrarCrear     = document.getElementById('btnMostrarCrearCliente');
+    const inputId             = document.getElementById('buscarClienteId');
+    const inputDni            = document.getElementById('buscarClienteDni');
+    const inputNombre         = document.getElementById('buscarClienteNombre');
+    const divResultado        = document.getElementById('buscarClienteResultado');
+    const divSeleccionado     = document.getElementById('clienteSeleccionado');
+    const spanNombre          = document.getElementById('clienteSeleccionadoNombre');
+    const btnCambiar          = document.getElementById('btnCambiarCliente');
+    const divCrear            = document.getElementById('crearClienteInline');
+    const btnCrear            = document.getElementById('btnCrearClienteInline');
+    const hiddenId            = document.getElementById('inputClienteId');
+    const hiddenNombre        = document.getElementById('inputClienteNombre');
+    const opcionCC            = document.getElementById('opcionCuentaCorriente');
 
     if (!btnBuscar) return;
+
+    if (btnMostrarCrear) {
+        btnMostrarCrear.addEventListener('click', () => {
+            divResultado.style.display = 'none';
+            divCrear.style.display = 'block';
+        });
+    }
 
     let clienteActual = null;
 

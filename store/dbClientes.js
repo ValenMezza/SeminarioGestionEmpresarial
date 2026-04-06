@@ -4,14 +4,19 @@ function nombreCompleto(c) {
     return `${c.nombre} ${c.apellido}`.trim();
 }
 
+function mapCliente(c) {
+    if (!c) return null;
+    return { ...c, cuentaCorriente: c.cuenta_corriente };
+}
+
 async function listClientes() {
     const { data } = await supabase.from('clientes').select('*').order('id');
-    return data || [];
+    return (data || []).map(mapCliente);
 }
 
 async function clienteById(id) {
     const { data } = await supabase.from('clientes').select('*').eq('id', id).single();
-    return data;
+    return mapCliente(data);
 }
 
 async function buscarClientes({ id, dni, nombre } = {}) {
@@ -20,7 +25,7 @@ async function buscarClientes({ id, dni, nombre } = {}) {
     else if (dni)    query = query.eq('dni', dni);
     else if (nombre) query = query.or(`nombre.ilike.%${nombre}%,apellido.ilike.%${nombre}%`);
     const { data } = await query.order('id');
-    return data || [];
+    return (data || []).map(mapCliente);
 }
 
 async function crearCliente(datos) {
@@ -34,7 +39,7 @@ async function crearCliente(datos) {
         cuenta_corriente: datos.cuentaCorriente === true || datos.cuentaCorriente === 'true',
         saldo: 0
     }).select().single();
-    return data;
+    return mapCliente(data);
 }
 
 async function editarCliente(id, datos) {
@@ -48,8 +53,7 @@ async function editarCliente(id, datos) {
     if (datos.cuentaCorriente !== undefined)
         update.cuenta_corriente = datos.cuentaCorriente === true || datos.cuentaCorriente === 'true';
     const { data } = await supabase.from('clientes').update(update).eq('id', id).select().single();
-    if (data) data.cuentaCorriente = data.cuenta_corriente;
-    return data;
+    return mapCliente(data);
 }
 
 async function eliminarCliente(id) {
@@ -77,13 +81,21 @@ async function abonarCuenta(id, monto) {
 }
 
 async function clientesConCuenta() {
-    const { data } = await supabase.from('clientes').select('*').eq('cuenta_corriente', true).order('id');
-    return (data || []).map(c => ({ ...c, cuentaCorriente: c.cuenta_corriente }));
+    const { data: clientes } = await supabase.from('clientes').select('*').eq('cuenta_corriente', true).order('id');
+    if (!clientes || clientes.length === 0) return [];
+    const ids = clientes.map(c => c.id);
+    const { data: movs } = await supabase.from('movimientos_cuenta').select('*').in('cliente_id', ids);
+    const movsMap = {};
+    (movs || []).forEach(m => {
+        if (!movsMap[m.cliente_id]) movsMap[m.cliente_id] = [];
+        movsMap[m.cliente_id].push(m);
+    });
+    return clientes.map(c => ({ ...mapCliente(c), movimientos: movsMap[c.id] || [] }));
 }
 
 async function clientesSinCuenta() {
     const { data } = await supabase.from('clientes').select('*').eq('cuenta_corriente', false).order('id');
-    return (data || []).map(c => ({ ...c, cuentaCorriente: c.cuenta_corriente }));
+    return (data || []).map(mapCliente);
 }
 
 module.exports = {

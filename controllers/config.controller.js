@@ -33,6 +33,14 @@ const configController = {
         const id = Number(req.params.id);
         await resetPassword(id, '123456');
         res.redirect('/configuraciones/usuarios');
+    },
+
+    cambiarPassword: async (req, res) => {
+        const id = Number(req.params.id);
+        const { password } = req.body;
+        if (!password || password.trim().length < 4) return res.redirect('/configuraciones/usuarios');
+        await resetPassword(id, password.trim());
+        res.redirect('/configuraciones/usuarios');
     }
 };
 

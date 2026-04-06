@@ -72,6 +72,11 @@
                                       onsubmit="return confirm('¿Resetear contraseña de <%= u.user %>? La nueva contraseña sera: 123456')">
                                     <button type="submit" class="btn-primary btn-sm">Resetear pass</button>
                                 </form>
+                                <button type="button" class="btn-secondary-yellow btn-sm btn-cambiar-pass"
+                                    data-id="<%= u.id %>"
+                                    data-user="<%= u.user %>">
+                                    Cambiar pass
+                                </button>
                                 <% if (u.id !== 1) { %>
                                 <form action="/configuraciones/usuarios/eliminar/<%= u.id %>" method="POST" style="display:inline"
                                       onsubmit="return confirm('¿Eliminar usuario <%= u.user %>?')">
@@ -133,6 +138,31 @@
         </div>
     </div>
 
+    <!-- Modal: Cambiar contraseña -->
+    <div id="modal-cambiar-pass" class="modal-overlay" style="display:none">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title">Cambiar contraseña — <span id="modal-pass-user"></span></h2>
+                <button type="button" class="modal-close" id="cerrarModalPass">✕</button>
+            </div>
+            <form id="formCambiarPass" method="POST" style="margin-top:1rem">
+                <div class="form-group">
+                    <label for="inputNuevoPass">Nueva contraseña *</label>
+                    <input type="password" name="password" id="inputNuevoPass" placeholder="Min. 4 caracteres" required minlength="4" autocomplete="new-password">
+                </div>
+                <div class="form-group" style="margin-top:0.5rem">
+                    <label for="inputConfirmarPass">Confirmar contraseña *</label>
+                    <input type="password" id="inputConfirmarPass" placeholder="Repetir contraseña" required>
+                </div>
+                <p id="modal-pass-error" style="color:var(--danger);font-size:0.85rem;margin:0.5rem 0 0;display:none">Las contraseñas no coinciden.</p>
+                <div class="modal-actions" style="margin-top:1.25rem">
+                    <button type="submit" class="btn-primary">Guardar contraseña</button>
+                    <button type="button" class="btn-secondary" id="cancelarModalPass">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="/javascript/formValidation.js"></script>
     <script src="/javascript/sidebar.js"></script>
     <script>
@@ -153,6 +183,43 @@
         document.getElementById('formNuevoUsuario').addEventListener('submit', function(e) {
             if (!validarFormulario(this, ['#nombre', '#apellido', '#user', '#password'])) {
                 e.preventDefault();
+            }
+        });
+
+        // Modal cambiar contraseña
+        const modalPass     = document.getElementById('modal-cambiar-pass');
+        const formCambiarPass = document.getElementById('formCambiarPass');
+        const inputNuevoPass  = document.getElementById('inputNuevoPass');
+        const inputConfirmar  = document.getElementById('inputConfirmarPass');
+        const errorPass       = document.getElementById('modal-pass-error');
+
+        document.querySelectorAll('.btn-cambiar-pass').forEach(btn => {
+            btn.addEventListener('click', () => {
+                formCambiarPass.action = `/configuraciones/usuarios/cambiar-pass/${btn.dataset.id}`;
+                document.getElementById('modal-pass-user').textContent = btn.dataset.user;
+                inputNuevoPass.value = '';
+                inputConfirmar.value = '';
+                errorPass.style.display = 'none';
+                modalPass.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                inputNuevoPass.focus();
+            });
+        });
+
+        function cerrarModalPass() {
+            modalPass.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        document.getElementById('cerrarModalPass').addEventListener('click', cerrarModalPass);
+        document.getElementById('cancelarModalPass').addEventListener('click', cerrarModalPass);
+        modalPass.addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModalPass(); });
+
+        formCambiarPass.addEventListener('submit', function(e) {
+            errorPass.style.display = 'none';
+            if (inputNuevoPass.value !== inputConfirmar.value) {
+                e.preventDefault();
+                errorPass.style.display = 'block';
+                inputConfirmar.focus();
             }
         });
 

@@ -1223,6 +1223,12 @@ main {
   margin-bottom: 0.75rem;
 }
 
+.buscar-cliente__btns {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
 .buscar-cliente__resultado {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
