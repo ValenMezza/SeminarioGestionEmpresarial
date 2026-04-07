@@ -1,4 +1,5 @@
 const { listUsuarios, crearUsuario, pausarUsuario, eliminarUsuario, resetPassword: cambiarPass } = require('../store/dbUsers');
+const { validarContrasena, hashPassword } = require('../lib/password');
 
 const configController = {
     index: (req, res) => {
@@ -7,13 +8,22 @@ const configController = {
 
     usuarios: async (req, res) => {
         const usuarios = await listUsuarios();
-        res.render('configuraciones/usuarios', { usuarios });
+        res.render('configuraciones/usuarios', { usuarios, error: null });
     },
 
     crearUsuario: async (req, res) => {
         const { nombre, apellido, user, password, rol } = req.body;
-        if (!user || !password || !nombre || !apellido) return res.redirect('/configuraciones/usuarios');
-        await crearUsuario({ nombre, apellido, user, password, rol });
+        if (!user || !password || !nombre || !apellido) {
+            const usuarios = await listUsuarios();
+            return res.render('configuraciones/usuarios', { usuarios, error: 'Completá todos los campos.' });
+        }
+        const errorPass = validarContrasena(password);
+        if (errorPass) {
+            const usuarios = await listUsuarios();
+            return res.render('configuraciones/usuarios', { usuarios, error: errorPass });
+        }
+        const hash = await hashPassword(password);
+        await crearUsuario({ nombre, apellido, user, password: hash, rol });
         res.redirect('/configuraciones/usuarios');
     },
 
@@ -32,8 +42,11 @@ const configController = {
     cambiarPassword: async (req, res) => {
         const id = Number(req.params.id);
         const { password } = req.body;
-        if (!password || password.trim().length < 4) return res.redirect('/configuraciones/usuarios');
-        await cambiarPass(id, password.trim());
+        if (!password) return res.redirect('/configuraciones/usuarios');
+        const errorPass = validarContrasena(password);
+        if (errorPass) return res.redirect('/configuraciones/usuarios');
+        const hash = await hashPassword(password);
+        await cambiarPass(id, hash);
         res.redirect('/configuraciones/usuarios');
     }
 };

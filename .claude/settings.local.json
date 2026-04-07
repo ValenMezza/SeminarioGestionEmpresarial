@@ -5,7 +5,9 @@
       "Bash(node -e \":*)",
       "Bash(xargs cat:*)",
       "Bash(timeout 8 node -e \"const app = require\\('./app'\\); const s = app.listen\\(0, \\(\\) => { console.log\\('OK: server started on port', s.address\\(\\).port\\); s.close\\(\\); process.exit\\(0\\); }\\);\")",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "WebFetch(domain:mermaid.ink)",
+      "Bash(npm install:*)"
     ]
   }
 }

@@ -58,6 +58,7 @@ const alquilerController = {
         const direccion     = `${req.body.calle} ${req.body.numero}`.trim();
         const precioAlquiler = req.body.precioAlquiler ? Number(req.body.precioAlquiler) : cont.precioAlquiler;
         const metodoPago    = req.body.metodoPago || 'efectivo';
+        console.log('[crearAlquiler] req.body.metodoPago =', JSON.stringify(req.body.metodoPago), '→ final =', metodoPago);
 
         if (cont.estado === 'Alquilado') {
             const alquiler = await crearAlquiler({

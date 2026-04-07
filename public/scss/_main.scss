@@ -1,4 +1,5 @@
 @use "variables";
+@use "sass:color";
 
 main {
     flex: 1;
@@ -54,31 +55,13 @@ main {
             transition: background 0.2s ease, transform 0.15s ease;
 
             &:hover {
-                background: darken(#1e3a5f, 8%);
+                background: color.adjust(#1e3a5f, $lightness: -8%);
                 transform: translateY(-1px);
             }
         }
     }
 }
 
-#ventas {
-    width: 95%;
-    display: grid;
-    grid-template-columns: 1fr 300px; // productos | carrito
-    gap: 1rem;
-    align-items: start;
-    padding: 1rem;
-    min-width: 0;
-
-    .lista-productos {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-    }
-}
 
 #contenedores {
     width: 100%;
@@ -114,7 +97,7 @@ main {
         transition: background 0.2s ease;
 
         &:hover {
-            background: darken(#1e3a5f, 8%);
+            background: color.adjust(#1e3a5f, $lightness: -8%);
         }
     }
 
@@ -339,7 +322,7 @@ main {
         transition: background 0.2s ease, transform 0.15s ease;
 
         &:hover {
-            background: darken(#1e3a5f, 8%);
+            background: color.adjust(#1e3a5f, $lightness: -8%);
             transform: translateY(-1px);
         }
     }
@@ -361,15 +344,3 @@ main {
     }
 }
 
-/* =========================
-    RESPONSIVE
-========================= */
-@media (max-width: 900px) {
-    #ventas.ventas-layout {
-        grid-template-columns: 1fr; // carrito abajo
-    }
-
-    #ventas .carrito {
-        position: static;
-    }
-}

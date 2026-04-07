@@ -17,7 +17,7 @@ function mapRow(a) {
 }
 
 async function crearAlquiler(datos) {
-    const { data } = await supabase.from('alquileres').insert({
+    const { data, error } = await supabase.from('alquileres').insert({
         contenedor_id:      datos.contenedorId,
         cliente_id:         datos.clienteId || null,
         cliente_nombre:     datos.clienteNombre,
@@ -28,6 +28,7 @@ async function crearAlquiler(datos) {
         metodo_pago:        datos.metodoPago || 'efectivo',
         estado:             datos.estado || 'activo'
     }).select().single();
+    if (error) throw new Error(`crearAlquiler: ${error.message}`);
     return mapRow(data);
 }
 
