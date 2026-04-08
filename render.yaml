@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: seminario-gestion
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
