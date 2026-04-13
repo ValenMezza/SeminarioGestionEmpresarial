@@ -1,5 +1,10 @@
-const { listUsuarios, crearUsuario, pausarUsuario, eliminarUsuario, resetPassword: cambiarPass } = require('../store/dbUsers');
+const { listUsuarios, crearUsuario, pausarUsuario, eliminarUsuario, actualizarUsuario } = require('../store/dbUsers');
 const { validarContrasena, hashPassword } = require('../lib/password');
+
+async function renderUsuarios(res, error = null) {
+    const usuarios = await listUsuarios();
+    res.render('configuraciones/usuarios', { usuarios, error });
+}
 
 const configController = {
     index: (req, res) => {
@@ -7,24 +12,28 @@ const configController = {
     },
 
     usuarios: async (req, res) => {
-        const usuarios = await listUsuarios();
-        res.render('configuraciones/usuarios', { usuarios, error: null });
+        await renderUsuarios(res);
     },
 
     crearUsuario: async (req, res) => {
         const { nombre, apellido, user, password, rol } = req.body;
+        console.log('[crearUsuario] body =', { nombre, apellido, user, rol, passLen: password?.length });
         if (!user || !password || !nombre || !apellido) {
-            const usuarios = await listUsuarios();
-            return res.render('configuraciones/usuarios', { usuarios, error: 'Completá todos los campos.' });
+            return renderUsuarios(res, 'Completá todos los campos.');
         }
         const errorPass = validarContrasena(password);
         if (errorPass) {
-            const usuarios = await listUsuarios();
-            return res.render('configuraciones/usuarios', { usuarios, error: errorPass });
+            return renderUsuarios(res, errorPass);
         }
-        const hash = await hashPassword(password);
-        await crearUsuario({ nombre, apellido, user, password: hash, rol });
-        res.redirect('/configuraciones/usuarios');
+        try {
+            const hash = await hashPassword(password);
+            const creado = await crearUsuario({ nombre, apellido, user, password: hash, rol });
+            console.log('[crearUsuario] creado OK:', creado?.id, creado?.user);
+            res.redirect('/configuraciones/usuarios');
+        } catch (err) {
+            console.error('[crearUsuario] ERROR:', err.message, err);
+            await renderUsuarios(res, err.message || 'Error al crear el usuario.');
+        }
     },
 
     pausarUsuario: async (req, res) => {
@@ -39,15 +48,35 @@ const configController = {
         res.redirect('/configuraciones/usuarios');
     },
 
-    cambiarPassword: async (req, res) => {
+    editarUsuario: async (req, res) => {
         const id = Number(req.params.id);
-        const { password } = req.body;
-        if (!password) return res.redirect('/configuraciones/usuarios');
-        const errorPass = validarContrasena(password);
-        if (errorPass) return res.redirect('/configuraciones/usuarios');
-        const hash = await hashPassword(password);
-        await cambiarPass(id, hash);
-        res.redirect('/configuraciones/usuarios');
+        const { nombre, apellido, user, rol, password } = req.body;
+
+        if (!nombre || !apellido || !user) {
+            return renderUsuarios(res, 'Nombre, apellido y usuario son obligatorios.');
+        }
+        if (id === 1 && rol && rol !== 'admin') {
+            return renderUsuarios(res, 'No se puede cambiar el rol del administrador principal.');
+        }
+
+        const datos = { nombre, apellido, user };
+        if (rol && (rol === 'admin' || rol === 'operador')) {
+            datos.rol = rol;
+        }
+
+        if (password && password.trim() !== '') {
+            const errorPass = validarContrasena(password);
+            if (errorPass) return renderUsuarios(res, errorPass);
+            datos.password = await hashPassword(password);
+        }
+
+        try {
+            await actualizarUsuario(id, datos);
+            res.redirect('/configuraciones/usuarios');
+        } catch (err) {
+            console.error('[editarUsuario] ERROR:', err.message, err);
+            await renderUsuarios(res, err.message || 'Error al editar el usuario.');
+        }
     }
 };
 

@@ -73,10 +73,13 @@
                                         <%= u.activo ? 'Pausar' : 'Activar' %>
                                     </button>
                                 </form>
-                                <button type="button" class="btn-secondary-yellow btn-sm btn-cambiar-pass"
+                                <button type="button" class="btn-secondary-yellow btn-sm btn-editar-usuario"
                                     data-id="<%= u.id %>"
-                                    data-user="<%= u.user %>">
-                                    Cambiar pass
+                                    data-nombre="<%= u.nombre || '' %>"
+                                    data-apellido="<%= u.apellido || '' %>"
+                                    data-user="<%= u.user %>"
+                                    data-rol="<%= u.rol %>">
+                                    Editar
                                 </button>
                                 <% if (u.id !== 1) { %>
                                 <form action="/configuraciones/usuarios/eliminar/<%= u.id %>" method="POST" style="display:inline"
@@ -139,26 +142,52 @@
         </div>
     </div>
 
-    <!-- Modal: Cambiar contraseña -->
-    <div id="modal-cambiar-pass" class="modal-overlay" style="display:none">
+    <!-- Modal: Editar usuario -->
+    <div id="modal-editar-usuario" class="modal-overlay" style="display:none">
         <div class="modal-box">
             <div class="modal-header">
-                <h2 class="modal-title">Cambiar contraseña — <span id="modal-pass-user"></span></h2>
-                <button type="button" class="modal-close" id="cerrarModalPass">✕</button>
+                <h2 class="modal-title">Editar usuario</h2>
+                <button type="button" class="modal-close" id="cerrarModalEditar">✕</button>
             </div>
-            <form id="formCambiarPass" method="POST" style="margin-top:1rem">
+            <form id="formEditarUsuario" method="POST" class="form-grid" style="margin-top:1rem">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="editNombre">Nombre *</label>
+                        <input type="text" name="nombre" id="editNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editApellido">Apellido *</label>
+                        <input type="text" name="apellido" id="editApellido" required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="inputNuevoPass">Nueva contraseña *</label>
-                    <input type="password" name="password" id="inputNuevoPass" placeholder="Min. 8 caracteres, mayúscula, número y carácter especial" required autocomplete="new-password">
+                    <label for="editUser">Nombre de usuario *</label>
+                    <input type="text" name="user" id="editUser" required>
                 </div>
-                <div class="form-group" style="margin-top:0.5rem">
-                    <label for="inputConfirmarPass">Confirmar contraseña *</label>
-                    <input type="password" id="inputConfirmarPass" placeholder="Repetir contraseña" required>
+
+                <div class="form-group">
+                    <label for="editRol">Rol</label>
+                    <select name="rol" id="editRol">
+                        <option value="operador">Operador</option>
+                        <option value="admin">Administrador</option>
+                    </select>
                 </div>
-                <p id="modal-pass-error" style="color:var(--danger);font-size:0.85rem;margin:0.5rem 0 0;display:none">Las contraseñas no coinciden.</p>
+
+                <div class="form-group">
+                    <label for="editPassword">Nueva contraseña <span style="font-weight:normal;color:#888">(opcional — dejar vacío para no cambiar)</span></label>
+                    <input type="password" name="password" id="editPassword" placeholder="Min. 8 caracteres, mayúscula, número y carácter especial" autocomplete="new-password">
+                </div>
+
+                <div class="form-group" id="editConfirmarPassGroup" style="display:none">
+                    <label for="editConfirmarPass">Confirmar contraseña *</label>
+                    <input type="password" id="editConfirmarPass" placeholder="Repetir contraseña">
+                </div>
+                <p id="modal-editar-error" style="color:var(--danger);font-size:0.85rem;margin:0.5rem 0 0;display:none">Las contraseñas no coinciden.</p>
+
                 <div class="modal-actions" style="margin-top:1.25rem">
-                    <button type="submit" class="btn-primary">Guardar contraseña</button>
-                    <button type="button" class="btn-secondary" id="cancelarModalPass">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                    <button type="button" class="btn-secondary" id="cancelarModalEditar">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -187,40 +216,61 @@
             }
         });
 
-        // Modal cambiar contraseña
-        const modalPass     = document.getElementById('modal-cambiar-pass');
-        const formCambiarPass = document.getElementById('formCambiarPass');
-        const inputNuevoPass  = document.getElementById('inputNuevoPass');
-        const inputConfirmar  = document.getElementById('inputConfirmarPass');
-        const errorPass       = document.getElementById('modal-pass-error');
+        // Modal editar usuario
+        const modalEditar     = document.getElementById('modal-editar-usuario');
+        const formEditarUsuario = document.getElementById('formEditarUsuario');
+        const editNombre      = document.getElementById('editNombre');
+        const editApellido    = document.getElementById('editApellido');
+        const editUser        = document.getElementById('editUser');
+        const editRol         = document.getElementById('editRol');
+        const editPassword    = document.getElementById('editPassword');
+        const editConfirmarPass = document.getElementById('editConfirmarPass');
+        const editConfirmarPassGroup = document.getElementById('editConfirmarPassGroup');
+        const errorEditar     = document.getElementById('modal-editar-error');
 
-        document.querySelectorAll('.btn-cambiar-pass').forEach(btn => {
+        document.querySelectorAll('.btn-editar-usuario').forEach(btn => {
             btn.addEventListener('click', () => {
-                formCambiarPass.action = `/configuraciones/usuarios/cambiar-pass/${btn.dataset.id}`;
-                document.getElementById('modal-pass-user').textContent = btn.dataset.user;
-                inputNuevoPass.value = '';
-                inputConfirmar.value = '';
-                errorPass.style.display = 'none';
-                modalPass.style.display = 'flex';
+                formEditarUsuario.action = `/configuraciones/usuarios/editar/${btn.dataset.id}`;
+                editNombre.value = btn.dataset.nombre || '';
+                editApellido.value = btn.dataset.apellido || '';
+                editUser.value = btn.dataset.user || '';
+                editRol.value = btn.dataset.rol || 'operador';
+                editPassword.value = '';
+                editConfirmarPass.value = '';
+                editConfirmarPassGroup.style.display = 'none';
+                errorEditar.style.display = 'none';
+                // Si es el admin principal (id=1), bloquear cambio de rol
+                if (btn.dataset.id === '1') {
+                    editRol.disabled = true;
+                } else {
+                    editRol.disabled = false;
+                }
+                modalEditar.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
-                inputNuevoPass.focus();
+                editNombre.focus();
             });
         });
 
-        function cerrarModalPass() {
-            modalPass.style.display = 'none';
+        // Mostrar campo de confirmar solo si se ingresa una nueva pass
+        editPassword.addEventListener('input', () => {
+            editConfirmarPassGroup.style.display = editPassword.value.length > 0 ? '' : 'none';
+            if (editPassword.value.length === 0) editConfirmarPass.value = '';
+        });
+
+        function cerrarModalEditar() {
+            modalEditar.style.display = 'none';
             document.body.style.overflow = '';
         }
-        document.getElementById('cerrarModalPass').addEventListener('click', cerrarModalPass);
-        document.getElementById('cancelarModalPass').addEventListener('click', cerrarModalPass);
-        modalPass.addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModalPass(); });
+        document.getElementById('cerrarModalEditar').addEventListener('click', cerrarModalEditar);
+        document.getElementById('cancelarModalEditar').addEventListener('click', cerrarModalEditar);
+        modalEditar.addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModalEditar(); });
 
-        formCambiarPass.addEventListener('submit', function(e) {
-            errorPass.style.display = 'none';
-            if (inputNuevoPass.value !== inputConfirmar.value) {
+        formEditarUsuario.addEventListener('submit', function(e) {
+            errorEditar.style.display = 'none';
+            if (editPassword.value.length > 0 && editPassword.value !== editConfirmarPass.value) {
                 e.preventDefault();
-                errorPass.style.display = 'block';
-                inputConfirmar.focus();
+                errorEditar.style.display = 'block';
+                editConfirmarPass.focus();
             }
         });
 

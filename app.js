@@ -129,7 +129,7 @@ app.get('/configuraciones/usuarios',                 requireAdmin, configControl
 app.post('/configuraciones/usuarios/crear',          requireAdmin, configController.crearUsuario);
 app.post('/configuraciones/usuarios/pausar/:id',     requireAdmin, configController.pausarUsuario);
 app.post('/configuraciones/usuarios/eliminar/:id',   requireAdmin, configController.eliminarUsuario);
-app.post('/configuraciones/usuarios/cambiar-pass/:id', requireAdmin, configController.cambiarPassword);
+app.post('/configuraciones/usuarios/editar/:id',     requireAdmin, configController.editarUsuario);
 
 // ── Utilidades ────────────────────────────────────────────────
 app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
