@@ -58,6 +58,12 @@ async function alquileresPorIniciar() {
     return (data || []).map(mapRow);
 }
 
+async function alquilerActivoPorContenedor(contenedorId) {
+    const { data } = await supabase.from('alquileres').select('*')
+        .eq('contenedor_id', contenedorId).eq('estado', 'activo').maybeSingle();
+    return mapRow(data);
+}
+
 async function alquileresProgramadosPorContenedor(contenedorId) {
     const { data } = await supabase.from('alquileres').select('*')
         .eq('contenedor_id', contenedorId).eq('estado', 'programado').maybeSingle();
@@ -82,6 +88,6 @@ async function cancelarAlquilerRecord(id) {
 module.exports = {
     crearAlquiler, listAlquileres, alquilerById,
     alquileresProgramados, alquileresActivos, alquileresPorIniciar,
-    alquileresProgramadosPorContenedor, activarAlquiler,
-    finalizarAlquilerRecord, cancelarAlquilerRecord
+    alquilerActivoPorContenedor, alquileresProgramadosPorContenedor,
+    activarAlquiler, finalizarAlquilerRecord, cancelarAlquilerRecord
 };

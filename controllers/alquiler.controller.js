@@ -1,7 +1,7 @@
 const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, finalizarAlquiler } = require("../store/dbContenedor");
 const { listClientes, nombreCompleto, agregarMovimiento } = require("../store/dbClientes");
 const { crearTransaccion } = require("../store/dbTransacciones");
-const { crearAlquiler, alquileresProgramados, alquileresProgramadosPorContenedor, activarAlquiler, alquilerById, finalizarAlquilerRecord } = require("../store/dbAlquiler");
+const { crearAlquiler, alquileresProgramados, alquileresProgramadosPorContenedor, alquilerActivoPorContenedor, activarAlquiler, alquilerById, finalizarAlquilerRecord } = require("../store/dbAlquiler");
 
 const alquilerController = {
     index: async (req, res) => {
@@ -23,11 +23,14 @@ const alquilerController = {
     },
 
     nuevoAlquiler: async (req, res) => {
-        const [contenedorlibre, contenedoresPorFinalizar, clientes] = await Promise.all([
+        const [contenedorlibre, porFinalizarRaw, clientes, programados] = await Promise.all([
             listContenedoresDisponibles(),
             listContenedoresPorFinalizar(),
             listClientes(),
+            alquileresProgramados(),
         ]);
+        const conProgramado = new Set(programados.map(p => p.contenedorId));
+        const contenedoresPorFinalizar = porFinalizarRaw.filter(c => !conProgramado.has(c.id));
         let renovarDatos = null;
         if (req.query.renovar) {
             const cont = await contenedorById(Number(req.query.renovar));
@@ -78,7 +81,7 @@ const alquilerController = {
         await actualizarContenedor(contenedorId, {
             estado: 'Alquilado', clienteId, cliente: clienteNombre,
             inicioAlquiler: req.body.fechaInicio, finAlquiler: req.body.fechaFin,
-            direccionAlquiler: direccion, precioAlquiler,
+            direccionAlquiler: direccion, precioAlquiler, metodoPago,
         });
 
         res.redirect(`/alquileres/confirmacion/${alquiler.id}`);
@@ -121,25 +124,38 @@ const alquilerController = {
     finalizarAlquiler: async (req, res) => {
         const id = Number(req.params.id);
         const contenedor = await contenedorById(id);
-        if (contenedor) {
-            await crearTransaccion({
-                tipo: 'Alquiler',
-                clienteId: contenedor.clienteId || null,
-                cliente: contenedor.cliente,
-                monto: contenedor.precioAlquiler,
-                descripcion: `Contenedor #${contenedor.id} — ${contenedor.direccionAlquiler} (${contenedor.inicioAlquiler} → ${contenedor.finAlquiler})`,
-                metodoPago: contenedor.metodoPago || 'efectivo'
+        if (!contenedor) return res.redirect('/alquileres');
+
+        // Buscar el registro de alquiler activo para obtener metodoPago
+        const alquilerActivo = await alquilerActivoPorContenedor(id);
+        const metodoPago = alquilerActivo?.metodoPago || 'efectivo';
+
+        await crearTransaccion({
+            tipo: 'Alquiler',
+            clienteId: contenedor.clienteId || null,
+            cliente: contenedor.cliente,
+            monto: contenedor.precioAlquiler,
+            descripcion: `Contenedor #${contenedor.id} — ${contenedor.direccionAlquiler} (${contenedor.inicioAlquiler} → ${contenedor.finAlquiler})`,
+            metodoPago
+        });
+
+        if (metodoPago === 'cuenta_corriente' && contenedor.clienteId) {
+            await agregarMovimiento(contenedor.clienteId, {
+                tipo: 'deuda',
+                descripcion: `Alquiler Contenedor #${contenedor.id} — ${contenedor.direccionAlquiler}`,
+                monto: -contenedor.precioAlquiler
             });
-            if (contenedor.metodoPago === 'cuenta_corriente' && contenedor.clienteId) {
-                await agregarMovimiento(contenedor.clienteId, {
-                    tipo: 'deuda',
-                    descripcion: `Alquiler Contenedor #${contenedor.id} — ${contenedor.direccionAlquiler}`,
-                    monto: -contenedor.precioAlquiler
-                });
-            }
         }
+
+        // Marcar el registro de alquiler como finalizado
+        if (alquilerActivo) {
+            await finalizarAlquilerRecord(alquilerActivo.id);
+        }
+
+        // Resetear el contenedor a Disponible
         await finalizarAlquiler(id);
 
+        // Activar alquiler programado si existe
         const programado = await alquileresProgramadosPorContenedor(id);
         if (programado) {
             await activarAlquiler(programado.id);
@@ -151,6 +167,7 @@ const alquilerController = {
                 finAlquiler: programado.finAlquiler,
                 direccionAlquiler: programado.direccionAlquiler,
                 precioAlquiler: programado.precioAlquiler,
+                metodoPago: programado.metodoPago,
             });
         }
 

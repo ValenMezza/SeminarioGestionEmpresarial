@@ -10,6 +10,7 @@ function mapRow(c) {
         direccionAlquiler: c.direccion_alquiler,
         precioAlquiler:    c.precio_alquiler,
         precioDia:         c.precio_dia,
+        metodoPago:        c.metodo_pago,
     };
 }
 
@@ -39,13 +40,11 @@ async function contenedorLibre() {
 }
 
 async function listContenedoresPorFinalizar() {
-    const hoy = new Date().toISOString().split('T')[0];
     const en2dias = new Date();
     en2dias.setDate(en2dias.getDate() + 2);
     const limite = en2dias.toISOString().split('T')[0];
     const { data } = await supabase.from('contenedores').select('*')
         .eq('estado', 'Alquilado')
-        .gte('fin_alquiler', hoy)
         .lte('fin_alquiler', limite)
         .order('fin_alquiler');
     return (data || []).map(mapRow);
@@ -61,6 +60,7 @@ async function actualizarContenedor(id, datos) {
     if (datos.direccionAlquiler  !== undefined) update.direccion_alquiler  = datos.direccionAlquiler;
     if (datos.precioAlquiler     !== undefined) update.precio_alquiler     = datos.precioAlquiler;
     if (datos.precioDia          !== undefined) update.precio_dia          = datos.precioDia;
+    if (datos.metodoPago         !== undefined) update.metodo_pago         = datos.metodoPago;
     const { data } = await supabase.from('contenedores').update(update).eq('id', id).select().single();
     return mapRow(data);
 }
