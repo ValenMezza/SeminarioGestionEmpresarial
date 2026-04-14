@@ -1,4 +1,4 @@
-const { listProds, prodsById }              = require('../store/dbStock');
+const { listProds, prodsById, actualizarProducto } = require('../store/dbStock');
 const { listClientes, nombreCompleto, agregarMovimiento } = require('../store/dbClientes');
 const { crearTransaccion }                 = require('../store/dbTransacciones');
 const { crearViaje, viajesPendientesHoy, viajesPendientes, viajeById, finalizarViaje } = require('../store/dbViajes');
@@ -31,6 +31,15 @@ const ventasController = {
         const nombre = clienteNombre || 'Particular';
         const cid    = clienteId ? Number(clienteId) : null;
 
+        // Descontar stock de cada producto
+        for (const item of carrito) {
+            const prod = await prodsById(item.id);
+            if (prod) {
+                const nuevoStock = Math.max(0, prod.stock - item.cantidad);
+                await actualizarProducto(item.id, { stock: nuevoStock });
+            }
+        }
+
         await crearTransaccion({ tipo: 'Venta Cantera', clienteId: cid, cliente: nombre, monto: total, descripcion: desc, metodoPago: metodoPago || 'efectivo' });
         if (metodoPago === 'cuenta_corriente' && cid) {
             await agregarMovimiento(cid, { tipo: 'deuda', descripcion: `Venta Cantera: ${desc}`, monto: -total });
@@ -49,13 +58,20 @@ const ventasController = {
         const direccion = `${calle || ''} ${numero || ''}`.trim();
         const esFinalizarAhora = finalizarAhora === 'true';
 
+        // Descontar stock del producto
+        const cantidadVendida = Number(cantidad) || 1;
+        if (prod) {
+            const nuevoStock = Math.max(0, prod.stock - cantidadVendida);
+            await actualizarProducto(Number(productoId), { stock: nuevoStock });
+        }
+
         const viaje = await crearViaje({
             clienteId: clienteId ? Number(clienteId) : null,
             clienteNombre: clienteNombre || 'Sin nombre',
             telefono, fecha, hora, direccion,
             productoId: Number(productoId),
             productoNombre: prod ? prod.producto : 'Producto',
-            cantidad: Number(cantidad) || 1,
+            cantidad: cantidadVendida,
             precioProducto: Number(precioProducto) || 0,
             precioFlete: Number(precioFlete) || 0,
             precioTotal: Number(precioTotal) || 0,

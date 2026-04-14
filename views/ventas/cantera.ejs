@@ -36,6 +36,7 @@
                                 data-id="<%= p.id %>"
                                 data-nombre="<%= p.producto %>"
                                 data-precio="<%= p.precio %>"
+                                data-stock="<%= p.stock %>"
                                 <%= p.stock === 0 ? 'disabled' : '' %>
                             >
                                 <%= p.stock === 0 ? 'Sin stock' : '+ Agregar' %>

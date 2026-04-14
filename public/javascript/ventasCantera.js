@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.querySelectorAll('.qty-plus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const p = carrito.find(x => x.id === Number(btn.dataset.id));
-                if (p) { p.cantidad++; renderCarrito(); }
+                if (p && p.cantidad < p.stock) { p.cantidad++; renderCarrito(); }
             });
         });
         container.querySelectorAll('.qty-remove').forEach(btn => {
@@ -99,9 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const id     = Number(btn.dataset.id);
             const nombre = btn.dataset.nombre;
             const precio = Number(btn.dataset.precio);
+            const stock  = Number(btn.dataset.stock);
             const exist  = carrito.find(p => p.id === id);
-            if (exist) exist.cantidad++;
-            else carrito.push({ id, nombre, precio, cantidad: 1 });
+            if (exist) {
+                if (exist.cantidad >= stock) return;
+                exist.cantidad++;
+            } else {
+                carrito.push({ id, nombre, precio, stock, cantidad: 1 });
+            }
             renderCarrito();
         });
     });
