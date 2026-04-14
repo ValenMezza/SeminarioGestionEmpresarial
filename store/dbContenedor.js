@@ -10,7 +10,6 @@ function mapRow(c) {
         direccionAlquiler: c.direccion_alquiler,
         precioAlquiler:    c.precio_alquiler,
         precioDia:         c.precio_dia,
-        metodoPago:        c.metodo_pago,
     };
 }
 
@@ -60,8 +59,8 @@ async function actualizarContenedor(id, datos) {
     if (datos.direccionAlquiler  !== undefined) update.direccion_alquiler  = datos.direccionAlquiler;
     if (datos.precioAlquiler     !== undefined) update.precio_alquiler     = datos.precioAlquiler;
     if (datos.precioDia          !== undefined) update.precio_dia          = datos.precioDia;
-    if (datos.metodoPago         !== undefined) update.metodo_pago         = datos.metodoPago;
-    const { data } = await supabase.from('contenedores').update(update).eq('id', id).select().single();
+    const { data, error } = await supabase.from('contenedores').update(update).eq('id', id).select().single();
+    if (error) throw new Error(`actualizarContenedor: ${error.message}`);
     return mapRow(data);
 }
 

@@ -96,7 +96,7 @@ const alquilerController = {
             await actualizarContenedor(contenedorId, {
                 estado: 'Alquilado', clienteId, cliente: clienteNombre,
                 inicioAlquiler: req.body.fechaInicio, finAlquiler: req.body.fechaFin,
-                direccionAlquiler: direccion, precioAlquiler, metodoPago,
+                direccionAlquiler: direccion, precioAlquiler,
             });
 
             res.redirect(`/alquileres/confirmacion/${alquiler.id}`);
@@ -204,7 +204,6 @@ const alquilerController = {
                     finAlquiler: programado.finAlquiler,
                     direccionAlquiler: programado.direccionAlquiler,
                     precioAlquiler: programado.precioAlquiler,
-                    metodoPago: programado.metodoPago,
                 });
             }
 
