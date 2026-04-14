@@ -1,6 +1,7 @@
-const { listClientes, clienteById, buscarClientes, crearCliente, editarCliente, eliminarCliente, habilitarCuentaCorriente, abonarCuenta, clientesConCuenta, clientesSinCuenta, nombreCompleto } = require('../store/dbClientes');
+const { listClientes, clienteById, buscarClientes, crearCliente, editarCliente, eliminarCliente, habilitarCuentaCorriente, abonarCuenta, agregarMovimiento, clientesConCuenta, clientesSinCuenta, nombreCompleto } = require('../store/dbClientes');
 const { listContenedores } = require('../store/dbContenedor');
 const { listTransacciones } = require('../store/dbTransacciones');
+const supabase = require('../lib/supabase');
 
 const clienteController = {
     index: async (req, res) => {
@@ -36,13 +37,72 @@ const clienteController = {
 
         const filtros = { fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', tipoOp: tipoOp || '' };
 
-        res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros });
+        // Deudas de cuenta corriente: transacciones con metodo_pago = 'cuenta_corriente'
+        const deudasCC = transacciones.filter(t => t.metodoPago === 'cuenta_corriente');
+
+        // Cargar movimientos del cliente para saber cuales deudas ya fueron saldadas
+        const { data: movsRaw } = await supabase.from('movimientos_cuenta').select('*').eq('cliente_id', cliente.id);
+        const movimientos = movsRaw || [];
+        const saldadas = new Set(
+            movimientos
+                .filter(m => m.tipo === 'pago' && /Saldo transaccion #(\d+)/.test(m.descripcion || ''))
+                .map(m => Number((m.descripcion.match(/Saldo transaccion #(\d+)/) || [])[1]))
+        );
+        const deudasConEstado = deudasCC.map(t => ({ ...t, saldada: saldadas.has(t.id) }));
+
+        res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros, deudasCC: deudasConEstado });
+    },
+
+    saldarTransaccion: async (req, res) => {
+        const clienteId = Number(req.params.id);
+        const transaccionId = Number(req.params.transaccionId);
+        const cliente = await clienteById(clienteId);
+        if (!cliente) return res.redirect('/clientes');
+
+        // Evitar pagos duplicados de la misma transaccion
+        const { data: movsRaw } = await supabase.from('movimientos_cuenta').select('*').eq('cliente_id', clienteId);
+        const yaSaldada = (movsRaw || []).some(m =>
+            m.tipo === 'pago' && (m.descripcion || '').includes(`Saldo transaccion #${transaccionId}`)
+        );
+        if (yaSaldada) return res.redirect(`/clientes/detalle/${clienteId}`);
+
+        const { data: trans } = await supabase.from('transacciones').select('*').eq('id', transaccionId).single();
+        if (!trans) return res.redirect(`/clientes/detalle/${clienteId}`);
+
+        await agregarMovimiento(clienteId, {
+            tipo: 'pago',
+            descripcion: `Saldo transaccion #${transaccionId}`,
+            monto: Number(trans.monto) || 0
+        });
+        res.redirect(`/clientes/detalle/${clienteId}`);
     },
 
     cuentas: async (req, res) => {
         const conCuenta    = await clientesConCuenta();
         const sinCuenta    = await clientesSinCuenta();
         res.render('clientes/cuentas', { conCuenta, sinCuenta });
+    },
+
+    cuentaDetalle: async (req, res) => {
+        const id = Number(req.params.id);
+        const cliente = await clienteById(id);
+        if (!cliente || !cliente.cuentaCorriente) return res.redirect('/clientes/cuentas');
+
+        const fullName = nombreCompleto(cliente);
+        const transacciones = (await listTransacciones()).filter(t =>
+            (t.clienteId === cliente.id || t.cliente === fullName) && t.metodoPago === 'cuenta_corriente'
+        );
+
+        const { data: movsRaw } = await supabase.from('movimientos_cuenta').select('*').eq('cliente_id', cliente.id);
+        const saldadas = new Set(
+            (movsRaw || [])
+                .filter(m => m.tipo === 'pago' && /Saldo transaccion #(\d+)/.test(m.descripcion || ''))
+                .map(m => Number((m.descripcion.match(/Saldo transaccion #(\d+)/) || [])[1]))
+        );
+        const deudasCC = transacciones.map(t => ({ ...t, saldada: saldadas.has(t.id) }));
+        const deudaTotal = deudasCC.filter(t => !t.saldada).reduce((acc, t) => acc + (t.monto || 0), 0);
+
+        res.render('clientes/cuenta_detalle', { cliente, deudasCC, deudaTotal });
     },
 
     nuevo: (req, res) => {

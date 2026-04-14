@@ -112,7 +112,9 @@ function actualizarResumen() {
         const dias = Math.round((new Date(finVal) - new Date(inicioVal)) / 86400000);
         if (elDias) elDias.textContent = dias > 0 ? `${dias} dias` : '—';
         const precio = calcularPrecioAlquiler(dias);
-        if (elTotalV) elTotalV.textContent = '$' + precio.toLocaleString('es-AR');
+        if (elTotalV) elTotalV.textContent = dias > 0
+            ? `$${precio.toLocaleString('es-AR')} por ${dias} Día${dias === 1 ? '' : 's'}`
+            : '—';
         if (elTotal)  elTotal.style.display = 'flex';
 
         // Sincronizar precio con display e input (si el usuario no lo esta editando manualmente)

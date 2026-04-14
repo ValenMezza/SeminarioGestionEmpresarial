@@ -45,6 +45,10 @@
                         placeholder="Nombre del cliente...">
                 </div>
                 <div class="filtro-group">
+                    <label>Mes (historial)</label>
+                    <input type="month" name="mes" value="<%= filtros.mes %>">
+                </div>
+                <div class="filtro-group">
                     <label>Desde</label>
                     <input type="date" name="fechaDesde" value="<%= filtros.fechaDesde %>">
                 </div>
@@ -63,10 +67,15 @@
                 </div>
                 <button type="submit" class="btn-primary">Filtrar</button>
                 <% if (filtros.id || filtros.tipo || filtros.idCliente || filtros.cliente || filtros.fechaDesde || filtros.fechaHasta ||
-                    filtros.montoMin || filtros.montoMax) { %>
+                    filtros.montoMin || filtros.montoMax || filtros.mes) { %>
                     <a href="/transacciones" class="btn-secondary">Limpiar</a>
                     <% } %>
             </form>
+
+            <div class="total-mes-bar" style="display:flex;justify-content:flex-end;gap:0.5rem;padding:0.5rem 0;font-weight:600">
+                <span>Total <% if (filtros.mes) { %>de <%= filtros.mes %><% } else { %>filtrado<% } %>:</span>
+                <span>$<%= (totalMes || 0).toLocaleString('es-AR') %></span>
+            </div>
 
             <div class="table-wrapper">
                 <table class="data-table">

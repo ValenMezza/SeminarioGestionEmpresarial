@@ -70,6 +70,9 @@ app.get('/ventas/cantera/confirmacion',    ventasController.confirmacionCantera)
 app.get('/ventas/viaje',                   ventasController.viaje);
 app.post('/ventas/crear-viaje',            ventasController.crearViajeProgramado);
 app.post('/ventas/finalizar-viaje/:id',    ventasController.finalizarViajeProgramado);
+app.post('/ventas/cancelar-viaje/:id',     ventasController.cancelarViajeProgramado);
+app.get('/ventas/viaje/editar/:id',        ventasController.editarViaje);
+app.post('/ventas/viaje/editar/:id',       ventasController.guardarEdicionViaje);
 app.get('/ventas/viaje/detalle/:id',       ventasController.detalleViaje);
 
 // ── Transacciones ─────────────────────────────────────────────
@@ -114,10 +117,12 @@ app.post('/clientes/nuevo_cliente',     clienteController.crearCliente);
 app.get('/clientes/detalle/:id',        clienteController.detalle);
 app.post('/clientes/eliminar/:id',      clienteController.eliminar);
 app.get('/clientes/cuentas',            clienteController.cuentas);
+app.get('/clientes/cuentas/:id',        clienteController.cuentaDetalle);
 app.get('/clientes/editar/:id',         clienteController.editar);
 app.post('/clientes/editar/:id',        clienteController.guardarEdicion);
 app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
 app.post('/clientes/:id/abonar',          clienteController.abonar);
+app.post('/clientes/:id/saldar-transaccion/:transaccionId', clienteController.saldarTransaccion);
 
 // ── API Clientes (JSON) ──────────────────────────────────────
 app.get('/api/clientes/buscar',  clienteController.buscarApi);
