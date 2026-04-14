@@ -4,12 +4,12 @@ const TIPOS = ['Alquiler', 'Venta Cantera', 'Venta Viaje'];
 
 const transaccionesController = {
     index: async (req, res) => {
-        const { id, tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = req.query;
-        const tienesFiltros = id || tipo || cliente || fechaDesde || fechaHasta || montoMin || montoMax;
+        const { id, tipo, idCliente, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = req.query;
+        const tienesFiltros = id || tipo || idCliente || cliente || fechaDesde || fechaHasta || montoMin || montoMax;
         const transacciones = tienesFiltros
-            ? await filtrarTransacciones({ id, tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax })
+            ? await filtrarTransacciones({ id, tipo, idCliente, cliente, fechaDesde, fechaHasta, montoMin, montoMax })
             : await listTransacciones();
-        const filtros = { id: id || '', tipo: tipo || '', cliente: cliente || '', fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', montoMin: montoMin || '', montoMax: montoMax || '' };
+        const filtros = { id: id || '', tipo: tipo || '', idCliente: idCliente || '', cliente: cliente || '', fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', montoMin: montoMin || '', montoMax: montoMax || '' };
         res.render('transacciones/index', { transacciones, filtros, tipos: TIPOS });
     },
 

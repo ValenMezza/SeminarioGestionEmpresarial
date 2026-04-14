@@ -17,10 +17,11 @@ async function listTransacciones() {
     return (data || []).map(t => ({ ...t, metodoPago: t.metodo_pago, clienteId: t.cliente_id }));
 }
 
-async function filtrarTransacciones({ id, tipo, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = {}) {
+async function filtrarTransacciones({ id, tipo, idCliente, cliente, fechaDesde, fechaHasta, montoMin, montoMax } = {}) {
     let query = supabase.from('transacciones').select('*');
     if (id)        query = query.eq('id', Number(id));
     if (tipo && tipo !== 'todos') query = query.eq('tipo', tipo);
+    if (idCliente) query = query.eq('cliente_id', Number(idCliente));
     if (cliente)   query = query.ilike('cliente', `%${cliente}%`);
     if (fechaDesde) query = query.gte('fecha', fechaDesde);
     if (fechaHasta) query = query.lte('fecha', fechaHasta);
