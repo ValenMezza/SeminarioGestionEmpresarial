@@ -13,7 +13,9 @@ const alquilerController = {
             ]);
             const contenedoresConProgramado = new Set(programados.map(p => p.contenedorId));
             const porFinalizar = porFinalizarRaw.filter(c => !contenedoresConProgramado.has(c.id));
-            res.render('alquileres/index', { contenedores, porFinalizar, programados });
+            const finProximoPorContenedor = {};
+            programados.forEach(p => { finProximoPorContenedor[p.contenedorId] = p.finAlquiler; });
+            res.render('alquileres/index', { contenedores, porFinalizar, programados, finProximoPorContenedor });
         } catch (err) {
             console.error('[alquileres/index]', err);
             res.status(500).send('Error al cargar alquileres: ' + err.message);

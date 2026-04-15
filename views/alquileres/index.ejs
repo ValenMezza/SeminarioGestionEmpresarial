@@ -65,7 +65,7 @@
                     <thead>
                         <tr>
                             <th>#Alquiler</th>
-                            <th>Contenedor</th>
+                            <th>#Contenedor</th>
                             <th>Cliente</th>
                             <th>Inicio</th>
                             <th>Fin</th>
@@ -98,10 +98,11 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>#ID</th>
+                            <th>#Contenedor</th>
                             <th>Cliente</th>
                             <th>Inicio</th>
                             <th>Fin</th>
+                            <th>Fin próx. alquiler</th>
                             <th>Direccion</th>
                             <th>Acciones</th>
                         </tr>
@@ -110,7 +111,7 @@
                         <% const alquilados = contenedores.filter(c => c.estado === "Alquilado"); %>
                         <% if (alquilados.length === 0) { %>
                             <tr>
-                                <td colspan="6" class="td-vacia">No hay alquileres activos</td>
+                                <td colspan="7" class="td-vacia">No hay alquileres activos</td>
                             </tr>
                         <% } %>
                         <% alquilados.forEach(c => { %>
@@ -119,6 +120,13 @@
                                 <td><%= c.cliente %></td>
                                 <td><%= formatFecha(c.inicioAlquiler) %></td>
                                 <td><%= formatFecha(c.finAlquiler) %></td>
+                                <td>
+                                    <% if (finProximoPorContenedor[c.id]) { %>
+                                        <span class="badge badge--alquilado"><%= formatFecha(finProximoPorContenedor[c.id]) %></span>
+                                    <% } else { %>
+                                        —
+                                    <% } %>
+                                </td>
                                 <td><%= c.direccionAlquiler %></td>
                                 <td class="td-acciones">
                                     <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
