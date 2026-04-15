@@ -60,7 +60,7 @@
                                     </td>
                                     <td><%= c.movimientos.length %></td>
                                     <td class="td-acciones">
-                                        <a href="/clientes/detalle/<%= c.id %>" class="btn-secondary btn-sm">Ver historial</a>
+                                        <a href="/clientes/cuentas/<%= c.id %>" class="btn-secondary btn-sm">Ver historial</a>
                                         <% if (c.saldo < 0) { %>
                                             <button type="button" class="btn-primary-green btn-sm btn-abonar"
                                                 data-id="<%= c.id %>"

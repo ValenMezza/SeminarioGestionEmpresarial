@@ -133,6 +133,54 @@
         </div>
         <% } %>
 
+        <!-- Deudas de cuenta corriente (transacciones con metodoPago=cuenta_corriente) -->
+        <% if (cliente.cuentaCorriente && deudasCC && deudasCC.length > 0) { %>
+        <div class="clientes-historial">
+            <h2 class="clientes-historial__title">Deudas de cuenta corriente</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID Transaccion</th>
+                            <th>Tipo</th>
+                            <th>Descripcion</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% deudasCC.forEach(t => { %>
+                            <tr>
+                                <td>#<%= t.id %></td>
+                                <td><span class="badge badge--alquilado"><%= t.tipo %></span></td>
+                                <td><%= t.descripcion %></td>
+                                <td><%= t.fecha %></td>
+                                <td class="transaccion-monto">$<%= t.monto?.toLocaleString('es-AR') %></td>
+                                <td>
+                                    <% if (t.saldada) { %>
+                                        <span class="badge badge--con-stock">Saldada</span>
+                                    <% } else { %>
+                                        <span class="badge badge--sin-stock">Pendiente</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (!t.saldada) { %>
+                                        <form action="/clientes/<%= cliente.id %>/saldar-transaccion/<%= t.id %>" method="POST" style="display:inline"
+                                              onsubmit="return confirm('¿Saldar esta deuda de $<%= t.monto?.toLocaleString('es-AR') %>?')">
+                                            <button type="submit" class="btn-primary-green btn-sm">Saldar</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+
         <!-- Historial de transacciones -->
         <% if (!filtros.tipoOp || filtros.tipoOp === 'transaccion') { %>
         <div class="clientes-historial">

@@ -3,6 +3,13 @@ function toInputDate(date) {
     return date.toISOString().split('T')[0];
 }
 
+// Tarifa alquiler: 9 dias = 250000; menos dias = 30000/dia
+function calcularPrecioAlquiler(dias) {
+    if (!dias || dias <= 0) return 0;
+    if (dias >= 9) return 250000;
+    return dias * 30000;
+}
+
 function formatFechaLocal(val) {
     if (!val) return '—';
     const [y, m, d] = val.split('-');
@@ -104,9 +111,21 @@ function actualizarResumen() {
     if (inicioVal && finVal) {
         const dias = Math.round((new Date(finVal) - new Date(inicioVal)) / 86400000);
         if (elDias) elDias.textContent = dias > 0 ? `${dias} dias` : '—';
-        const precio = Number(document.getElementById('inputContenedorPrecio')?.value || 0);
-        if (elTotalV) elTotalV.textContent = '$' + precio.toLocaleString('es-AR');
+        const precio = calcularPrecioAlquiler(dias);
+        if (elTotalV) elTotalV.textContent = dias > 0
+            ? `$${precio.toLocaleString('es-AR')} por ${dias} Día${dias === 1 ? '' : 's'}`
+            : '—';
         if (elTotal)  elTotal.style.display = 'flex';
+
+        // Sincronizar precio con display e input (si el usuario no lo esta editando manualmente)
+        if (precioDisplay && !checkEditarPrecio?.checked) {
+            precioDisplay.textContent = '$' + precio.toLocaleString('es-AR');
+        }
+        if (precioInput && !checkEditarPrecio?.checked) {
+            precioInput.value = precio;
+        }
+        let inputPrecioHidden = document.getElementById('inputContenedorPrecio');
+        if (inputPrecioHidden) inputPrecioHidden.value = precio;
     } else {
         if (elDias)  elDias.textContent   = '—';
         if (elTotal) elTotal.style.display = 'none';

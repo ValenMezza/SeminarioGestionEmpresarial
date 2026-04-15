@@ -18,10 +18,17 @@
                 <h1 class="page-title">Viaje #<%= viaje.id %></h1>
             </div>
             <% if (viaje.estado === 'pendiente') { %>
-            <form action="/ventas/finalizar-viaje/<%= viaje.id %>" method="POST"
-                  onsubmit="return confirm('¿Finalizar este viaje?')">
-                <button type="submit" class="btn-primary-green">Finalizar viaje</button>
-            </form>
+            <div style="display:flex; gap:0.5rem">
+                <a href="/ventas/viaje/editar/<%= viaje.id %>" class="btn-secondary-yellow">Editar</a>
+                <form action="/ventas/cancelar-viaje/<%= viaje.id %>" method="POST" style="display:inline"
+                      onsubmit="return confirm('¿Cancelar este viaje? Se restituira el stock del producto.')">
+                    <button type="submit" class="btn-secondary">Cancelar</button>
+                </form>
+                <form action="/ventas/finalizar-viaje/<%= viaje.id %>" method="POST" style="display:inline"
+                      onsubmit="return confirm('¿Finalizar este viaje?')">
+                    <button type="submit" class="btn-primary-green">Finalizar viaje</button>
+                </form>
+            </div>
             <% } %>
         </div>
 

@@ -3,6 +3,19 @@ const { listClientes, nombreCompleto, agregarMovimiento } = require("../store/db
 const { crearTransaccion } = require("../store/dbTransacciones");
 const { crearAlquiler: insertarAlquiler, alquileresProgramados, alquileresProgramadosPorContenedor, alquilerActivoPorContenedor, activarAlquiler, alquilerById, finalizarAlquilerRecord } = require("../store/dbAlquiler");
 
+// Tarifa alquiler: 9 dias = 250000; menos dias = 30000/dia
+function calcularPrecioAlquiler(dias) {
+    if (!dias || dias <= 0) return 0;
+    if (dias >= 9) return 250000;
+    return dias * 30000;
+}
+
+function diasEntre(inicio, fin) {
+    const a = new Date(inicio + 'T00:00:00');
+    const b = new Date(fin + 'T00:00:00');
+    return Math.round((b - a) / 86400000);
+}
+
 const alquilerController = {
     index: async (req, res) => {
         try {
@@ -74,10 +87,16 @@ const alquilerController = {
             const cont = await contenedorById(contenedorId);
             if (!cont) return res.redirect('/alquileres');
 
+            // Validacion de periodo: minimo 4 dias, maximo 9 dias
+            const dias = diasEntre(req.body.fechaInicio, req.body.fechaFin);
+            if (!Number.isFinite(dias) || dias < 4 || dias > 9) {
+                return res.status(400).send('El alquiler debe durar entre 4 y 9 dias.');
+            }
+
             const clienteId     = req.body.clienteId ? Number(req.body.clienteId) : null;
             const clienteNombre = req.body.clienteNombre || req.body.nombreNuevoCliente || 'Sin nombre';
             const direccion     = `${req.body.calle} ${req.body.numero}`.trim();
-            const precioAlquiler = req.body.precioAlquiler ? Number(req.body.precioAlquiler) : cont.precioAlquiler;
+            const precioAlquiler = calcularPrecioAlquiler(dias);
             const metodoPago    = req.body.metodoPago || 'efectivo';
 
             if (cont.estado === 'Alquilado') {

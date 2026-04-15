@@ -1,7 +1,7 @@
 const { listProds, prodsById, actualizarProducto } = require('../store/dbStock');
 const { listClientes, nombreCompleto, agregarMovimiento } = require('../store/dbClientes');
 const { crearTransaccion }                 = require('../store/dbTransacciones');
-const { crearViaje, viajesPendientesHoy, viajesPendientes, viajeById, finalizarViaje } = require('../store/dbViajes');
+const { crearViaje, viajesPendientesHoy, viajesPendientes, viajeById, finalizarViaje, cancelarViaje, actualizarViaje } = require('../store/dbViajes');
 
 const ventasController = {
     index: async (req, res) => {
@@ -53,40 +53,47 @@ const ventasController = {
     },
 
     crearViajeProgramado: async (req, res) => {
-        const { clienteId, clienteNombre, telefono, fecha, hora, calle, numero, productoId, cantidad, precioProducto, precioFlete, precioTotal, metodoPago, descripcion, finalizarAhora } = req.body;
-        const prod = await prodsById(Number(productoId));
-        const direccion = `${calle || ''} ${numero || ''}`.trim();
-        const esFinalizarAhora = finalizarAhora === 'true';
+        try {
+            const { clienteId, clienteNombre, telefono, fecha, hora, calle, numero, productoId, cantidad, precioProducto, precioFlete, precioTotal, metodoPago, descripcion, finalizarAhora } = req.body;
+            const prod = await prodsById(Number(productoId));
+            const direccion = `${calle || ''} ${numero || ''}`.trim();
+            const esFinalizarAhora = finalizarAhora === 'true';
 
-        // Descontar stock del producto
-        const cantidadVendida = Number(cantidad) || 1;
-        if (prod) {
-            const nuevoStock = Math.max(0, prod.stock - cantidadVendida);
-            await actualizarProducto(Number(productoId), { stock: nuevoStock });
-        }
-
-        const viaje = await crearViaje({
-            clienteId: clienteId ? Number(clienteId) : null,
-            clienteNombre: clienteNombre || 'Sin nombre',
-            telefono, fecha, hora, direccion,
-            productoId: Number(productoId),
-            productoNombre: prod ? prod.producto : 'Producto',
-            cantidad: cantidadVendida,
-            precioProducto: Number(precioProducto) || 0,
-            precioFlete: Number(precioFlete) || 0,
-            precioTotal: Number(precioTotal) || 0,
-            metodoPago: metodoPago || 'efectivo',
-            descripcion: descripcion || '',
-            estado: esFinalizarAhora ? 'finalizado' : 'pendiente'
-        });
-
-        if (esFinalizarAhora) {
-            await crearTransaccion({ tipo: 'Venta Viaje', clienteId: viaje.clienteId, cliente: viaje.clienteNombre, monto: viaje.precioTotal, descripcion: `${viaje.productoNombre} x${viaje.cantidad} — ${viaje.direccion}`, metodoPago: viaje.metodoPago });
-            if (viaje.metodoPago === 'cuenta_corriente' && viaje.clienteId) {
-                await agregarMovimiento(viaje.clienteId, { tipo: 'deuda', descripcion: `Venta Viaje: ${viaje.productoNombre} x${viaje.cantidad} — ${viaje.direccion}`, monto: -viaje.precioTotal });
+            // Descontar stock del producto
+            const cantidadVendida = Number(cantidad) || 1;
+            if (prod) {
+                const nuevoStock = Math.max(0, prod.stock - cantidadVendida);
+                await actualizarProducto(Number(productoId), { stock: nuevoStock });
             }
+
+            const viaje = await crearViaje({
+                clienteId: clienteId ? Number(clienteId) : null,
+                clienteNombre: clienteNombre || 'Sin nombre',
+                telefono, fecha, hora, direccion,
+                productoId: Number(productoId),
+                productoNombre: prod ? prod.producto : 'Producto',
+                cantidad: cantidadVendida,
+                precioProducto: Number(precioProducto) || 0,
+                precioFlete: Number(precioFlete) || 0,
+                precioTotal: Number(precioTotal) || 0,
+                metodoPago: metodoPago || 'efectivo',
+                descripcion: descripcion || '',
+                estado: esFinalizarAhora ? 'finalizado' : 'pendiente'
+            });
+
+            if (!viaje) throw new Error('No se pudo crear el viaje (insert devolvio null).');
+
+            if (esFinalizarAhora) {
+                await crearTransaccion({ tipo: 'Venta Viaje', clienteId: viaje.clienteId, cliente: viaje.clienteNombre, monto: viaje.precioTotal, descripcion: `${viaje.productoNombre} x${viaje.cantidad} — ${viaje.direccion}`, metodoPago: viaje.metodoPago });
+                if (viaje.metodoPago === 'cuenta_corriente' && viaje.clienteId) {
+                    await agregarMovimiento(viaje.clienteId, { tipo: 'deuda', descripcion: `Venta Viaje: ${viaje.productoNombre} x${viaje.cantidad} — ${viaje.direccion}`, monto: -viaje.precioTotal });
+                }
+            }
+            res.redirect(`/ventas/viaje/detalle/${viaje.id}`);
+        } catch (err) {
+            console.error('[ventas/crearViajeProgramado]', err);
+            res.status(500).send('Error al crear viaje: ' + err.message);
         }
-        res.redirect(`/ventas/viaje/detalle/${viaje.id}`);
     },
 
     finalizarViajeProgramado: async (req, res) => {
@@ -107,6 +114,70 @@ const ventasController = {
         const viaje = await viajeById(id);
         if (!viaje) return res.status(404).send('Viaje no encontrado');
         res.render('ventas/detalle_viaje', { viaje });
+    },
+
+    editarViaje: async (req, res) => {
+        const id = Number(req.params.id);
+        const viaje = await viajeById(id);
+        if (!viaje) return res.redirect('/ventas');
+        if (viaje.estado !== 'pendiente') return res.status(400).send('Solo se pueden editar viajes pendientes.');
+        const dir = viaje.direccion || '';
+        const lastSpace = dir.lastIndexOf(' ');
+        const calle  = lastSpace > 0 ? dir.substring(0, lastSpace) : dir;
+        const numero = lastSpace > 0 ? dir.substring(lastSpace + 1) : '';
+        res.render('ventas/editar_viaje', { viaje, calle, numero });
+    },
+
+    guardarEdicionViaje: async (req, res) => {
+        const id = Number(req.params.id);
+        const viaje = await viajeById(id);
+        if (!viaje) return res.redirect('/ventas');
+        if (viaje.estado !== 'pendiente') return res.status(400).send('Solo se pueden editar viajes pendientes.');
+
+        const cantidadNueva = Number(req.body.cantidad) || viaje.cantidad;
+        const diff = cantidadNueva - viaje.cantidad;
+        if (diff !== 0 && viaje.productoId) {
+            const prod = await prodsById(viaje.productoId);
+            if (prod) {
+                const nuevoStock = Math.max(0, prod.stock - diff);
+                await actualizarProducto(viaje.productoId, { stock: nuevoStock });
+            }
+        }
+
+        const precioProducto = req.body.precioProducto !== undefined ? Number(req.body.precioProducto) : viaje.precioProducto;
+        const precioFlete    = req.body.precioFlete    !== undefined ? Number(req.body.precioFlete)    : viaje.precioFlete;
+        const precioTotal    = req.body.precioTotal ? Number(req.body.precioTotal) : (precioProducto * cantidadNueva + precioFlete);
+
+        await actualizarViaje(id, {
+            fecha: req.body.fecha,
+            hora: req.body.hora,
+            telefono: req.body.telefono,
+            direccion: `${req.body.calle || ''} ${req.body.numero || ''}`.trim(),
+            descripcion: req.body.descripcion || '',
+            cantidad: cantidadNueva,
+            precioProducto,
+            precioFlete,
+            precioTotal,
+            metodoPago: req.body.metodoPago || viaje.metodoPago,
+        });
+        res.redirect(`/ventas/viaje/detalle/${id}`);
+    },
+
+    cancelarViajeProgramado: async (req, res) => {
+        const id = Number(req.params.id);
+        const viaje = await viajeById(id);
+        if (!viaje) return res.redirect('/ventas');
+        if (viaje.estado !== 'pendiente') return res.status(400).send('Solo se pueden cancelar viajes pendientes.');
+
+        // Restituir stock
+        if (viaje.productoId && viaje.cantidad) {
+            const prod = await prodsById(viaje.productoId);
+            if (prod) {
+                await actualizarProducto(viaje.productoId, { stock: prod.stock + viaje.cantidad });
+            }
+        }
+        await cancelarViaje(id);
+        res.redirect('/ventas');
     }
 };
 
