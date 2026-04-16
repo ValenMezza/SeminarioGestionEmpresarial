@@ -112,6 +112,7 @@ function actualizarResumen() {
         const dias = Math.round((new Date(finVal) - new Date(inicioVal)) / 86400000);
         if (elDias) elDias.textContent = dias > 0 ? `${dias} dias` : '—';
         const precio = calcularPrecioAlquiler(dias);
+        const perDia = dias > 0 ? Math.round(precio / dias) : 0;
         if (elTotalV) elTotalV.textContent = dias > 0
             ? `$${precio.toLocaleString('es-AR')} por ${dias} Día${dias === 1 ? '' : 's'}`
             : '—';
@@ -119,13 +120,13 @@ function actualizarResumen() {
 
         // Sincronizar precio con display e input (si el usuario no lo esta editando manualmente)
         if (precioDisplay && !checkEditarPrecio?.checked) {
-            precioDisplay.textContent = '$' + precio.toLocaleString('es-AR');
+            precioDisplay.textContent = dias > 0
+                ? `$${perDia.toLocaleString('es-AR')} x ${dias} Día${dias === 1 ? '' : 's'} = $${precio.toLocaleString('es-AR')}`
+                : '$' + precio.toLocaleString('es-AR');
         }
         if (precioInput && !checkEditarPrecio?.checked) {
             precioInput.value = precio;
         }
-        let inputPrecioHidden = document.getElementById('inputContenedorPrecio');
-        if (inputPrecioHidden) inputPrecioHidden.value = precio;
     } else {
         if (elDias)  elDias.textContent   = '—';
         if (elTotal) elTotal.style.display = 'none';
@@ -233,15 +234,6 @@ if (btnConfirmar) {
         const inputId = document.getElementById('inputContenedorId');
         if (inputId) inputId.value = contenedorSeleccionado.id;
 
-        let inputPrecio = document.getElementById('inputContenedorPrecio');
-        if (!inputPrecio) {
-            inputPrecio = document.createElement('input');
-            inputPrecio.type = 'hidden';
-            inputPrecio.id   = 'inputContenedorPrecio';
-            document.getElementById('formNuevoAlquiler')?.appendChild(inputPrecio);
-        }
-        inputPrecio.value = contenedorSeleccionado.precio;
-
         // Actualizar display de precio
         if (precioDisplay) precioDisplay.textContent = '$' + Number(contenedorSeleccionado.precio).toLocaleString('es-AR');
         if (precioInput) precioInput.value = contenedorSeleccionado.precio;
@@ -300,16 +292,6 @@ const renovar = renovarEl ? JSON.parse(renovarEl.textContent) : null;
 if (renovar) {
     const inputId = document.getElementById('inputContenedorId');
     if (inputId) inputId.value = renovar.id;
-
-    let inputPrecio = document.getElementById('inputContenedorPrecio');
-    if (!inputPrecio) {
-        inputPrecio = document.createElement('input');
-        inputPrecio.type  = 'hidden';
-        inputPrecio.id    = 'inputContenedorPrecio';
-        inputPrecio.name  = 'precioAlquiler';
-        document.getElementById('formNuevoAlquiler')?.appendChild(inputPrecio);
-    }
-    inputPrecio.value = renovar.precio;
 
     if (precioDisplay) precioDisplay.textContent = '$' + Number(renovar.precio).toLocaleString('es-AR');
     if (precioInput) precioInput.value = renovar.precio;
