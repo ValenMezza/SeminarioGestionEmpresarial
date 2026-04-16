@@ -71,8 +71,7 @@
         </div>
 
     </main>
-    <script src="/javascript/formValidation.js"></script>
-    <script src="/javascript/sidebar.js"></script>
+    <%- include('../partials/scripts.ejs') %>
     <script>
         document.getElementById('formEditarCliente').addEventListener('submit', function(e) {
             if (!validarFormulario(this, ['#nombre', '#apellido', '#telefono'])) {

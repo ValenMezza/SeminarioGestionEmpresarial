@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const buttons        = document.querySelectorAll('.addToCart');
     const container      = document.getElementById('cartItemsContainer');
+    if (!container) return; // No estamos en la pagina de cantera
+    const buttons        = document.querySelectorAll('.addToCart');
     const totalBar       = document.getElementById('cartTotal');
     const totalValor     = document.getElementById('cartTotalValor');
     const actionsDiv     = document.getElementById('cartActions');
