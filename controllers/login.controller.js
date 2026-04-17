@@ -3,7 +3,7 @@ const { validarContrasena, hashPassword, verifyPassword } = require('../lib/pass
 
 const MAX_INTENTOS = 5;
 
-// Detecta si el string es un hash bcrypt
+// chequea si el string ya es un hash de bcrypt
 function esBcrypt(str) {
     return typeof str === 'string' && str.startsWith('$2');
 }
@@ -30,10 +30,9 @@ const loginController = {
         let passwordOk = false;
         if (usuario) {
             if (esBcrypt(usuario.password)) {
-                // Contraseña ya hasheada
                 passwordOk = await verifyPassword(password, usuario.password);
             } else {
-                // Contraseña en texto plano (usuario viejo) — comparar y migrar
+                // pass en texto plano (usuario viejo), si coincide lo migro a hash
                 if (usuario.password === password) {
                     passwordOk = true;
                     const hash = await hashPassword(password);

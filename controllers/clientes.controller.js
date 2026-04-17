@@ -22,25 +22,21 @@ const clienteController = {
 
         const { fechaDesde, fechaHasta, tipoOp } = req.query;
 
-        const contenedores  = await listContenedores();
+        const contenedores = await listContenedores();
         const fullName = nombreCompleto(cliente);
-        let alquileres      = contenedores.filter(c => c.clienteId === cliente.id || c.cliente === fullName);
+        let alquileres = contenedores.filter(c => c.clienteId === cliente.id || c.cliente === fullName);
         const transacciones = (await listTransacciones()).filter(t => t.clienteId === cliente.id || t.cliente === fullName);
 
-        // Filtros
-        if (fechaDesde) {
-            alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler >= fechaDesde);
-        }
-        if (fechaHasta) {
-            alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler <= fechaHasta);
-        }
+        // filtros de fecha
+        if (fechaDesde) alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler >= fechaDesde);
+        if (fechaHasta) alquileres = alquileres.filter(a => a.inicioAlquiler && a.inicioAlquiler <= fechaHasta);
 
         const filtros = { fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', tipoOp: tipoOp || '' };
 
-        // Deudas de cuenta corriente: transacciones con metodo_pago = 'cuenta_corriente'
+        // deudas de cuenta corriente
         const deudasCC = transacciones.filter(t => t.metodoPago === 'cuenta_corriente');
 
-        // Cargar movimientos del cliente para saber cuales deudas ya fueron saldadas
+        // traigo los movimientos para saber cuales deudas ya se saldaron
         const { data: movsRaw } = await supabase.from('movimientos_cuenta').select('*').eq('cliente_id', cliente.id);
         const movimientos = movsRaw || [];
         const saldadas = new Set(
@@ -59,7 +55,7 @@ const clienteController = {
         const cliente = await clienteById(clienteId);
         if (!cliente) return res.redirect('/clientes');
 
-        // Evitar pagos duplicados de la misma transaccion
+        // chequeo que no se haya saldado ya (para evitar pagos duplicados)
         const { data: movsRaw } = await supabase.from('movimientos_cuenta').select('*').eq('cliente_id', clienteId);
         const yaSaldada = (movsRaw || []).some(m =>
             m.tipo === 'pago' && (m.descripcion || '').includes(`Saldo transaccion #${transaccionId}`)
@@ -78,8 +74,8 @@ const clienteController = {
     },
 
     cuentas: async (req, res) => {
-        const conCuenta    = await clientesConCuenta();
-        const sinCuenta    = await clientesSinCuenta();
+        const conCuenta = await clientesConCuenta();
+        const sinCuenta = await clientesSinCuenta();
         res.render('clientes/cuentas', { conCuenta, sinCuenta });
     },
 
@@ -149,15 +145,15 @@ const clienteController = {
         const id = Number(req.params.id);
         const cliente = await clienteById(id);
         if (!cliente || !cliente.cuentaCorriente) return res.redirect('/clientes/cuentas');
-        const deuda = Math.abs(Math.min(cliente.saldo, 0)); // deuda real (positiva)
+        const deuda = Math.abs(Math.min(cliente.saldo, 0));
         let monto = Number(req.body.monto);
         if (!monto || monto <= 0) return res.redirect('/clientes/cuentas');
-        if (monto > deuda) monto = deuda; // no puede exceder la deuda
+        if (monto > deuda) monto = deuda; // no puede pagar mas de lo que debe
         await abonarCuenta(id, monto);
         res.redirect('/clientes/cuentas');
     },
 
-    // API JSON endpoints
+    // endpoints JSON para buscar/crear clientes desde el front
     buscarApi: async (req, res) => {
         const { id, dni, nombre } = req.query;
         if (!id && !dni && !nombre) return res.json([]);

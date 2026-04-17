@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let carrito = [];
 
-    // ── Botones de acción ──────────────────────────────────────
     const btnCantera = document.createElement('button');
     btnCantera.className = 'btn-cantera';
     btnCantera.textContent = 'Finalizar venta — Cantera';
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cartDiv.append(btnCantera, btnViaje, btnLimpiar);
 
-    // ── Render carrito ─────────────────────────────────────────
     function renderCarrito() {
         cartList.innerHTML = '';
 
@@ -82,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cartDiv.insertBefore(totalLi, cartDiv.querySelector('.btn-cantera'));
     }
 
-    // ── Agregar al carrito ─────────────────────────────────────
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.disabled) return;
@@ -96,14 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ── Limpiar carrito ────────────────────────────────────────
     btnLimpiar.addEventListener('click', () => {
         if (!confirm('¿Limpiar el carrito?')) return;
         carrito = [];
         renderCarrito();
     });
 
-    // ── Helpers de modal ───────────────────────────────────────
+    // helpers para modales
     function abrirModal(id) {
         document.getElementById(id).style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -126,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return new Set(carrito.map(p => p.id)).size <= 1;
     }
 
-    // ── Modal Cantera ──────────────────────────────────────────
+    // modal cantera
     btnCantera.addEventListener('click', () => {
         buildResumen('resumenCantera');
         document.getElementById('itemsCantera').value = JSON.stringify(carrito);
@@ -136,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cerrarModalCantera')?.addEventListener('click', () => cerrarModal('modal-cantera'));
     document.getElementById('cancelarModalCantera')?.addEventListener('click', () => cerrarModal('modal-cantera'));
 
-    // Toggle cliente existente / particular
+    // toggle particular / cliente existente
     document.querySelectorAll('input[name="tipoCliente"]').forEach(radio => {
         radio.addEventListener('change', () => {
             const esParticular = document.getElementById('tipoParticular').checked;
@@ -145,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ── Modal Viaje ────────────────────────────────────────────
+    // modal viaje (solo permite 1 producto por viaje)
     btnViaje.addEventListener('click', () => {
         if (!tieneUnSoloProducto()) {
             document.getElementById('alertaMultiProducto').style.display = 'block';

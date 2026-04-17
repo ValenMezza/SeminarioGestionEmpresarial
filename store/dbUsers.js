@@ -21,6 +21,7 @@ async function crearUsuario({ nombre, apellido, user, password, rol }) {
         rol: rol || 'operador', activo: true
     }).select().single();
     if (error) {
+        // si el user ya existe tiro un error mas claro
         if (error.code === '23505' || /duplicate/i.test(error.message)) {
             throw new Error(`El nombre de usuario "${user}" ya existe.`);
         }
@@ -57,6 +58,7 @@ async function eliminarUsuario(id) {
 async function pausarUsuario(id) {
     const usuario = await usuarioById(id);
     if (!usuario) return null;
+    // toggle: si esta activo lo pauso y viceversa
     const { data } = await supabase.from('usuarios').update({ activo: !usuario.activo }).eq('id', id).select().single();
     return data;
 }

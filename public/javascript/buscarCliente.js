@@ -1,4 +1,4 @@
-// ── Modulo reutilizable: Busqueda de clientes ──────────────────
+// busqueda y seleccion de clientes (reutilizable en varios formularios)
 (function () {
     const btnBuscar           = document.getElementById('btnBuscarCliente');
     const btnMostrarCrear     = document.getElementById('btnMostrarCrearCliente');
@@ -36,7 +36,7 @@
         divCrear.style.display        = 'none';
         divSeleccionado.style.display = 'flex';
 
-        // Mostrar/ocultar cuenta corriente en metodo de pago
+        // muestro la opcion de cuenta corriente solo si el cliente la tiene habilitada
         if (opcionCC) {
             opcionCC.style.display = c.cuentaCorriente ? '' : 'none';
             const select = document.getElementById('metodoPago');
@@ -45,7 +45,6 @@
             }
         }
 
-        // Dispatch evento para que formularios padres reaccionen
         document.dispatchEvent(new CustomEvent('clienteSeleccionado', { detail: c }));
     }
 
@@ -89,7 +88,7 @@
                 divResultado.innerHTML = '<p class="form-hint">No se encontraron clientes.</p>';
                 divResultado.style.display = 'block';
                 divCrear.style.display = 'block';
-                // Pre-llenar nombre si se busco por nombre
+                // pre-lleno el form de crear con lo que busco
                 if (nombre) {
                     const parts = nombre.split(' ');
                     const nuevoNombreInput = document.getElementById('nuevoClienteNombre');
@@ -104,7 +103,7 @@
             } else if (data.length === 1) {
                 seleccionarCliente(data[0]);
             } else {
-                // Multiples resultados - mostrar lista seleccionable
+                // varios resultados, muestro lista para elegir
                 let html = '<p class="form-hint">Se encontraron varios clientes:</p><ul class="buscar-cliente__lista">';
                 data.forEach(c => {
                     html += `<li>
@@ -133,7 +132,7 @@
 
     btnCambiar.addEventListener('click', resetBusqueda);
 
-    // Crear cliente inline
+    // crear cliente desde el mismo formulario sin ir a otra pagina
     btnCrear.addEventListener('click', async () => {
         const nombre   = document.getElementById('nuevoClienteNombre').value.trim();
         const apellido = document.getElementById('nuevoClienteApellido').value.trim();
@@ -162,7 +161,7 @@
         }
     });
 
-    // Exponer funciones globales para que otros scripts puedan leer el cliente seleccionado
+    // expongo funciones para que otros scripts puedan acceder al cliente seleccionado
     window.getClienteSeleccionado = () => clienteActual;
     window.resetBusquedaCliente = resetBusqueda;
 })();

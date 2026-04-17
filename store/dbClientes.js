@@ -21,7 +21,7 @@ async function clienteById(id) {
 
 async function buscarClientes({ id, dni, nombre } = {}) {
     let query = supabase.from('clientes').select('*');
-    if (id)     query = query.eq('id', Number(id));
+    if (id)          query = query.eq('id', Number(id));
     else if (dni)    query = query.eq('dni', dni);
     else if (nombre) query = query.or(`nombre.ilike.%${nombre}%,apellido.ilike.%${nombre}%`);
     const { data } = await query.order('id');
@@ -72,6 +72,7 @@ async function agregarMovimiento(id, { tipo, descripcion, monto }) {
     const { data: mov } = await supabase.from('movimientos_cuenta').insert({
         cliente_id: id, tipo, descripcion, monto: Number(monto)
     }).select().single();
+    // actualizo el saldo del cliente
     await supabase.from('clientes').update({ saldo: (cliente.saldo || 0) + Number(monto) }).eq('id', id);
     return mov;
 }

@@ -1,9 +1,9 @@
-// ── Helpers ────────────────────────────────────────────────────
+// helpers
 function toInputDate(date) {
     return date.toISOString().split('T')[0];
 }
 
-// Tarifa alquiler: 9 dias = 250000; menos dias = 30000/dia
+// tarifa: 9 dias = 250000, menos de 9 = dias * 30000
 function calcularPrecioAlquiler(dias) {
     if (!dias || dias <= 0) return 0;
     if (dias >= 9) return 250000;
@@ -16,7 +16,7 @@ function formatFechaLocal(val) {
     return `${d}/${m}/${y}`;
 }
 
-// ── Mapa ───────────────────────────────────────────────────────
+// mapa
 const btnBuscar  = document.getElementById('btnBuscarDireccion');
 const mapaDiv    = document.getElementById('mapaEntrega');
 const msgMapa    = document.getElementById('msgMapa');
@@ -41,18 +41,18 @@ if (btnBuscar) {
     });
 }
 
-// Precargar mapa si ya hay direccion (pagina editar)
+// si ya hay direccion cargada (ej: pagina editar), cargo el mapa
 const calleInicial  = document.getElementById('calle')?.value.trim();
 const numeroInicial = document.getElementById('numero')?.value.trim();
 if (calleInicial && numeroInicial) {
     cargarMapa(`${calleInicial} ${numeroInicial}`);
 }
 
-// ── Fechas ─────────────────────────────────────────────────────
+// fechas
 const fechaInicio = document.getElementById('fechaInicio');
 const fechaFin    = document.getElementById('fechaFin');
 
-// Validacion de fechas: minimo 4 dias, maximo 9 dias (solo en form nuevo)
+// validacion de rango: minimo 4 dias, maximo 9 (solo en form nuevo)
 const esFormNuevo = !!document.getElementById('btnConfirmarAlquiler');
 if (esFormNuevo && fechaInicio && fechaFin) {
     const hoy = new Date();
@@ -73,7 +73,7 @@ if (esFormNuevo && fechaInicio && fechaFin) {
     });
 }
 
-// ── Precio editable ───────────────────────────────────────────
+// precio editable (toggle)
 const checkEditarPrecio = document.getElementById('checkEditarPrecio');
 const precioDisplay     = document.getElementById('precioAlquilerDisplay');
 const precioInput       = document.getElementById('precioAlquilerInput');
@@ -85,18 +85,18 @@ if (checkEditarPrecio) {
     });
 }
 
-// ── Resumen en tiempo real ─────────────────────────────────────
+// resumen en tiempo real (columna derecha)
 function actualizarResumen() {
     const calleEl      = document.getElementById('calle');
     const numeroEl     = document.getElementById('numero');
     const metodoPagoEl = document.getElementById('metodoPago');
 
-    // Cliente (desde buscarCliente.js)
+    // cliente
     const clienteNombre = document.getElementById('inputClienteNombre')?.value || '—';
     const elCliente = document.getElementById('res-cliente');
     if (elCliente) elCliente.textContent = clienteNombre;
 
-    // Fechas
+    // fechas y dias
     const inicioVal = fechaInicio?.value;
     const finVal    = fechaFin?.value;
     const elInicio  = document.getElementById('res-inicio');
@@ -113,12 +113,13 @@ function actualizarResumen() {
         if (elDias) elDias.textContent = dias > 0 ? `${dias} dias` : '—';
         const precio = calcularPrecioAlquiler(dias);
         const perDia = dias > 0 ? Math.round(precio / dias) : 0;
+
         if (elTotalV) elTotalV.textContent = dias > 0
             ? `$${precio.toLocaleString('es-AR')} por ${dias} Día${dias === 1 ? '' : 's'}`
             : '—';
-        if (elTotal)  elTotal.style.display = 'flex';
+        if (elTotal) elTotal.style.display = 'flex';
 
-        // Sincronizar precio con display e input (si el usuario no lo esta editando manualmente)
+        // actualizo el precio del modal si no lo esta editando manualmente
         if (precioDisplay && !checkEditarPrecio?.checked) {
             precioDisplay.textContent = dias > 0
                 ? `$${perDia.toLocaleString('es-AR')} x ${dias} Día${dias === 1 ? '' : 's'} = $${precio.toLocaleString('es-AR')}`
@@ -132,33 +133,31 @@ function actualizarResumen() {
         if (elTotal) elTotal.style.display = 'none';
     }
 
-    // Direccion
+    // direccion
     const calle  = calleEl?.value.trim();
     const numero = numeroEl?.value.trim();
     const elDir  = document.getElementById('res-direccion');
     if (elDir) elDir.textContent = calle && numero ? `${calle} ${numero}` : calle || '—';
 
-    // Pago
+    // metodo de pago
     const pagoMap = { efectivo: 'Efectivo', transferencia: 'Transferencia', cuenta_corriente: 'Cuenta corriente' };
     const elPago  = document.getElementById('res-pago');
     if (elPago) elPago.textContent = pagoMap[metodoPagoEl?.value] || '—';
 }
 
-// Escuchar cambios
+// escucho cambios en los campos del formulario
 ['fechaInicio','fechaFin','calle','numero','metodoPago'].forEach(id => {
     document.getElementById(id)?.addEventListener('change', actualizarResumen);
     document.getElementById(id)?.addEventListener('input',  actualizarResumen);
 });
 
-// Escuchar seleccion de cliente desde buscarCliente.js
 document.addEventListener('clienteSeleccionado', actualizarResumen);
 document.addEventListener('clienteDeseleccionado', actualizarResumen);
 
 actualizarResumen();
 
-// ── Seleccion de contenedor via cards ──────────────────────────
+// seleccion de contenedor (cards)
 let contenedorSeleccionado = null;
-
 const btnConfirmar = document.getElementById('btnConfirmarAlquiler');
 
 document.querySelectorAll('.btn-seleccionar-cont').forEach(btn => {
@@ -191,7 +190,7 @@ document.querySelectorAll('.btn-seleccionar-cont').forEach(btn => {
     });
 });
 
-// ── Toggle lista disponibles / por finalizar ───────────────────
+// toggle disponibles / por finalizar
 const checkPorFinalizar  = document.getElementById('contenedorPorFinalizar');
 const listaDisponibles   = document.getElementById('listaDisponibles');
 const listaPorFinalizar  = document.getElementById('listaPorFinalizar');
@@ -202,6 +201,7 @@ if (checkPorFinalizar) {
         if (listaDisponibles)  listaDisponibles.style.display  = usar ? 'none' : '';
         if (listaPorFinalizar) listaPorFinalizar.style.display = usar ? '' : 'none';
 
+        // reseteo seleccion
         document.querySelectorAll('.alquiler-card').forEach(c => c.classList.remove('alquiler-card--selected'));
         document.querySelectorAll('.btn-seleccionar-cont').forEach(b => b.textContent = 'Seleccionar');
         contenedorSeleccionado = null;
@@ -215,7 +215,7 @@ if (checkPorFinalizar) {
     });
 }
 
-// ── Modal alquiler ─────────────────────────────────────────────
+// modal alquiler
 function abrirModalAlquiler() {
     const modal = document.getElementById('modal-alquiler');
     if (modal) modal.style.display = 'flex';
@@ -234,13 +234,14 @@ if (btnConfirmar) {
         const inputId = document.getElementById('inputContenedorId');
         if (inputId) inputId.value = contenedorSeleccionado.id;
 
-        // Actualizar display de precio
+        // seteo el precio del contenedor seleccionado
         if (precioDisplay) precioDisplay.textContent = '$' + Number(contenedorSeleccionado.precio).toLocaleString('es-AR');
         if (precioInput) precioInput.value = contenedorSeleccionado.precio;
 
         const labelModal = document.getElementById('modal-cont-label');
         if (labelModal) labelModal.textContent = `Contenedor #${contenedorSeleccionado.id}`;
 
+        // si es contenedor por finalizar, la fecha de inicio arranca despues del vencimiento
         if (contenedorSeleccionado.fin && fechaInicio) {
             fechaInicio.min = contenedorSeleccionado.fin;
             fechaInicio.value = '';
@@ -255,7 +256,7 @@ if (btnConfirmar) {
 document.getElementById('cerrarModalAlquiler')?.addEventListener('click', cerrarModalAlquiler);
 document.getElementById('cancelarModalAlquiler')?.addEventListener('click', cerrarModalAlquiler);
 
-// ── Validacion al submit ──────────────────────────────────────
+// validacion al enviar el form
 document.getElementById('formNuevoAlquiler')?.addEventListener('submit', (e) => {
     const clienteId = document.getElementById('inputClienteId')?.value;
     if (!clienteId) {
@@ -268,7 +269,7 @@ document.getElementById('formNuevoAlquiler')?.addEventListener('submit', (e) => 
     }
 });
 
-// ── Modal confirmacion (pagina editar) ────────────────────────
+// modal confirmacion (pagina editar)
 const btnGuardar       = document.getElementById('btnGuardar');
 const modalConfirmar   = document.getElementById('modalConfirmar');
 const btnConfirmarModal = document.getElementById('btnConfirmarModal');
@@ -286,7 +287,7 @@ if (btnGuardar && modalConfirmar) {
     });
 }
 
-// ── Renovar alquiler (precarga desde detalle) ──────────────────
+// renovar alquiler (precarga datos del alquiler anterior)
 const renovarEl = document.getElementById('renovar-datos');
 const renovar = renovarEl ? JSON.parse(renovarEl.textContent) : null;
 if (renovar) {
@@ -302,7 +303,7 @@ if (renovar) {
     const elCont = document.getElementById('res-contenedor');
     if (elCont) elCont.textContent = `Contenedor #${renovar.id}`;
 
-    // Pre-cargar cliente
+    // precargo el cliente anterior
     if (renovar.clienteId) {
         const inputClienteId     = document.getElementById('inputClienteId');
         const inputClienteNombre = document.getElementById('inputClienteNombre');
@@ -320,14 +321,14 @@ if (renovar) {
         }
     }
 
-    // Pre-cargar direccion
+    // precargo la direccion
     const calleEl  = document.getElementById('calle');
     const numeroEl = document.getElementById('numero');
     if (calleEl)  calleEl.value  = renovar.calle  || '';
     if (numeroEl) numeroEl.value = renovar.numero || '';
     if (renovar.calle && renovar.numero) cargarMapa(`${renovar.calle} ${renovar.numero}`);
 
-    // Fijar fecha de inicio al dia siguiente del fin actual
+    // la fecha de inicio arranca el dia siguiente al fin del alquiler actual
     if (renovar.finAlquilerActual && fechaInicio) {
         const finActual = new Date(renovar.finAlquilerActual + 'T00:00:00');
         finActual.setDate(finActual.getDate() + 1);

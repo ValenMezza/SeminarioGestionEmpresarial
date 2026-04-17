@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container      = document.getElementById('cartItemsContainer');
-    if (!container) return; // No estamos en la pagina de cantera
+    if (!container) return;
     const buttons        = document.querySelectorAll('.addToCart');
     const totalBar       = document.getElementById('cartTotal');
     const totalValor     = document.getElementById('cartTotalValor');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(div);
         });
 
-        // Event listeners para botones de cantidad
+        // botones +/-/x
         container.querySelectorAll('.qty-minus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const p = carrito.find(x => x.id === Number(btn.dataset.id));
@@ -79,9 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         totalBar.style.display = 'flex';
         totalValor.textContent = '$' + total.toLocaleString('es-AR');
 
-        if (!checkPrecio.checked) {
-            inputPrecio.value = total;
-        }
+        if (!checkPrecio.checked) inputPrecio.value = total;
 
         actualizarBotonConfirmar();
     }
@@ -93,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConfirmar.disabled = !clienteId || !clienteId.value;
     }
 
-    // Agregar al carrito
+    // agregar al carrito (no deja pasar del stock disponible)
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.disabled) return;
@@ -112,30 +110,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Limpiar carrito
     btnLimpiar.addEventListener('click', () => {
         if (!confirm('¿Limpiar el carrito?')) return;
         carrito = [];
         renderCarrito();
     });
 
-    // Cliente particular
     checkParticular.addEventListener('change', () => {
         busquedaWrapper.style.display = checkParticular.checked ? 'none' : 'block';
         actualizarBotonConfirmar();
     });
 
-    // Precio editable
     checkPrecio.addEventListener('change', () => {
         inputPrecio.style.display = checkPrecio.checked ? 'block' : 'none';
         if (!checkPrecio.checked) inputPrecio.value = calcularTotal();
     });
 
-    // Escuchar seleccion de cliente
     document.addEventListener('clienteSeleccionado', () => actualizarBotonConfirmar());
     document.addEventListener('clienteDeseleccionado', () => actualizarBotonConfirmar());
 
-    // Confirmar venta
+    // confirmar venta
     btnConfirmar.addEventListener('click', () => {
         if (carrito.length === 0) return;
 

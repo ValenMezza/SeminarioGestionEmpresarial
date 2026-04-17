@@ -1,5 +1,6 @@
 const supabase = require('../lib/supabase');
 
+// mapeo snake_case de la DB a camelCase para usar en el codigo
 function mapRow(c) {
     if (!c) return null;
     return {
@@ -38,6 +39,7 @@ async function contenedorLibre() {
     return mapRow(data);
 }
 
+// trae los contenedores que vencen en 2 dias o menos
 async function listContenedoresPorFinalizar() {
     const en2dias = new Date();
     en2dias.setDate(en2dias.getDate() + 2);
@@ -64,12 +66,14 @@ async function actualizarContenedor(id, datos) {
     return mapRow(data);
 }
 
+// actualiza precios base de todos los contenedores disponibles
 async function actualizarPrecios(precioDia, precioAlquiler) {
     await supabase.from('contenedores').update({
         precio_dia: precioDia, precio_alquiler: precioAlquiler
     }).eq('estado', 'Disponible');
 }
 
+// al finalizar un alquiler, resetea el contenedor a disponible con precios default
 async function finalizarAlquiler(id) {
     const { data: cfg } = await supabase.from('contenedores').select('precio_dia, precio_alquiler').eq('estado', 'Disponible').limit(1).single();
     const { data } = await supabase.from('contenedores').update({
@@ -83,6 +87,7 @@ async function finalizarAlquiler(id) {
 }
 
 async function crearContenedor() {
+    // agarro los precios de otro contenedor para mantener consistencia
     const { data: ref } = await supabase.from('contenedores').select('precio_dia, precio_alquiler').limit(1).single();
     const { data } = await supabase.from('contenedores').insert({
         estado: 'Disponible',
@@ -96,7 +101,7 @@ async function crearContenedor() {
 
 async function eliminarContenedor(id) {
     const cont = await contenedorById(id);
-    if (!cont || cont.estado === 'Alquilado') return null;
+    if (!cont || cont.estado === 'Alquilado') return null; // no se puede eliminar si esta alquilado
     const { data } = await supabase.from('contenedores').delete().eq('id', id).select().single();
     return mapRow(data);
 }

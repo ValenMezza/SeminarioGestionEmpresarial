@@ -16,18 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenFinalizar = document.getElementById('inputFinalizarAhora');
     const fechaInput     = document.getElementById('fechaViaje');
 
-    // Fecha minima: hoy
+    // fecha minima: hoy
     const hoy = new Date().toISOString().split('T')[0];
     if (fechaInput) fechaInput.min = hoy;
 
-    // Pre-llenar telefono cuando se selecciona cliente
+    // cuando selecciono un cliente, le cargo el telefono automaticamente
     document.addEventListener('clienteSeleccionado', (e) => {
         const c = e.detail;
         const telInput = document.getElementById('telefonoViaje');
         if (telInput && c.telefono) telInput.value = c.telefono;
     });
 
-    // Calcular precios
     function getPrecioUnitario() {
         const opt = selectProducto?.selectedOptions[0];
         return opt ? Number(opt.dataset.precio || 0) : 0;
@@ -53,18 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
     inputCantidad?.addEventListener('input', calcularPrecios);
     inputFlete?.addEventListener('input', calcularPrecios);
 
-    // Editar total manualmente
+    // toggle para editar el total manualmente
     checkEditar.addEventListener('change', () => {
         totalInput.style.display = checkEditar.checked ? 'block' : 'none';
         totalDisplay.style.display = checkEditar.checked ? 'none' : 'block';
         if (!checkEditar.checked) calcularPrecios();
     });
 
-    // Tipo de operacion
+    // tipo de operacion: finalizar ahora o programar
     opFinalizar?.addEventListener('change', () => { hiddenFinalizar.value = 'true'; });
     opProgramar?.addEventListener('change', () => { hiddenFinalizar.value = 'false'; });
 
-    // Mapa
+    // mapa
     if (btnBuscar) {
         btnBuscar.addEventListener('click', () => {
             const calle  = document.getElementById('calleViaje')?.value.trim();
@@ -80,11 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Validacion al submit
+    // validacion al enviar
     document.getElementById('formViaje')?.addEventListener('submit', (e) => {
         const campos = ['#productoViaje', '#cantidadViaje', '#fechaViaje', '#calleViaje'];
 
-        // Verificar cliente
         const clienteId = document.getElementById('inputClienteId')?.value;
         if (!clienteId) {
             alert('Busca y selecciona un cliente antes de confirmar.');
@@ -104,10 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Asegurar que el total este seteado
-        if (!checkEditar.checked) {
-            calcularPrecios();
-        }
+        if (!checkEditar.checked) calcularPrecios();
     });
 
     calcularPrecios();
