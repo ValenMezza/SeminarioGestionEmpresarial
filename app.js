@@ -1,14 +1,13 @@
 require('dotenv').config();
-var createError = require('http-errors');
-var express     = require('express');
-var path        = require('path');
+var createError  = require('http-errors');
+var express      = require('express');
+var path         = require('path');
 var cookieParser = require('cookie-parser');
-var logger      = require('morgan');
-var session     = require('express-session');
+var logger       = require('morgan');
+var session      = require('express-session');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -24,6 +23,7 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// variables globales para las vistas
 app.use((req, res, next) => {
     res.locals.formatFecha = (fecha) => {
         if (!fecha) return '';
@@ -34,11 +34,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// ── Middleware de autenticación ───────────────────────────────
 const requireAuth  = require('./middleware/requireAuth');
 const requireAdmin = require('./middleware/requireAdmin');
 
-// ── Controladores ─────────────────────────────────────────────
 const authController         = require('./controllers/login.controller.js');
 const homeController         = require('./controllers/home.controller.js');
 const ventasController       = require('./controllers/ventas.controller.js');
@@ -49,20 +47,20 @@ const clienteController      = require('./controllers/clientes.controller.js');
 const transaccionesController = require('./controllers/transacciones.controller.js');
 const configController       = require('./controllers/config.controller.js');
 
-// ── Auth (rutas públicas) ─────────────────────────────────────
+// rutas publicas (login)
 app.get('/',        authController.index);
 app.post('/login',  authController.login);
 app.get('/logout',  authController.logout);
 app.get('/create',  authController.createUser);
 app.post('/create', authController.postUser);
 
-// ── Rutas protegidas ──────────────────────────────────────────
+// a partir de aca todo requiere estar logueado
 app.use(requireAuth);
 
-// ── Home ──────────────────────────────────────────────────────
+// home
 app.get('/home', homeController.index);
 
-// ── Ventas ────────────────────────────────────────────────────
+// ventas
 app.get('/ventas',                         ventasController.index);
 app.get('/ventas/cantera',                 ventasController.cantera);
 app.post('/ventas/finalizar-cantera',      ventasController.finalizarVentaCantera);
@@ -75,11 +73,11 @@ app.get('/ventas/viaje/editar/:id',        ventasController.editarViaje);
 app.post('/ventas/viaje/editar/:id',       ventasController.guardarEdicionViaje);
 app.get('/ventas/viaje/detalle/:id',       ventasController.detalleViaje);
 
-// ── Transacciones ─────────────────────────────────────────────
+// transacciones
 app.get('/transacciones',            transaccionesController.index);
 app.get('/transacciones/detalle/:id', transaccionesController.detalle);
 
-// ── Alquileres ────────────────────────────────────────────────
+// alquileres
 app.get('/alquileres',                    alquilerController.index);
 app.get('/alquileres/detalle/:id',        alquilerController.detalle);
 app.get('/alquileres/nuevo_alquiler',     alquilerController.nuevoAlquiler);
@@ -90,18 +88,18 @@ app.post('/alquileres/crear',             alquilerController.crearAlquiler);
 app.post('/alquileres/cancelar/:id',      alquilerController.cancelarAlquiler);
 app.post('/alquileres/finalizar/:id',     alquilerController.finalizarAlquiler);
 
-// ── Contenedores ──────────────────────────────────────────────
+// contenedores
 app.get('/contenedores',                contenedoresController.index);
 app.get('/contenedores/detalle/:id',    contenedoresController.detalle);
 app.get('/contenedores/config',         contenedoresController.config);
 app.post('/contenedores/config',        contenedoresController.guardarConfig);
 app.post('/contenedores/crear',         contenedoresController.crear);
 app.post('/contenedores/eliminar/:id',  contenedoresController.eliminar);
-// Editar contenedor reutiliza la misma lógica de alquileres/editar
+// editar contenedor usa la misma logica que alquileres/editar
 app.get('/contenedores/:id/edit',  alquilerController.edicionAlquiler);
 app.post('/contenedores/:id/edit', alquilerController.guardarEdicion);
 
-// ── Stock ─────────────────────────────────────────────────────
+// stock
 app.get('/stock',                stockController.index);
 app.get('/stock/nuevo_stock',    stockController.nuevoStock);
 app.post('/stock/nuevo_stock',   stockController.crearStock);
@@ -110,7 +108,7 @@ app.get('/stock/editar/:id',     stockController.editarStock);
 app.post('/stock/editar/:id',    stockController.guardarEdicionStock);
 app.post('/stock/eliminar/:id',  stockController.eliminarStock);
 
-// ── Clientes ──────────────────────────────────────────────────
+// clientes
 app.get('/clientes',                    clienteController.index);
 app.get('/clientes/nuevo_cliente',      clienteController.nuevo);
 app.post('/clientes/nuevo_cliente',     clienteController.crearCliente);
@@ -124,11 +122,11 @@ app.post('/clientes/:id/habilitar-cuenta', clienteController.habilitarCuenta);
 app.post('/clientes/:id/abonar',          clienteController.abonar);
 app.post('/clientes/:id/saldar-transaccion/:transaccionId', clienteController.saldarTransaccion);
 
-// ── API Clientes (JSON) ──────────────────────────────────────
+// api clientes (devuelve JSON para busquedas desde el front)
 app.get('/api/clientes/buscar',  clienteController.buscarApi);
 app.post('/api/clientes/crear',  clienteController.crearApi);
 
-// ── Configuraciones (solo admin) ──────────────────────────────
+// configuraciones (solo admin)
 app.get('/configuraciones',                          requireAdmin, configController.index);
 app.get('/configuraciones/usuarios',                 requireAdmin, configController.usuarios);
 app.post('/configuraciones/usuarios/crear',          requireAdmin, configController.crearUsuario);
@@ -136,7 +134,7 @@ app.post('/configuraciones/usuarios/pausar/:id',     requireAdmin, configControl
 app.post('/configuraciones/usuarios/eliminar/:id',   requireAdmin, configController.eliminarUsuario);
 app.post('/configuraciones/usuarios/editar/:id',     requireAdmin, configController.editarUsuario);
 
-// ── Utilidades ────────────────────────────────────────────────
+// para que Chrome DevTools no tire 404
 app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
     res.status(204).end();
 });
@@ -146,7 +144,7 @@ app.use(function (req, res, next) {
     next(createError(404));
 });
 
-// Error handler
+// error handler
 app.use(function (err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error   = req.app.get('env') === 'development' ? err : {};

@@ -7,15 +7,10 @@
 
     btn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
-
-        if (sidebar.classList.contains("active")) {
-            btn.style.left = (SIDEBAR_WIDTH + 12) + "px";
-        } else {
-            btn.style.left = "16px";
-        }
+        btn.style.left = sidebar.classList.contains("active") ? (SIDEBAR_WIDTH + 12) + "px" : "16px";
     });
 
-    // Marcar link activo según la URL actual
+    // marco el link activo segun la URL
     document.querySelectorAll(".sidebar__link").forEach(link => {
         if (link.getAttribute("href") === window.location.pathname) {
             link.classList.add("is-active");

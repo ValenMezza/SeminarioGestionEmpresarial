@@ -16,6 +16,7 @@ const homeController = {
         const mesActual  = hoy.getMonth();
         const anioActual = hoy.getFullYear();
 
+        // sumo las transacciones del mes actual nomas
         const ingresoMensual = transacciones
             .filter(t => {
                 const d = new Date(t.fecha);

@@ -1,11 +1,12 @@
 (function() {
     const modalUsuario = document.getElementById('modal-nuevo-usuario');
-    if (!modalUsuario) return; // No estamos en la pagina de usuarios
+    if (!modalUsuario) return;
 
     document.getElementById('btnNuevoUsuario').addEventListener('click', () => {
         modalUsuario.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     });
+
     function cerrarModal() {
         modalUsuario.style.display = 'none';
         document.body.style.overflow = '';
@@ -13,14 +14,14 @@
     document.getElementById('cerrarModalUsuario').addEventListener('click', cerrarModal);
     document.getElementById('cancelarModalUsuario').addEventListener('click', cerrarModal);
 
-    // Validacion
+    // validacion del form
     document.getElementById('formNuevoUsuario').addEventListener('submit', function(e) {
         if (!validarFormulario(this, ['#nombre', '#apellido', '#user', '#password'])) {
             e.preventDefault();
         }
     });
 
-    // Toggle mostrar/ocultar contraseña
+    // mostrar/ocultar contraseña
     document.querySelectorAll('.btn-toggle-pass').forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.getElementById(btn.dataset.target);
@@ -35,17 +36,17 @@
         });
     });
 
-    // Modal editar usuario
-    const modalEditar     = document.getElementById('modal-editar-usuario');
-    const formEditarUsuario = document.getElementById('formEditarUsuario');
-    const editNombre      = document.getElementById('editNombre');
-    const editApellido    = document.getElementById('editApellido');
-    const editUser        = document.getElementById('editUser');
-    const editRol         = document.getElementById('editRol');
-    const editPassword    = document.getElementById('editPassword');
-    const editConfirmarPass = document.getElementById('editConfirmarPass');
+    // modal editar usuario
+    const modalEditar        = document.getElementById('modal-editar-usuario');
+    const formEditarUsuario  = document.getElementById('formEditarUsuario');
+    const editNombre         = document.getElementById('editNombre');
+    const editApellido       = document.getElementById('editApellido');
+    const editUser           = document.getElementById('editUser');
+    const editRol            = document.getElementById('editRol');
+    const editPassword       = document.getElementById('editPassword');
+    const editConfirmarPass  = document.getElementById('editConfirmarPass');
     const editConfirmarPassGroup = document.getElementById('editConfirmarPassGroup');
-    const errorEditar     = document.getElementById('modal-editar-error');
+    const errorEditar        = document.getElementById('modal-editar-error');
 
     document.querySelectorAll('.btn-editar-usuario').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -58,17 +59,15 @@
             editConfirmarPass.value = '';
             editConfirmarPassGroup.style.display = 'none';
             errorEditar.style.display = 'none';
-            if (btn.dataset.id === '1') {
-                editRol.disabled = true;
-            } else {
-                editRol.disabled = false;
-            }
+            // no se puede cambiar el rol del admin principal (id=1)
+            editRol.disabled = btn.dataset.id === '1';
             modalEditar.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             editNombre.focus();
         });
     });
 
+    // si escribe una pass nueva, muestro el campo de confirmacion
     editPassword.addEventListener('input', () => {
         editConfirmarPassGroup.style.display = editPassword.value.length > 0 ? '' : 'none';
         if (editPassword.value.length === 0) editConfirmarPass.value = '';
@@ -82,6 +81,7 @@
     document.getElementById('cancelarModalEditar').addEventListener('click', cerrarModalEditar);
     modalEditar.addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModalEditar(); });
 
+    // validacion: las contraseñas tienen que coincidir
     formEditarUsuario.addEventListener('submit', function(e) {
         errorEditar.style.display = 'none';
         if (editPassword.value.length > 0 && editPassword.value !== editConfirmarPass.value) {
@@ -91,7 +91,7 @@
         }
     });
 
-    // Toggle pausados
+    // toggle para mostrar/ocultar usuarios pausados
     const toggle = document.getElementById('toggleMostrarPausados');
     toggle.addEventListener('change', () => {
         const filas = document.querySelectorAll('#tablaUsuarios tr[data-activo]');

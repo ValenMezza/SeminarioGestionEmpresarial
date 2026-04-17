@@ -1,16 +1,13 @@
-// ── Validacion de formularios reutilizable ──────────────────────
+// validacion generica de formularios
 function validarFormulario(form, camposRequeridos) {
     let valido = true;
-    // Limpiar errores previos
     form.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
     form.querySelectorAll('.field-error-msg').forEach(el => el.remove());
 
     camposRequeridos.forEach(selector => {
         const campo = form.querySelector(selector);
         if (!campo) return;
-
-        // Saltar campos ocultos (display:none en el campo o su contenedor)
-        if (campo.offsetParent === null) return;
+        if (campo.offsetParent === null) return; // skip campos ocultos
 
         const valor = campo.value?.trim();
         if (!valor) {
@@ -26,7 +23,7 @@ function validarFormulario(form, camposRequeridos) {
     return valido;
 }
 
-// Limpiar error al escribir
+// limpio el error cuando el usuario empieza a escribir
 document.addEventListener('input', (e) => {
     if (e.target.classList.contains('field-error')) {
         e.target.classList.remove('field-error');
