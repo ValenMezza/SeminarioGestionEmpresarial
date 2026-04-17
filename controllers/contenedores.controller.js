@@ -1,9 +1,15 @@
 const { listContenedores, contenedorById, actualizarPrecios, crearContenedor, eliminarContenedor } = require("../store/dbContenedor");
+const { alquileresProgramados } = require("../store/dbAlquiler");
 
 const contenedoresController = {
     index: async (req, res) => {
-        const contenedores = await listContenedores();
-        res.render('contenedores/index', { contenedores });
+        const [contenedores, programados] = await Promise.all([
+            listContenedores(),
+            alquileresProgramados(),
+        ]);
+        const finProximoPorContenedor = {};
+        programados.forEach(p => { finProximoPorContenedor[p.contenedorId] = p.finAlquiler; });
+        res.render('contenedores/index', { contenedores, finProximoPorContenedor });
     },
 
     detalle: async (req, res) => {

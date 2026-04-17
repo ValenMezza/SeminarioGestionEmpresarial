@@ -318,6 +318,12 @@ if (renovar) {
             const inputs = busqDiv.querySelectorAll('input:not([type=hidden]), button');
             inputs.forEach(el => el.style.display = 'none');
         }
+
+        // Mostrar opcion cuenta corriente si el cliente la tiene
+        const opcionCC = document.getElementById('opcionCuentaCorriente');
+        if (opcionCC && renovar.cuentaCorriente) {
+            opcionCC.style.display = '';
+        }
     }
 
     // Pre-cargar direccion

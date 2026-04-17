@@ -55,6 +55,7 @@
                         <th>Cliente</th>
                         <th>Inicio</th>
                         <th>Fin</th>
+                        <th>Fin próx. alquiler</th>
                         <th>Precio alquiler</th>
                         <th>Acciones</th>
                     </tr>
@@ -71,6 +72,13 @@
                             <td><%= c.cliente || '—' %></td>
                             <td><%= c.inicioAlquiler ? formatFecha(c.inicioAlquiler) : '—' %></td>
                             <td><%= c.finAlquiler ? formatFecha(c.finAlquiler) : '—' %></td>
+                            <td>
+                                <% if (finProximoPorContenedor[c.id]) { %>
+                                    <span class="badge badge--alquilado"><%= formatFecha(finProximoPorContenedor[c.id]) %></span>
+                                <% } else { %>
+                                    —
+                                <% } %>
+                            </td>
                             <td><%= c.estado === 'Alquilado' ? '$' + c.precioAlquiler?.toLocaleString('es-AR') : '—' %></td>
                             <td class="td-acciones">
                                 <% if (c.estado === 'Alquilado') { %>

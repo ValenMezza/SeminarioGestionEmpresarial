@@ -1,5 +1,5 @@
 const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, finalizarAlquiler: resetContenedor } = require("../store/dbContenedor");
-const { listClientes, nombreCompleto, agregarMovimiento } = require("../store/dbClientes");
+const { listClientes, clienteById: clientePorId, nombreCompleto, agregarMovimiento } = require("../store/dbClientes");
 const { crearTransaccion } = require("../store/dbTransacciones");
 const { crearAlquiler: insertarAlquiler, alquileresProgramados, alquileresProgramadosPorContenedor, alquilerActivoPorContenedor, activarAlquiler, alquilerById, finalizarAlquilerRecord } = require("../store/dbAlquiler");
 
@@ -61,17 +61,27 @@ const alquilerController = {
             if (req.query.renovar) {
                 const cont = await contenedorById(Number(req.query.renovar));
                 if (cont) {
-                    const dir = cont.direccionAlquiler || '';
-                    const lastSpace = dir.lastIndexOf(' ');
-                    renovarDatos = {
-                        id: cont.id,
-                        clienteId: cont.clienteId || null,
-                        cliente: cont.cliente,
-                        calle: lastSpace > 0 ? dir.substring(0, lastSpace) : dir,
-                        numero: lastSpace > 0 ? dir.substring(lastSpace + 1) : '',
-                        finAlquilerActual: cont.finAlquiler,
-                        precio: cont.precioAlquiler,
-                    };
+                    // No permitir renovar si ya tiene un alquiler programado
+                    const yaProgr = await alquileresProgramadosPorContenedor(cont.id);
+                    if (!yaProgr) {
+                        const dir = cont.direccionAlquiler || '';
+                        const lastSpace = dir.lastIndexOf(' ');
+                        let cuentaCorriente = false;
+                        if (cont.clienteId) {
+                            const cli = await clientePorId(cont.clienteId);
+                            if (cli) cuentaCorriente = !!cli.cuentaCorriente;
+                        }
+                        renovarDatos = {
+                            id: cont.id,
+                            clienteId: cont.clienteId || null,
+                            cliente: cont.cliente,
+                            cuentaCorriente,
+                            calle: lastSpace > 0 ? dir.substring(0, lastSpace) : dir,
+                            numero: lastSpace > 0 ? dir.substring(lastSpace + 1) : '',
+                            finAlquilerActual: cont.finAlquiler,
+                            precio: cont.precioAlquiler,
+                        };
+                    }
                 }
             }
             res.render('alquileres/nuevo_alquiler', { contenedorlibre, contenedoresPorFinalizar, clientes, renovarDatos });
@@ -100,6 +110,11 @@ const alquilerController = {
             const metodoPago    = req.body.metodoPago || 'efectivo';
 
             if (cont.estado === 'Alquilado') {
+                // Verificar que no exista ya un alquiler programado para este contenedor
+                const yaProgr = await alquileresProgramadosPorContenedor(contenedorId);
+                if (yaProgr) {
+                    return res.status(400).send('Este contenedor ya tiene un alquiler próximo programado. No se puede reservar otro.');
+                }
                 const alquiler = await insertarAlquiler({
                     contenedorId, clienteId, clienteNombre,
                     inicioAlquiler: req.body.fechaInicio, finAlquiler: req.body.fechaFin,

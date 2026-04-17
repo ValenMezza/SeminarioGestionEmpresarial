@@ -24,8 +24,7 @@
                 <table class="data-table data-table--warning">
                     <thead>
                         <tr>
-                            <th>#ID Alquiler</th>
-                            <th>#ID</th>
+                            <th>#Contenedor</th>
                             <th>Cliente</th>
                             <th>Fin</th>
                             <th>Direccion</th>
@@ -36,7 +35,6 @@
                     <tbody>
                         <% porFinalizar.forEach(c => { %>
                             <tr>
-                                <td>#<%= transaccion.id %></td>
                                 <td>#<%= c.id %></td>
                                 <td><%= c.cliente %></td>
                                 <td><%= formatFecha(c.finAlquiler) %></td>
@@ -58,7 +56,6 @@
         </div>
         <% } %>
 
-        <!-- Proximos a iniciar (programados) -->
         <% if (programados.length > 0) { %>
         <div class="alquileres-seccion">
             <h2 class="section-title">Proximos a iniciar (programados)</h2>
@@ -93,7 +90,6 @@
         </div>
         <% } %>
 
-        <!-- Todos los alquileres activos -->
         <div class="alquileres-seccion">
             <h2 class="section-title">Alquileres activos</h2>
             <div class="table-wrapper">
@@ -133,9 +129,11 @@
                                 <td class="td-acciones">
                                     <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
                                     <a href="/alquileres/editar/<%= c.id %>" class="btn-secondary-yellow btn-sm">Editar</a>
-                                    <a href="/alquileres/nuevo_alquiler?renovar=<%= c.id %>" class="btn-primary btn-sm">Renovar</a>
+                                    <% if (!finProximoPorContenedor[c.id]) { %>
+                                        <a href="/alquileres/nuevo_alquiler?renovar=<%= c.id %>" class="btn-primary btn-sm">Renovar</a>
+                                    <% } %>
                                     <form action="/alquileres/finalizar/<%= c.id %>" method="POST" style="display:inline"
-                                          onsubmit="return confirm('¿Finalizar alquiler del Contenedor #<%= c.id %>?')">
+                                            onsubmit="return confirm('¿Finalizar alquiler del Contenedor #<%= c.id %>?')">
                                         <button type="submit" class="btn-primary-green btn-sm">Finalizar</button>
                                     </form>
                                 </td>

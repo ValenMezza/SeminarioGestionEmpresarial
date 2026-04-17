@@ -89,7 +89,7 @@
                             <option value="">— Seleccionar producto —</option>
                             <% productos.forEach(p => { %>
                                 <% if (p.stock > 0) { %>
-                                <option value="<%= p.id %>" data-precio="<%= p.precio %>">
+                                <option value="<%= p.id %>" data-precio="<%= p.precio %>" data-stock="<%= p.stock %>">
                                     <%= p.producto %> — $<%= p.precio.toLocaleString('es-AR') %> (<%= p.stock %> unid.)
                                 </option>
                                 <% } %>

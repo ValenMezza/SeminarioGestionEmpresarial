@@ -27,6 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (telInput && c.telefono) telInput.value = c.telefono;
     });
 
+    // Stock disponible del producto seleccionado
+    function getStockDisponible() {
+        const opt = selectProducto?.selectedOptions[0];
+        return opt && opt.value ? Number(opt.dataset.stock || 0) : 0;
+    }
+
+    function actualizarMaxCantidad() {
+        const stock = getStockDisponible();
+        if (inputCantidad) {
+            inputCantidad.max = stock || '';
+            if (stock && Number(inputCantidad.value) > stock) {
+                inputCantidad.value = stock;
+            }
+        }
+    }
+
     // Calcular precios
     function getPrecioUnitario() {
         const opt = selectProducto?.selectedOptions[0];
@@ -49,8 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    selectProducto?.addEventListener('change', calcularPrecios);
-    inputCantidad?.addEventListener('input', calcularPrecios);
+    selectProducto?.addEventListener('change', () => {
+        actualizarMaxCantidad();
+        if (inputCantidad) inputCantidad.value = 1;
+        calcularPrecios();
+    });
+    inputCantidad?.addEventListener('input', () => {
+        const stock = getStockDisponible();
+        if (stock && Number(inputCantidad.value) > stock) {
+            inputCantidad.value = stock;
+        }
+        calcularPrecios();
+    });
     inputFlete?.addEventListener('input', calcularPrecios);
 
     // Editar total manualmente
@@ -100,6 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!validarFormulario(e.target, campos)) {
+            e.preventDefault();
+            return;
+        }
+
+        // Validar stock disponible
+        const stock = getStockDisponible();
+        const cant = Number(inputCantidad?.value || 0);
+        if (stock && cant > stock) {
+            alert(`Stock insuficiente. Disponible: ${stock} unidades.`);
             e.preventDefault();
             return;
         }

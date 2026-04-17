@@ -59,11 +59,13 @@ const ventasController = {
             const direccion = `${calle || ''} ${numero || ''}`.trim();
             const esFinalizarAhora = finalizarAhora === 'true';
 
-            // Descontar stock del producto
+            // Validar y descontar stock del producto
             const cantidadVendida = Number(cantidad) || 1;
+            if (prod && cantidadVendida > prod.stock) {
+                return res.status(400).send(`Stock insuficiente. Disponible: ${prod.stock} unidades.`);
+            }
             if (prod) {
-                const nuevoStock = Math.max(0, prod.stock - cantidadVendida);
-                await actualizarProducto(Number(productoId), { stock: nuevoStock });
+                await actualizarProducto(Number(productoId), { stock: prod.stock - cantidadVendida });
             }
 
             const viaje = await crearViaje({
@@ -139,8 +141,10 @@ const ventasController = {
         if (diff !== 0 && viaje.productoId) {
             const prod = await prodsById(viaje.productoId);
             if (prod) {
-                const nuevoStock = Math.max(0, prod.stock - diff);
-                await actualizarProducto(viaje.productoId, { stock: nuevoStock });
+                if (diff > 0 && diff > prod.stock) {
+                    return res.status(400).send(`Stock insuficiente. Disponible: ${prod.stock} unidades.`);
+                }
+                await actualizarProducto(viaje.productoId, { stock: prod.stock - diff });
             }
         }
 
