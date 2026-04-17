@@ -1,6 +1,7 @@
 const { listTransacciones, filtrarTransacciones } = require('../store/dbTransacciones');
 
 const TIPOS = ['Alquiler', 'Venta Cantera', 'Venta Viaje'];
+const POR_PAGINA = 10;
 
 const transaccionesController = {
     index: async (req, res) => {
@@ -16,14 +17,23 @@ const transaccionesController = {
         }
 
         const tienesFiltros = id || tipo || idCliente || cliente || fDesde || fHasta || montoMin || montoMax;
-        const transacciones = tienesFiltros
+        const todas = tienesFiltros
             ? await filtrarTransacciones({ id, tipo, idCliente, cliente, fechaDesde: fDesde, fechaHasta: fHasta, montoMin, montoMax })
             : await listTransacciones();
 
-        const totalMes = transacciones.reduce((acc, t) => acc + (t.monto || 0), 0);
+        const totalMes = todas.reduce((acc, t) => acc + (t.monto || 0), 0);
+
+        // paginacion
+        const totalPaginas = Math.max(1, Math.ceil(todas.length / POR_PAGINA));
+        let pagina = Number(req.query.page) || 1;
+        if (pagina < 1) pagina = 1;
+        if (pagina > totalPaginas) pagina = totalPaginas;
+        const inicio = (pagina - 1) * POR_PAGINA;
+        const transacciones = todas.slice(inicio, inicio + POR_PAGINA);
+
         const filtros = { id: id || '', tipo: tipo || '', idCliente: idCliente || '', cliente: cliente || '', fechaDesde: fechaDesde || '', fechaHasta: fechaHasta || '', montoMin: montoMin || '', montoMax: montoMax || '', mes: mes || '' };
 
-        res.render('transacciones/index', { transacciones, filtros, tipos: TIPOS, totalMes });
+        res.render('transacciones/index', { transacciones, filtros, tipos: TIPOS, totalMes, pagina, totalPaginas, totalTransacciones: todas.length });
     },
 
     detalle: async (req, res) => {

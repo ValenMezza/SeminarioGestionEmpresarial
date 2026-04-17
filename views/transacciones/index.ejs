@@ -131,6 +131,26 @@
                 </table>
             </div>
 
+            <% if (totalPaginas > 1) { %>
+                <%
+                    const qs = Object.entries(filtros).filter(([, v]) => v !== '' && v != null).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+                    const base = '/transacciones?' + (qs ? qs + '&' : '');
+                %>
+                <nav class="pagination" style="display:flex;justify-content:center;align-items:center;gap:0.75rem;padding:1rem 0;margin-top:0.5rem">
+                    <% if (pagina > 1) { %>
+                        <a href="<%= base %>page=<%= pagina - 1 %>" class="btn-secondary btn-sm">← Anterior</a>
+                    <% } else { %>
+                        <span class="btn-secondary btn-sm" style="opacity:0.4;pointer-events:none">← Anterior</span>
+                    <% } %>
+                    <span style="font-weight:600">Página <%= pagina %> de <%= totalPaginas %> (<%= totalTransacciones %> resultados)</span>
+                    <% if (pagina < totalPaginas) { %>
+                        <a href="<%= base %>page=<%= pagina + 1 %>" class="btn-secondary btn-sm">Siguiente →</a>
+                    <% } else { %>
+                        <span class="btn-secondary btn-sm" style="opacity:0.4;pointer-events:none">Siguiente →</span>
+                    <% } %>
+                </nav>
+            <% } %>
+
         </main>
 
         <!-- Modal detalle transaccion -->
