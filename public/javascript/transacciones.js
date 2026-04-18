@@ -9,6 +9,7 @@
             document.getElementById('modal-t-descripcion').textContent = btn.dataset.descripcion;
             document.getElementById('modal-t-fecha').textContent = btn.dataset.fecha;
             document.getElementById('modal-t-monto').textContent = '$' + Number(btn.dataset.monto).toLocaleString('es-AR');
+            document.getElementById('modal-t-metodo-pago').textContent = btn.dataset.metodoPago;
             document.getElementById('modal-transaccion').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         });

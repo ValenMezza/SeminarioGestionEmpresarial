@@ -121,7 +121,8 @@
                                             <button type="button" class="btn-secondary btn-sm btn-ver-transaccion"
                                                 data-id="<%= t.id %>" data-tipo="<%= t.tipo %>"
                                                 data-cliente="<%= t.cliente %>" data-descripcion="<%= t.descripcion %>"
-                                                data-fecha="<%= t.fecha %>" data-monto="<%= t.monto %>">
+                                                data-fecha="<%= t.fecha %>" data-monto="<%= t.monto %>"
+                                                data-metodo-pago="<%= t.metodoPago || '' %>">
                                                 Ver
                                             </button>
                                         </td>
@@ -180,6 +181,10 @@
                     <div class="alquiler-resumen__row">
                         <span class="alquiler-resumen__label">Monto</span>
                         <span id="modal-t-monto" style="font-weight:700"></span>
+                    </div>
+                    <div class="alquiler-resumen__row">
+                        <span class="alquiler-resumen__label">Método de pago</span>
+                        <span id="modal-t-metodo-pago" style="font-weight:700"></span>
                     </div>
                 </div>
                 <div class="modal-actions" style="margin-top:1.5rem">
