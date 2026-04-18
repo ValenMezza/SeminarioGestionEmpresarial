@@ -90,6 +90,55 @@
         </div>
         <% } %>
 
+        <%
+            // divido los "Alquilado" en: ya iniciados vs reservados con inicio futuro
+            const hoyStr = new Date().toISOString().slice(0, 10);
+            const alquiladosTodos = contenedores.filter(c => c.estado === "Alquilado");
+            const reservadosFuturos = alquiladosTodos.filter(c => c.inicioAlquiler && c.inicioAlquiler > hoyStr);
+            const alquilados = alquiladosTodos.filter(c => !c.inicioAlquiler || c.inicioAlquiler <= hoyStr);
+        %>
+
+        <% if (reservadosFuturos.length > 0) { %>
+        <div class="alquileres-seccion">
+            <h2 class="section-title">Reservados proximos a iniciar</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#Contenedor</th>
+                            <th>Cliente</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Direccion</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservadosFuturos.forEach(c => { %>
+                            <tr>
+                                <td>#<%= c.id %></td>
+                                <td><%= c.cliente %></td>
+                                <td><%= formatFecha(c.inicioAlquiler) %></td>
+                                <td><%= formatFecha(c.finAlquiler) %></td>
+                                <td><%= c.direccionAlquiler %></td>
+                                <td>$<%= c.precioAlquiler?.toLocaleString('es-AR') %></td>
+                                <td class="td-acciones">
+                                    <a href="/alquileres/detalle/<%= c.id %>" class="btn-secondary btn-sm">Detalle</a>
+                                    <a href="/alquileres/editar/<%= c.id %>" class="btn-secondary-yellow btn-sm">Editar</a>
+                                    <form action="/alquileres/finalizar/<%= c.id %>" method="POST" style="display:inline"
+                                            onsubmit="return confirm('¿Cancelar reserva del Contenedor #<%= c.id %>?')">
+                                        <button type="submit" class="btn-primary-green btn-sm">Cancelar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+
         <div class="alquileres-seccion">
             <h2 class="section-title">Alquileres activos</h2>
             <div class="table-wrapper">
@@ -106,7 +155,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% const alquilados = contenedores.filter(c => c.estado === "Alquilado"); %>
                         <% if (alquilados.length === 0) { %>
                             <tr>
                                 <td colspan="7" class="td-vacia">No hay alquileres activos</td>

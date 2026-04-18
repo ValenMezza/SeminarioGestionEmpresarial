@@ -106,7 +106,11 @@ const alquilerController = {
             const clienteId     = req.body.clienteId ? Number(req.body.clienteId) : null;
             const clienteNombre = req.body.clienteNombre || req.body.nombreNuevoCliente || 'Sin nombre';
             const direccion     = `${req.body.calle} ${req.body.numero}`.trim();
-            const precioAlquiler = calcularPrecioAlquiler(dias);
+            // si el usuario modifico el precio a mano, uso ese; sino calculo por dias
+            const precioManual  = Number(req.body.precioAlquiler);
+            const precioAlquiler = Number.isFinite(precioManual) && precioManual > 0
+                ? precioManual
+                : calcularPrecioAlquiler(dias);
             const metodoPago    = req.body.metodoPago || 'efectivo';
 
             if (cont.estado === 'Alquilado') {
