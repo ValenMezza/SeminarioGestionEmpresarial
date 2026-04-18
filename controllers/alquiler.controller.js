@@ -1,13 +1,13 @@
-const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, finalizarAlquiler: resetContenedor } = require("../store/dbContenedor");
+const { listContenedores, contenedorById, listContenedoresDisponibles, actualizarContenedor, listContenedoresPorFinalizar, getPreciosConfig, finalizarAlquiler: resetContenedor } = require("../store/dbContenedor");
 const { listClientes, clienteById: clientePorId, nombreCompleto, agregarMovimiento } = require("../store/dbClientes");
 const { crearTransaccion } = require("../store/dbTransacciones");
 const { crearAlquiler: insertarAlquiler, alquileresProgramados, alquileresProgramadosPorContenedor, alquilerActivoPorContenedor, activarAlquiler, alquilerById, finalizarAlquilerRecord } = require("../store/dbAlquiler");
 
-// Tarifa alquiler: 9 dias = 250000; menos dias = 30000/dia
-function calcularPrecioAlquiler(dias) {
+// tarifa alquiler: 9+ dias = precioAlquiler, menos = dias * precioDia (config)
+function calcularPrecioAlquiler(dias, precioDia, precioAlquiler) {
     if (!dias || dias <= 0) return 0;
-    if (dias >= 9) return 250000;
-    return dias * 30000;
+    if (dias >= 9) return precioAlquiler;
+    return dias * precioDia;
 }
 
 function diasEntre(inicio, fin) {
@@ -49,11 +49,12 @@ const alquilerController = {
 
     nuevoAlquiler: async (req, res) => {
         try {
-            const [contenedorlibre, porFinalizarRaw, clientes, programados] = await Promise.all([
+            const [contenedorlibre, porFinalizarRaw, clientes, programados, preciosCfg] = await Promise.all([
                 listContenedoresDisponibles(),
                 listContenedoresPorFinalizar(),
                 listClientes(),
                 alquileresProgramados(),
+                getPreciosConfig(),
             ]);
             const conProgramado = new Set(programados.map(p => p.contenedorId));
             const contenedoresPorFinalizar = porFinalizarRaw.filter(c => !conProgramado.has(c.id));
@@ -84,7 +85,7 @@ const alquilerController = {
                     }
                 }
             }
-            res.render('alquileres/nuevo_alquiler', { contenedorlibre, contenedoresPorFinalizar, clientes, renovarDatos });
+            res.render('alquileres/nuevo_alquiler', { contenedorlibre, contenedoresPorFinalizar, clientes, renovarDatos, preciosCfg });
         } catch (err) {
             console.error('[alquileres/nuevoAlquiler]', err);
             res.status(500).send('Error: ' + err.message);
@@ -106,11 +107,12 @@ const alquilerController = {
             const clienteId     = req.body.clienteId ? Number(req.body.clienteId) : null;
             const clienteNombre = req.body.clienteNombre || req.body.nombreNuevoCliente || 'Sin nombre';
             const direccion     = `${req.body.calle} ${req.body.numero}`.trim();
-            // si el usuario modifico el precio a mano, uso ese; sino calculo por dias
+            // si el usuario modifico el precio a mano, uso ese; sino calculo por dias con la tarifa del config
             const precioManual  = Number(req.body.precioAlquiler);
+            const cfg           = await getPreciosConfig();
             const precioAlquiler = Number.isFinite(precioManual) && precioManual > 0
                 ? precioManual
-                : calcularPrecioAlquiler(dias);
+                : calcularPrecioAlquiler(dias, cfg.precioDia, cfg.precioAlquiler);
             const metodoPago    = req.body.metodoPago || 'efectivo';
 
             if (cont.estado === 'Alquilado') {

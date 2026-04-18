@@ -73,6 +73,16 @@ async function actualizarPrecios(precioDia, precioAlquiler) {
     }).eq('estado', 'Disponible');
 }
 
+// agarro los precios base leyendo un contenedor disponible
+async function getPreciosConfig() {
+    const { data } = await supabase.from('contenedores').select('precio_dia, precio_alquiler')
+        .eq('estado', 'Disponible').limit(1).maybeSingle();
+    return {
+        precioDia:      data?.precio_dia      ?? 30000,
+        precioAlquiler: data?.precio_alquiler ?? 250000,
+    };
+}
+
 // al finalizar un alquiler, resetea el contenedor a disponible con precios default
 async function finalizarAlquiler(id) {
     const { data: cfg } = await supabase.from('contenedores').select('precio_dia, precio_alquiler').eq('estado', 'Disponible').limit(1).single();
@@ -109,6 +119,6 @@ async function eliminarContenedor(id) {
 module.exports = {
     contenedorById, listContenedores, listContenedoresAlquilados,
     listContenedoresDisponibles, contenedorLibre, actualizarContenedor,
-    listContenedoresPorFinalizar, actualizarPrecios, finalizarAlquiler,
+    listContenedoresPorFinalizar, actualizarPrecios, getPreciosConfig, finalizarAlquiler,
     crearContenedor, eliminarContenedor
 };

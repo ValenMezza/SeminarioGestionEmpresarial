@@ -3,11 +3,14 @@ function toInputDate(date) {
     return date.toISOString().split('T')[0];
 }
 
-// tarifa: 9 dias = 250000, menos de 9 = dias * 30000
+// tarifa: 9+ dias = precioAlquiler, menos = dias * precioDia (tomado del config)
+const preciosCfgEl = document.getElementById('precios-config');
+const preciosCfg = preciosCfgEl ? JSON.parse(preciosCfgEl.textContent) : { precioDia: 30000, precioAlquiler: 250000 };
+
 function calcularPrecioAlquiler(dias) {
     if (!dias || dias <= 0) return 0;
-    if (dias >= 9) return 250000;
-    return dias * 30000;
+    if (dias >= 9) return preciosCfg.precioAlquiler;
+    return dias * preciosCfg.precioDia;
 }
 
 function formatFechaLocal(val) {
