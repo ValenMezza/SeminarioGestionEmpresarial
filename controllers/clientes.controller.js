@@ -44,9 +44,11 @@ const clienteController = {
                 .filter(m => m.tipo === 'pago' && /Saldo transaccion #(\d+)/.test(m.descripcion || ''))
                 .map(m => Number((m.descripcion.match(/Saldo transaccion #(\d+)/) || [])[1]))
         );
-        const deudasConEstado = deudasCC.map(t => ({ ...t, saldada: saldadas.has(t.id) }));
+        const deudasPendientes = deudasCC
+            .map(t => ({ ...t, saldada: saldadas.has(t.id) }))
+            .filter(t => !t.saldada);
 
-        res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros, deudasCC: deudasConEstado });
+        res.render('clientes/detalle', { cliente, alquileres, transacciones, filtros, deudasCC: deudasPendientes });
     },
 
     saldarTransaccion: async (req, res) => {
@@ -95,10 +97,12 @@ const clienteController = {
                 .filter(m => m.tipo === 'pago' && /Saldo transaccion #(\d+)/.test(m.descripcion || ''))
                 .map(m => Number((m.descripcion.match(/Saldo transaccion #(\d+)/) || [])[1]))
         );
-        const deudasCC = transacciones.map(t => ({ ...t, saldada: saldadas.has(t.id) }));
-        const deudaTotal = deudasCC.filter(t => !t.saldada).reduce((acc, t) => acc + (t.monto || 0), 0);
+        const deudasPendientes = transacciones
+            .map(t => ({ ...t, saldada: saldadas.has(t.id) }))
+            .filter(t => !t.saldada);
+        const deudaTotal = deudasPendientes.reduce((acc, t) => acc + (t.monto || 0), 0);
 
-        res.render('clientes/cuenta_detalle', { cliente, deudasCC, deudaTotal });
+        res.render('clientes/cuenta_detalle', { cliente, deudasCC: deudasPendientes, deudaTotal });
     },
 
     nuevo: (req, res) => {
