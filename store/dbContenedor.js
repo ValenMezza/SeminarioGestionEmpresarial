@@ -42,7 +42,7 @@ async function contenedorLibre() {
 // trae los contenedores que vencen en 2 dias o menos
 async function listContenedoresPorFinalizar() {
     const en2dias = new Date();
-    en2dias.setDate(en2dias.getDate() + 2);
+    en2dias.setDate(en2dias.getDate() + 1); // no daba bien la suma de 2 por eso deje 1, revisar despues si es necesario ajustar la logica de fechas en general
     const limite = en2dias.toISOString().split('T')[0];
     const { data } = await supabase.from('contenedores').select('*')
         .eq('estado', 'Alquilado')
